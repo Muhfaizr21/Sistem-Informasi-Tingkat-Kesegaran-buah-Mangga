@@ -3,8 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Product;
+use App\Models\HarvestReport;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -56,5 +60,95 @@ class DatabaseSeeder extends Seeder
                 'tier_member' => 'silver',
             ]
         );
+
+        // Seed Produk Contoh
+        Product::updateOrCreate(
+            ['name' => 'Mangga Harum Manis Super'],
+            [
+                'variety' => 'Harum Manis',
+                'stock' => 150.00,
+                'price' => 25000,
+                'grade' => 'Grade A+',
+                'image' => 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80',
+            ]
+        );
+
+        Product::updateOrCreate(
+            ['name' => 'Mangga Gedong Gincu'],
+            [
+                'variety' => 'Gedong Gincu',
+                'stock' => 85.00,
+                'price' => 35000,
+                'grade' => 'Grade A',
+                'image' => 'https://images.unsplash.com/photo-1591073113125-e46713c829ed?auto=format&fit=crop&w=800&q=80',
+            ]
+        );
+
+        // Seed Laporan Panen Contoh (untuk Petani ID 2)
+        $petani = User::where('email', 'petani@mangga.com')->first();
+        if ($petani) {
+            HarvestReport::updateOrCreate(
+                ['user_id' => $petani->id, 'location' => 'Blok A-1'],
+                [
+                    'variety' => 'Harum Manis',
+                    'weight' => 45.5,
+                    'grade' => 'Grade A',
+                    'note' => 'Panen pagi hari, cuaca cerah.',
+                ]
+            );
+
+            // Seed Profil Petani
+            DB::table('petani')->updateOrInsert(
+                ['pengguna_id' => $petani->id],
+                [
+                    'nik' => '3212012345678901',
+                    'pengalaman_tahun' => 10,
+                    'kelompok_tani' => 'Mekar Sari Indramayu',
+                    'status_verifikasi' => 'verified',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+
+            $petani_profile_id = DB::table('petani')->where('pengguna_id', $petani->id)->value('id');
+
+            // Seed Lahan
+            DB::table('lahan')->updateOrInsert(
+                ['petani_id' => $petani_profile_id, 'nama_lahan' => 'Kebun Mangga Blok Utama'],
+                [
+                    'latitude' => -6.3276,
+                    'longitude' => 108.3249,
+                    'kecamatan_id' => 1,
+                    'desa' => 'Karangsong',
+                    'luas_hektar' => 2.5,
+                    'jenis_mangga' => 'Harum Manis',
+                    'jumlah_pohon' => 150,
+                    'tahun_tanam' => 2018,
+                    'status' => 'produktif',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+
+            // Seed Data Cuaca (untuk Rekomendasi)
+            DB::table('data_cuaca')->updateOrInsert(
+                ['kecamatan_id' => 1, 'tanggal_prakiraan' => Carbon::today()->toDateString()],
+                [
+                    'latitude' => -6.3276,
+                    'longitude' => 108.3249,
+                    'suhu_min' => 24.5,
+                    'suhu_max' => 32.0,
+                    'kelembaban' => 75.0,
+                    'curah_hujan_mm' => 5.2,
+                    'kecepatan_angin' => 12.0,
+                    'risiko_penyakit' => 'rendah',
+                    'optimal_panen' => true,
+                    'sumber_api' => 'OpenWeather',
+                    'diambil_pada' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
     }
 }

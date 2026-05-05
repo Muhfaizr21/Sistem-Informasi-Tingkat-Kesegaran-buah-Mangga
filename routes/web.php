@@ -103,13 +103,45 @@ Route::prefix('pembeli')->name('pembeli.')->middleware(['auth', 'pembeli'])->gro
     Route::post('/pesanan/{id}/review', [ReviewController::class, 'store'])->name('pesanan.review');
 });
 
-use App\Http\Controllers\PetaniController;
+use App\Http\Controllers\petani\PetaniController;
+use App\Http\Controllers\petani\DashboardController;
+use App\Http\Controllers\petani\LahanController;
+use App\Http\Controllers\petani\ScanKesegaranController;
+use App\Http\Controllers\petani\LaporanPanenController;
+use App\Http\Controllers\petani\WilayahProduksiController;
+use App\Http\Controllers\petani\ProfileController as PetaniProfileController;
+use App\Http\Controllers\petani\RekomendasiController;
 
 Route::prefix('petani')->name('petani.')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [PetaniController::class, 'dashboard'])->name('dashboard');
-    Route::get('/cek-kesegaran', [PetaniController::class, 'cekKesegaran'])->name('cek-kesegaran');
-    Route::get('/data-lahan', [PetaniController::class, 'dataLahan'])->name('data-lahan');
-    Route::get('/laporan-panen', [PetaniController::class, 'laporanPanen'])->name('laporan-panen');
-    Route::post('/laporan-panen', [PetaniController::class, 'storeLaporanPanen'])->name('laporan-panen.store');
-    Route::get('/profil', [PetaniController::class, 'profil'])->name('profil');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/wilayah-produksi', [WilayahProduksiController::class, 'index'])->name('wilayah-produksi');
+    Route::get('/rekomendasi', [RekomendasiController::class, 'index'])->name('rekomendasi');
+    
+    // Scan Kesegaran
+    Route::get('/cek-kesegaran', [ScanKesegaranController::class, 'index'])->name('cek-kesegaran');
+    Route::post('/cek-kesegaran/analyze', [ScanKesegaranController::class, 'analyze'])->name('cek-kesegaran.analyze');
+    Route::post('/cek-kesegaran/store', [ScanKesegaranController::class, 'store'])->name('cek-kesegaran.store');
+    
+    // Lahan Management
+    Route::get('/data-lahan', [LahanController::class, 'index'])->name('data-lahan');
+    Route::post('/data-lahan', [LahanController::class, 'store'])->name('data-lahan.store');
+    Route::put('/data-lahan/{lahan}', [LahanController::class, 'update'])->name('data-lahan.update');
+    Route::delete('/data-lahan/{lahan}', [LahanController::class, 'destroy'])->name('data-lahan.destroy');
+    Route::post('/kecamatan/sync', [LahanController::class, 'syncKecamatan'])->name('kecamatan.sync');
+
+    // Laporan Panen
+    Route::get('/laporan-panen', [LaporanPanenController::class, 'index'])->name('laporan-panen');
+    Route::post('/laporan-panen', [LaporanPanenController::class, 'store'])->name('laporan-panen.store');
+    Route::put('/laporan-panen/{laporan}', [LaporanPanenController::class, 'update'])->name('laporan-panen.update');
+
+    // Profile Management
+    Route::get('/profil', [PetaniProfileController::class, 'index'])->name('profil');
+    Route::put('/profil', [PetaniProfileController::class, 'update'])->name('profil.update');
+    Route::put('/profil/password', [PetaniProfileController::class, 'updatePassword'])->name('profil.password');
+    Route::post('/profil/documents', [PetaniProfileController::class, 'uploadDocuments'])->name('profil.documents');
+
+    // Notifications
+    Route::post('/notifikasi/{id}/read', [\App\Http\Controllers\petani\NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
+    Route::delete('/notifikasi/{id}', [\App\Http\Controllers\petani\NotifikasiController::class, 'markAsRead'])->name('notifikasi.destroy');
+    Route::post('/notifikasi/read-all', [\App\Http\Controllers\petani\NotifikasiController::class, 'markAllAsRead'])->name('notifikasi.read-all');
 });

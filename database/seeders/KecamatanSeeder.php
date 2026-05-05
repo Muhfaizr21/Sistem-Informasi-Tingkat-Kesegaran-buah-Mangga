@@ -44,6 +44,12 @@ class KecamatanSeeder extends Seeder
             ['kode_bps' => '3212210', 'nama' => 'Anjatan'],
             ['kode_bps' => '3212220', 'nama' => 'Sukra'],
             ['kode_bps' => '3212221', 'nama' => 'Patrol'],
+            
+            // Tambahan Wilayah Bandung (Untuk General/Testing)
+            ['kode_bps' => '3273010', 'nama' => 'Sumur Bandung'],
+            ['kode_bps' => '3273020', 'nama' => 'Bandung Wetan'],
+            ['kode_bps' => '3273030', 'nama' => 'Coblong'],
+            ['kode_bps' => '3273040', 'nama' => 'Cicendo'],
         ];
 
         foreach ($kecamatan as $k) {
