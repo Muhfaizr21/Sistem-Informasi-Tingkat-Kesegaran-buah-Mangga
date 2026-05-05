@@ -7,13 +7,19 @@ Route::get('/', function () {
     return view('landing');
 })->name('landing');
 
+use App\Http\Controllers\Pembeli\DashboardController as PembeliDashboard;
+use App\Http\Controllers\Pembeli\ReviewController;
+use App\Http\Controllers\Pembeli\BuyerController;
+use App\Http\Controllers\Pembeli\FavoritController;
+use App\Http\Controllers\Pembeli\NotificationController;
+
 Route::get('/dashboard', function () {
     $role = auth()->user()->role;
     
     if ($role === 'admin') {
         return redirect()->route('admin.dashboard');
-    } elseif ($role === 'buyer') {
-        return redirect()->route('buyer.dashboard');
+    } elseif ($role === 'pembeli') {
+        return redirect()->route('pembeli.dashboard');
     } elseif ($role === 'petani') {
         return redirect()->route('petani.dashboard');
     }
@@ -41,15 +47,60 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/config', [AdminController::class, 'config'])->name('config');
 });
 
-use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\Pembeli\ScanController as PembeliScan;
+use App\Http\Controllers\Pembeli\MarketplaceController;
+use App\Http\Controllers\Pembeli\CartController;
+use App\Http\Controllers\Pembeli\CheckoutController;
+use App\Http\Controllers\Pembeli\PetaniController as PembeliPetani;
+use App\Http\Controllers\Pembeli\AddressController;
+use App\Http\Controllers\Pembeli\OrderController as PembeliOrder;
 
-Route::prefix('buyer')->name('buyer.')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [BuyerController::class, 'dashboard'])->name('dashboard');
-    Route::get('/catalog', [BuyerController::class, 'catalog'])->name('catalog');
-    Route::get('/order-history', [BuyerController::class, 'orderHistory'])->name('order-history');
-    Route::get('/checkout', [BuyerController::class, 'checkout'])->name('checkout');
-    Route::get('/account-setting', [BuyerController::class, 'accountSetting'])->name('account-setting');
-    Route::get('/market-analytics', [BuyerController::class, 'marketAnalytics'])->name('market-analytics');
+Route::prefix('pembeli')->name('pembeli.')->middleware(['auth', 'pembeli'])->group(function () {
+    Route::get('/dashboard', [PembeliDashboard::class, 'index'])->name('dashboard');
+    Route::get('/scan', [PembeliScan::class, 'index'])->name('scan');
+    Route::post('/scan/proses', [PembeliScan::class, 'proses'])->name('scan.proses');
+    Route::post('/scan/simpan', [PembeliScan::class, 'simpan'])->name('scan.simpan');
+    Route::post('/scan/batal', [PembeliScan::class, 'batal'])->name('scan.batal');
+
+    // Marketplace
+    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.katalog');
+    Route::get('/marketplace/mangga/{id}', [MarketplaceController::class, 'show'])->name('marketplace.detail');
+    Route::get('/marketplace/petani/{id}', [PembeliPetani::class, 'show'])->name('marketplace.petani');
+
+    // Cart
+    Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/keranjang/tambah', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/keranjang/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/keranjang/hapus', [CartController::class, 'remove'])->name('cart.remove');
+
+    // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/proses', [CheckoutController::class, 'process'])->name('checkout.process');
+
+    // Alamat
+    Route::get('/alamat', [AddressController::class, 'index'])->name('alamat.index');
+    Route::post('/alamat', [AddressController::class, 'store'])->name('alamat.store');
+    Route::put('/alamat/{id}', [AddressController::class, 'update'])->name('alamat.update');
+    Route::delete('/alamat/{id}', [AddressController::class, 'destroy'])->name('alamat.destroy');
+    Route::post('/alamat/{id}/utama', [AddressController::class, 'setUtama'])->name('alamat.utama');
+
+    // Scan History
+    Route::get('/riwayat-scan', [BuyerController::class, 'scanHistory'])->name('scan.history');
+    Route::delete('/riwayat-scan/{id}', [BuyerController::class, 'destroyScan'])->name('scan.destroy');
+
+    // Notifikasi
+    Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifikasi/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+
+    // Favorit Petani
+    Route::post('/favorit/toggle', [FavoritController::class, 'toggle'])->name('favorit.toggle');
+
+    // Pesanan (Tracking & History)
+    Route::get('/pesanan', [PembeliOrder::class, 'index'])->name('pesanan.index');
+    Route::get('/pesanan/{id}', [PembeliOrder::class, 'show'])->name('pesanan.show');
+    Route::post('/pesanan/{id}/selesai', [PembeliOrder::class, 'konfirmasiSelesai'])->name('pesanan.selesai');
+    Route::post('/pesanan/{id}/review', [ReviewController::class, 'store'])->name('pesanan.review');
 });
 
 use App\Http\Controllers\PetaniController;

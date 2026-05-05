@@ -39,12 +39,21 @@ class DatabaseSeeder extends Seeder
         );
 
         // Akun Pembeli Contoh
-        User::updateOrCreate(
+        $userPembeli = User::updateOrCreate(
             ['email' => 'pembeli@mangga.com'],
             [
                 'nama' => 'Ibu Siti Aminah',
                 'password' => Hash::make('pembeli123'),
                 'role' => 'pembeli',
+            ]
+        );
+
+        \DB::table('pembeli')->updateOrInsert(
+            ['pengguna_id' => $userPembeli->id],
+            [
+                'tipe_bisnis' => 'individu',
+                'poin_loyalitas' => 150,
+                'tier_member' => 'silver',
             ]
         );
     }

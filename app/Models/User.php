@@ -72,4 +72,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the petani profile associated with the user.
+     */
+    public function petani()
+    {
+        return $this->hasOne(Petani::class, 'pengguna_id');
+    }
+
+    /**
+     * Get the pembeli profile associated with the user.
+     */
+    public function pembeli()
+    {
+        return $this->hasOne(Pembeli::class, 'pengguna_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notifikasi::class, 'pengguna_id');
+    }
 }
