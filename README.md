@@ -1,58 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🥭 Sistem Informasi Tingkat Kesegaran Buah Mangga
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📋 Deskripsi Proyek
+Sistem ini merupakan solusi digital berbasis **Big Data** dan **Computer Vision** yang dirancang khusus untuk industri mangga di **Kabupaten Indramayu**. Proyek ini bertujuan untuk menjembatani kesenjangan informasi antara petani dan pembeli melalui teknologi penilaian kualitas otomatis dan analitik prediktif.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Maksud dan Tujuan
+Sistem ini dibangun dengan visi untuk memodernisasi ekosistem pertanian mangga melalui:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1.  **Penilaian Kesegaran Otomatis (Computer Vision)**: Menghilangkan subjektivitas dalam penentuan kualitas mangga dengan menggunakan analisis citra (warna, tekstur, dan deteksi cacat) secara real-time.
+2.  **Transparansi & Efisiensi Pasar**: Memberikan akses langsung kepada pembeli untuk melihat stok dan kualitas mangga dari berbagai lahan petani terverifikasi di Indramayu.
+3.  **Manajemen Produksi Berbasis Data**: Membantu petani mengelola data lahan, laporan tanam, dan laporan panen secara digital dan terstruktur.
+4.  **Rekomendasi Cerdas (Big Data Analytics)**: Mengintegrasikan API Cuaca dan algoritma Machine Learning untuk memberikan rekomendasi waktu panen dan tanam yang optimal guna meminimalkan risiko gagal panen.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🚀 Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🌾 Untuk Petani
+*   **Real-time Freshness Scan**: Cek tingkat kesegaran mangga hanya dengan mengambil foto.
+*   **Data-Driven Recommendations**: Notifikasi waktu panen optimal berdasarkan ramalan cuaca dan data historis.
+*   **Digital Farm Log**: Pencatatan otomatis laporan tanam dan panen per lahan.
+*   **GIS Mapping**: Visualisasi lokasi lahan pada peta digital.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🛒 Untuk Pembeli
+*   **Katalog Mangga Terverifikasi**: Cari mangga berdasarkan jenis, lokasi (kecamatan), dan tingkat kesegaran.
+*   **Quality Guarantee**: Melihat hasil scan asli dan skor kualitas dari sistem sebelum membeli.
+*   **Direct Transaction**: Sistem pemesanan dan checkout yang terintegrasi dengan Payment Gateway.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 👨‍💼 Untuk Admin
+*   **Quality Monitoring**: Dashboard analitik untuk memantau tren kualitas mangga di seluruh wilayah Indramayu.
+*   **Verification System**: Validasi data petani dan dokumen lahan untuk menjaga integritas sistem.
+*   **Market Insight**: Analisis harga dan permintaan pasar secara real-time.
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 🛠️ Tech Stack & Integrasi
+Sistem ini menggunakan arsitektur modern untuk menjamin performa dan skalabilitas:
 
-```bash
-composer require laravel/boost --dev
+*   **Backend**: [Laravel Framework](https://laravel.com) (PHP)
+*   **AI/ML**: TensorFlow / MobileNetV2 untuk analisis citra.
+*   **Database**: PostgreSQL & Redis.
+*   **Integrasi Service (API)**:
+    *   **Weather**: OpenWeatherMap / BMKG.
+    *   **Payment**: Midtrans.
+    *   **Mapping**: Google Maps / Leaflet.
+    *   **Storage**: AWS S3 / DigitalOcean Spaces.
 
-php artisan boost:install
-```
+---
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## 📖 Dokumentasi Lanjutan
+Untuk informasi lebih detail mengenai arsitektur dan layanan pihak ketiga, silakan merujuk pada:
+*   [**Sistem.md**](./Sistem.md) - Dokumentasi fitur, alur kerja, dan skema database.
+*   [**API.md**](./API.md) - Daftar layanan pihak ketiga dan rekomendasi stack teknologi.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📄 Lisensi
+Proyek ini bersifat open-source dan berada di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
