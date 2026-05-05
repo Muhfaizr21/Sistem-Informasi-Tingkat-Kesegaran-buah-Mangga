@@ -15,11 +15,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Admin Account
+        \App\Models\User::factory()->create([
+            'name' => 'Admin Mango',
+            'email' => 'admin@mango.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'admin',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Buyer Account
+        \App\Models\User::factory()->create([
+            'name' => 'Buyer Mango',
+            'email' => 'buyer@mango.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'buyer',
+        ]);
+
+        // Petani Account
+        \App\Models\User::factory()->create([
+            'name' => 'Petani Mango',
+            'email' => 'petani@mango.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'petani',
         ]);
     }
 }
