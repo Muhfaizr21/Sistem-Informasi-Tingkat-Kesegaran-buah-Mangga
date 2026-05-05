@@ -14,6 +14,8 @@ class User extends Authenticatable
 
     protected $table = 'pengguna';
 
+    protected $appends = ['name'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +29,26 @@ class User extends Authenticatable
         'no_telepon',
         'foto_profil',
     ];
+
+    /**
+     * Virtual attribute for 'name' to maintain compatibility with Laravel Auth
+     */
+    public function getNameAttribute()
+    {
+        return $this->nama;
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['nama'] = $value;
+    }
+
+    /**
+     * Helper methods for roles
+     */
+    public function isAdmin() { return $this->role === 'admin'; }
+    public function isPetani() { return $this->role === 'petani'; }
+    public function isPembeli() { return $this->role === 'pembeli'; }
 
     /**
      * The attributes that should be hidden for serialization.
