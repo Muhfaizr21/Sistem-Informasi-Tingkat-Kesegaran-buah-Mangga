@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,27 +17,31 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin Account
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Admin Mango',
             'email' => 'admin@mango.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
 
         // Buyer Account
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Buyer Mango',
             'email' => 'buyer@mango.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'password' => Hash::make('password'),
             'role' => 'buyer',
         ]);
 
-        // Petani Account
-        \App\Models\User::factory()->create([
-            'name' => 'Petani Mango',
-            'email' => 'petani@mango.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
-            'role' => 'petani',
+        // Farmer Account
+        User::factory()->create([
+            'name' => 'Farmer Mango',
+            'email' => 'farmer@mango.com',
+            'password' => Hash::make('password'),
+            'role' => 'farmer',
+        ]);
+
+        $this->call([
+            ProductSeeder::class,
         ]);
     }
 }
