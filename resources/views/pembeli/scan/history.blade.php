@@ -34,7 +34,22 @@
                 <span class="text-[9px] px-3 py-1 bg-gray-100 rounded-full font-black text-gray-500 uppercase tracking-tighter">{{ $scan->kategori }}</span>
             </div>
             
-            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-gray-50">
+            <div class="grid grid-cols-3 gap-2 pt-6 border-t border-gray-50">
+                <div>
+                    <p class="text-[8px] text-gray-400 uppercase font-bold mb-1">Warna</p>
+                    <p class="font-bold text-xs text-[#F53003]">{{ $scan->persentase_warna }}%</p>
+                </div>
+                <div>
+                    <p class="text-[8px] text-gray-400 uppercase font-bold mb-1">Tekstur</p>
+                    <p class="font-bold text-xs text-orange-500">{{ $scan->skor_tekstur }}/100</p>
+                </div>
+                <div>
+                    <p class="text-[8px] text-gray-400 uppercase font-bold mb-1">Ukuran</p>
+                    <p class="font-bold text-xs text-emerald-500">{{ $scan->diameter_cm }}cm/{{ $scan->berat_gram }}g</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 pt-3 mt-3 border-t border-gray-50">
                 <div>
                     <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Akurasi AI</p>
                     <p class="font-bold text-sm text-[#1b1b18]">{{ $scan->skor_kepercayaan }}%</p>

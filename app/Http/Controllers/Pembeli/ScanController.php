@@ -39,31 +39,65 @@ class ScanController extends Controller
             $tempName = 'scan/temp/' . Str::random(10) . '_' . time() . '.webp';
             Storage::disk('public')->put($tempName, $data);
 
-            // Simulasi Deteksi Objek (Mangga atau Bukan)
-            if (rand(1, 20) === 1) { // 5% failure rate for a smoother demo experience
+            // Validasi gambar menggunakan PHP GD
+            $imagePath = storage_path('app/public/' . $tempName);
+            $imageInfo = @getimagesize($imagePath);
+            
+            if ($imageInfo === false) {
                 Storage::disk('public')->delete($tempName);
                 return response()->json([
                     'success' => false,
-                    'message' => 'AI mendeteksi objek non-mangga (Manusia/Tangan). Pastikan hanya objek mangga yang terlihat jelas di kamera.'
+                    'message' => 'File gambar tidak valid atau rusak.'
+                ], 422);
+            }
+            
+            // Cek rasio warna dasar menggunakan PHP GD (sederhana)
+            $isValidMango = $this->quickMangoCheck($imagePath);
+            
+            if (!$isValidMango) {
+                Storage::disk('public')->delete($tempName);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'AI mendeteksi objek non-mangga. Pastikan hanya mangga yang terlihat jelas di kamera.'
                 ], 422);
             }
 
-            // Simulasi Algoritma
-            $skorKesegaran = rand(70, 98);
-            $kategori = $this->tentukanKategori($skorKesegaran);
-            $rekomendasi = $this->tentukanRekomendasi($kategori);
+
+            // Mengirim Gambar ke FastAPI Microservice (Lebih Cepat!)
+            $imageAbsolutePath = storage_path('app/public/' . $tempName);
+            
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(15)
+                    ->attach('image', file_get_contents($imageAbsolutePath), 'scan.webp')
+                    ->post('http://127.0.0.1:8001/api/scan', [
+                        'jenis_mangga' => $request->jenis_mangga,
+                    ]);
+
+                if ($response->failed()) {
+                    throw new \Exception('Server AI (FastAPI) mengembalikan error.');
+                }
+                
+                $result = $response->json();
+                
+            } catch (\Exception $e) {
+                Storage::disk('public')->delete($tempName);
+                throw new \Exception('Gagal terhubung ke Server AI. Pastikan server FastAPI berjalan di http://127.0.0.1:8001. Error: ' . $e->getMessage());
+            }
 
             return response()->json([
                 'success' => true,
                 'analysis' => [
-                    'skor_kesegaran' => $skorKesegaran,
-                    'kategori' => $kategori,
-                    'rekomendasi' => $rekomendasi,
-                    'skor_kepercayaan' => rand(85, 99),
-                    'persentase_warna' => rand(60, 95),
-                    'skor_tekstur' => rand(75, 95),
-                    'skor_bentuk' => rand(80, 95),
-                    'skor_aroma' => rand(75, 98),
+                    'skor_kesegaran' => $result['skor_kesegaran'],
+                    'kategori' => $result['kategori'],
+                    'rekomendasi' => $result['rekomendasi'],
+                    'skor_kepercayaan' => $result['skor_kepercayaan'],
+                    'persentase_warna' => $result['persentase_warna'],
+                    'skor_tekstur' => $result['skor_tekstur'],
+                    'skor_bentuk' => $result['skor_bentuk'],
+                    'panjang_cm' => $result['panjang_cm'],
+                    'berat_gr' => $result['berat_gr'],
+                    'estimasi_ukuran' => $result['estimasi_ukuran'],
+                    'skor_aroma' => $result['skor_aroma'],
                 ],
                 'temp_path' => $tempName,
                 'image_url' => asset('storage/' . $tempName)
@@ -95,6 +129,8 @@ class ScanController extends Controller
                 'persentase_warna' => $request->persentase_warna,
                 'skor_tekstur' => $request->skor_tekstur,
                 'skor_bentuk' => $request->skor_bentuk,
+                'berat_gram' => $request->berat_gr ?? 0,
+                'diameter_cm' => $request->panjang_cm ?? 0,
                 'skor_aroma' => $request->skor_aroma,
                 'skor_kepercayaan' => $request->skor_kepercayaan,
                 'kategori' => $request->kategori,
@@ -129,5 +165,59 @@ class ScanController extends Controller
         if ($kategori == 'matang') return 'siap_jual';
         if ($kategori == 'setengah_matang') return 'perlu_penyimpanan';
         return 'belum_siap';
+    }
+
+    // Tambahkan method helper untuk pengecekan cepat (tanpa OpenCV)
+    private function quickMangoCheck($imagePath)
+    {
+        if (!extension_loaded('gd')) {
+            return true; // Jika GD tidak ada, lewati validasi
+        }
+        
+        $img = @imagecreatefromstring(file_get_contents($imagePath));
+        if (!$img) {
+            return false;
+        }
+        
+        $width = imagesx($img);
+        $height = imagesy($img);
+        $totalPixels = $width * $height;
+        
+        // Sample 1000 pixel random untuk cek warna dominan
+        $samples = min(1000, $totalPixels);
+        $mangoColorCount = 0;
+        
+        for ($i = 0; $i < $samples; $i++) {
+            $x = rand(0, $width - 1);
+            $y = rand(0, $height - 1);
+            $rgb = imagecolorat($img, $x, $y);
+            $r = ($rgb >> 16) & 0xFF;
+            $g = ($rgb >> 8) & 0xFF;
+            $b = $rgb & 0xFF;
+            
+            // Warna mangga: R tinggi (kuning/oranye) atau G tinggi (hijau)
+            // Tapi tidak boleh terlalu biru
+            $isMangoColor = false;
+            
+            // Hijau (mentah) - Diperlebar
+            if ($g > 80 && $g > $b) {
+                $isMangoColor = true;
+            }
+            // Kuning/Oranye (matang) - Diperlebar
+            if ($r > 90 && $g > 50 && $r > $b) {
+                $isMangoColor = true;
+            }
+            
+            if ($isMangoColor) {
+                $mangoColorCount++;
+            }
+        }
+        
+        imagedestroy($img);
+        
+        $rasioWarnaMangga = $mangoColorCount / $samples;
+        
+        // Turunkan threshold menjadi 5% untuk mengakomodasi foto dengan background luas
+        return $rasioWarnaMangga > 0.05;
     }
 }

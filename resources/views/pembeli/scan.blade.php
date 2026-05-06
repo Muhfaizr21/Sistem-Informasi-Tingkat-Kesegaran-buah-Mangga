@@ -64,18 +64,31 @@
                         <option value="Harum Manis" class="bg-[#0c0c0b]">Harum Manis (Default)</option>
                         <option value="Gedong Gincu" class="bg-[#0c0c0b]">Gedong Gincu</option>
                         <option value="Manalagi" class="bg-[#0c0c0b]">Manalagi</option>
+                        <option value="Cengkir" class="bg-[#0c0c0b]">Cengkir / Indramayu</option>
+                        <option value="Golek" class="bg-[#0c0c0b]">Golek</option>
+                        <option value="Apel" class="bg-[#0c0c0b]">Apel</option>
+                        <option value="Kweni" class="bg-[#0c0c0b]">Kweni</option>
+                        <option value="Madu" class="bg-[#0c0c0b]">Madu</option>
+                        <option value="Podang" class="bg-[#0c0c0b]">Podang</option>
                     </select>
                     <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                 </div>
                 
-                <button id="capture-btn" class="w-full py-6 bg-[#F53003] hover:bg-[#FF4433] rounded-[2rem] font-black text-lg shadow-2xl shadow-orange-900/40 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    MULAI ANALISIS
-                </button>
+                <div class="flex flex-col gap-3">
+                    <button id="capture-btn" class="w-full py-6 bg-[#F53003] hover:bg-[#FF4433] rounded-[2rem] font-black text-lg shadow-2xl shadow-orange-900/40 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        SCAN KAMERA
+                    </button>
+                    <button id="upload-btn" type="button" class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-[2rem] font-bold text-sm tracking-wider transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 text-gray-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        UPLOAD DARI GALERI
+                    </button>
+                    <input type="file" id="file-upload" accept="image/*" class="hidden">
+                </div>
             </div>
-            <p class="text-center text-gray-600 text-[10px] uppercase tracking-widest font-bold">Posisikan mangga di tengah area scan</p>
+            <p class="text-center text-gray-600 text-[10px] uppercase tracking-widest font-bold">Posisikan mangga di tengah area scan, atau upload gambar</p>
         </div>
 
         <!-- Results Panel -->
@@ -147,6 +160,22 @@
                             </div>
                         </div>
 
+                        <!-- Tambahan Metrik Detail (Warna, Tekstur, Ukuran) -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Warna</p>
+                                <p id="result-warna" class="text-lg font-bold text-[#F53003]">-</p>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Tekstur</p>
+                                <p id="result-tekstur" class="text-lg font-bold text-orange-400">-</p>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Ukuran</p>
+                                <p id="result-bentuk" class="text-lg font-bold text-emerald-400">-</p>
+                            </div>
+                        </div>
+
                         <div class="glass-panel p-8 rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-transparent">
                             <div class="flex items-start gap-4">
                                 <div class="text-2xl mt-1">💡</div>
@@ -175,11 +204,40 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const captureBtn = document.getElementById('capture-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileUpload = document.getElementById('file-upload');
         const scanLine = document.getElementById('scan-line');
         const scanStatus = $('#scan-status');
         
         let currentAnalysis = null;
         let currentTempPath = null;
+        
+        // Preview Image Element for Upload
+        const previewImg = document.createElement('img');
+        previewImg.id = 'preview-overlay';
+        previewImg.className = 'w-full h-full object-cover hidden absolute inset-0 z-10 rounded-[36px]';
+        document.querySelector('.scanner-view').appendChild(previewImg);
+
+        uploadBtn.addEventListener('click', () => {
+            fileUpload.click();
+        });
+
+        fileUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imageData = event.target.result;
+                    previewImg.src = imageData;
+                    previewImg.classList.remove('hidden');
+                    
+                    $(uploadBtn).prop('disabled', true).text('PROSES AI...');
+                    $(captureBtn).prop('disabled', true);
+                    scanImage(imageData);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         async function initCamera() {
             try {
@@ -200,6 +258,10 @@
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             
             const imageData = canvas.toDataURL('image/webp', 0.6);
+            return scanImage(imageData);
+        }
+
+        function scanImage(imageData) {
             const jenis = $('#jenis_mangga').val();
 
             scanLine.classList.remove('hidden');
@@ -229,13 +291,21 @@
                     } else {
                         Swal.fire({ title: 'Error', text: 'Gagal menghubungi AI Server.', icon: 'error', confirmButtonColor: '#F53003' });
                     }
-                    $(captureBtn).prop('disabled', false).html('<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> MULAI ANALISIS');
+                    
+                    // Reset UI Buttons
+                    $(captureBtn).prop('disabled', false).html('<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> SCAN KAMERA');
+                    $(uploadBtn).prop('disabled', false).html('<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> UPLOAD DARI GALERI');
+                    
+                    // Reset preview
+                    previewImg.classList.add('hidden');
+                    fileUpload.value = '';
                 }
             });
         }
 
         captureBtn.addEventListener('click', async () => {
             $(captureBtn).prop('disabled', true).text('PROSES AI...');
+            $(uploadBtn).prop('disabled', true);
             await performScan();
         });
 
@@ -243,18 +313,31 @@
             $('#result-img').attr('src', imageUrl);
             $('#result-varietas').text(varietas);
             $('#result-score').text(data.skor_kesegaran + '%');
-            $('#result-cat').text(data.kategori.replace('_', ' '));
+            let displayCat = data.kategori.replace('_', ' ');
+            let advice = "";
+            
+            if (data.kategori == 'busuk' || data.kategori == 'busuk_awal') {
+                advice = "Terdeteksi pembusukan! Buang atau jadikan kompos.";
+            } else if (data.kategori == 'mentah') {
+                advice = "Mangga masih mentah. Simpan di suhu ruangan bersama apel/pisang.";
+            } else if (data.kategori == 'setengah_matang') {
+                advice = "Perlu penyimpanan 1-2 hari di suhu ruangan.";
+            } else if (data.kategori == 'sangat_matang') {
+                advice = "Sangat matang. Segera konsumsi atau simpan di kulkas.";
+            } else {
+                advice = "Kondisi optimal. Nikmati segera atau siap jual!";
+            }
+            
+            $('#result-cat').text(displayCat);
+            $('#result-advice').text(advice);
             $('#result-acc').text(data.skor_kepercayaan + '%');
+            $('#result-warna').text(data.persentase_warna + '%');
+            $('#result-tekstur').text(data.skor_tekstur + '/100');
+            $('#result-bentuk').text(data.estimasi_ukuran);
             
             const circle = document.getElementById('progress-circle');
             const circumference = 42 * 2 * Math.PI;
             circle.style.strokeDashoffset = circumference - (data.skor_kesegaran / 100 * circumference);
-            
-            let advice = "Simpan di tempat sejuk.";
-            if(data.kategori == 'mentah') advice = "Mangga masih mentah. Simpan di suhu ruangan bersama pisang.";
-            if(data.kategori == 'sangat_matang') advice = "Sangat matang. Segera konsumsi atau simpan di kulkas.";
-            if(data.kategori == 'matang') advice = "Kondisi optimal. Nikmati segera!";
-            $('#result-advice').text(advice);
             
             $('#results-panel').removeClass('hidden').addClass('animate-in fade-in duration-500');
         }
