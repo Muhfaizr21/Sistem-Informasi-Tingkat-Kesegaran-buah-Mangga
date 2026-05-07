@@ -29,7 +29,7 @@ class AdminController extends Controller
 
     public function harvestReport()
     {
-        $reports = \App\Models\HarvestReport::with('user')->latest()->get();
+        $reports = \App\Models\LaporanPanen::with('petani')->latest()->get();
         return view('admin.harvest-report', compact('reports'));
     }
 

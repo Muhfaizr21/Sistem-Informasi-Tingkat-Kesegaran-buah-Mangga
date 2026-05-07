@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\HarvestReport;
+use App\Models\LaporanPanen;
 
 class DashboardController extends Controller
 {
@@ -27,11 +27,14 @@ class DashboardController extends Controller
 
         // Statistik Panen
         $thisMonth = Carbon::now()->startOfMonth();
-        $reports = HarvestReport::where('user_id', $userId)
-            ->where('created_at', '>=', $thisMonth)
-            ->get();
+        $reports = collect();
+        if ($petani) {
+            $reports = LaporanPanen::where('petani_id', $petani->id)
+                ->where('created_at', '>=', $thisMonth)
+                ->get();
+        }
         
-        $totalPanenBulanIni = $reports->sum('weight');
+        $totalPanenBulanIni = $reports->sum('jumlah_kg');
         $rataRataKualitas = 85.5; 
 
         // Status Penjualan

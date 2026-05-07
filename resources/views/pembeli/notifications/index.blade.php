@@ -12,16 +12,16 @@
         @if($notifications->where('sudah_dibaca', false)->count() > 0)
         <form action="{{ route('pembeli.notifications.readAll') }}" method="POST">
             @csrf
-            <button type="submit" class="text-sm font-bold text-[#F53003] hover:underline">Tandai semua dibaca</button>
+            <button type="submit" class="text-sm font-bold text-[#FFB800] hover:underline">Tandai semua dibaca</button>
         </form>
         @endif
     </div>
 
     <div class="space-y-4">
         @forelse($notifications as $notif)
-        <div class="glass-card rounded-3xl p-6 transition-all {{ $notif->sudah_dibaca ? 'opacity-70' : 'border-l-4 border-l-[#F53003] shadow-md' }}">
+        <div class="glass-card rounded-3xl p-6 transition-all {{ $notif->sudah_dibaca ? 'opacity-70' : 'border-l-4 border-l-[#FFB800] shadow-md' }}">
             <div class="flex gap-4">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 {{ $notif->sudah_dibaca ? 'bg-gray-100 text-gray-400' : 'bg-orange-50 text-[#F53003]' }}">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 {{ $notif->sudah_dibaca ? 'bg-gray-100 text-gray-400' : 'bg-orange-50 text-[#FFB800]' }}">
                     @if($notif->tipe === 'pesanan_selesai')
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     @elseif($notif->tipe === 'stok_baru')
@@ -38,9 +38,9 @@
                     <p class="text-sm text-[#706f6c] leading-relaxed mb-3">{{ $notif->pesan }}</p>
                     
                     @if($notif->referensi_tipe === 'pesanan')
-                        <a href="{{ route('pembeli.pesanan.show', $notif->referensi_id) }}" class="text-xs font-bold text-[#F53003] hover:underline">Lihat Detail Pesanan →</a>
+                        <a href="{{ route('pembeli.pesanan.show', $notif->referensi_id) }}" class="text-xs font-bold text-[#FFB800] hover:underline">Lihat Detail Pesanan →</a>
                     @elseif($notif->referensi_tipe === 'listing')
-                        <a href="{{ route('pembeli.marketplace.detail', $notif->referensi_id) }}" class="text-xs font-bold text-[#F53003] hover:underline">Lihat Produk →</a>
+                        <a href="{{ route('pembeli.marketplace.detail', $notif->referensi_id) }}" class="text-xs font-bold text-[#FFB800] hover:underline">Lihat Produk →</a>
                     @endif
                 </div>
             </div>

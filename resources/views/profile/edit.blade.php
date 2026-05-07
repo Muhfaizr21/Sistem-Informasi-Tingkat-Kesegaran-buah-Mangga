@@ -6,7 +6,7 @@
 <div class="relative min-h-screen pb-20">
     <!-- Header -->
     <div class="mb-12 animate-in fade-in slide-in-from-left duration-700">
-        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Pengaturan <span class="text-[#F53003]">Profil</span></h1>
+        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Pengaturan <span class="text-[#FFB800]">Profil</span></h1>
         <p class="text-lg text-[#706f6c] font-medium">Kelola informasi akun dan keamanan Anda di sini.</p>
     </div>
 
@@ -26,12 +26,12 @@
                 <div class="absolute -top-10 -left-10 w-40 h-40 bg-orange-50 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform"></div>
                 
                 <div class="relative z-10">
-                    <div class="w-32 h-32 mx-auto mb-6 rounded-[2.5rem] bg-gradient-to-br from-[#F53003] to-orange-500 p-1">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-[2.5rem] bg-gradient-to-br from-[#FFB800] to-orange-500 p-1">
                         <div class="w-full h-full bg-white rounded-[2.3rem] flex items-center justify-center overflow-hidden">
                             @if(Auth::user()->foto_profil)
                                 <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" class="w-full h-full object-cover">
                             @else
-                                <span class="text-4xl font-black text-[#F53003]">{{ substr(Auth::user()->nama, 0, 1) }}</span>
+                                <span class="text-4xl font-black text-[#FFB800]">{{ substr(Auth::user()->nama, 0, 1) }}</span>
                             @endif
                         </div>
                     </div>
@@ -46,9 +46,9 @@
 
             <!-- Stats or Info Box -->
             <div class="bg-[#1b1b18] rounded-[3rem] p-10 text-white relative overflow-hidden group shadow-2xl">
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-[#F53003] rounded-full blur-3xl opacity-20 group-hover:scale-150 transition-transform"></div>
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-[#FFB800] rounded-full blur-3xl opacity-20 group-hover:scale-150 transition-transform"></div>
                 <div class="relative z-10">
-                    <h4 class="text-xs font-black uppercase tracking-[0.3em] mb-4 text-[#F53003]">Keamanan Akun</h4>
+                    <h4 class="text-xs font-black uppercase tracking-[0.3em] mb-4 text-[#FFB800]">Keamanan Akun</h4>
                     <p class="text-sm text-gray-400 leading-relaxed font-medium">Pastikan kata sandi Anda kuat dan ganti secara berkala untuk menjaga keamanan data Anda.</p>
                 </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="bg-white rounded-[3.5rem] p-10 border-2 border-gray-200 shadow-xl shadow-gray-200/50 relative overflow-hidden group">
                 <div class="flex justify-between items-center mb-6">
                     <h4 class="text-xs font-black uppercase tracking-[0.2em] text-[#1b1b18]">Lokasi & Alamat</h4>
-                    <a href="{{ route('pembeli.alamat.index') }}" class="text-[#F53003] hover:text-[#FF4433] transition-colors p-3 bg-orange-50 rounded-[1rem] group-hover:bg-orange-100">
+                    <a href="{{ route('pembeli.alamat.index') }}" class="text-[#FFB800] hover:text-[#10B981] transition-colors p-3 bg-orange-50 rounded-[1rem] group-hover:bg-orange-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     </a>
                 </div>
@@ -71,7 +71,7 @@
                     <div class="space-y-3">
                         <div class="flex items-center gap-3 mb-2">
                             <span class="px-3 py-1 bg-[#1b1b18] text-white text-[9px] font-black uppercase tracking-widest rounded-lg">{{ $alamatUtama->label }}</span>
-                            <span class="text-[9px] font-black text-[#F53003] uppercase tracking-widest">Utama</span>
+                            <span class="text-[9px] font-black text-[#FFB800] uppercase tracking-widest">Utama</span>
                         </div>
                         <p class="font-black text-[#1b1b18] text-lg">{{ $alamatUtama->nama_penerima }}</p>
                         <p class="text-xs font-bold text-gray-400">{{ $alamatUtama->no_telepon }}</p>
@@ -111,13 +111,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Nama Lengkap</label>
-                            <input type="text" name="nama" value="{{ old('nama', Auth::user()->nama) }}" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#F53003]/50 outline-none transition-all" required>
+                            <input type="text" name="nama" value="{{ old('nama', Auth::user()->nama) }}" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#FFB800]/50 outline-none transition-all" required>
                             @error('nama') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="space-y-3">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Alamat Email</label>
-                            <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#F53003]/50 outline-none transition-all" required>
+                            <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#FFB800]/50 outline-none transition-all" required>
                             @error('email') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
@@ -144,26 +144,26 @@
                     <div class="space-y-8">
                         <div class="space-y-3">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Kata Sandi Saat Ini</label>
-                            <input type="password" name="current_password" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#F53003]/50 outline-none transition-all">
+                            <input type="password" name="current_password" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#FFB800]/50 outline-none transition-all">
                             @error('current_password', 'updatePassword') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
                                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Kata Sandi Baru</label>
-                                <input type="password" name="password" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#F53003]/50 outline-none transition-all">
+                                <input type="password" name="password" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#FFB800]/50 outline-none transition-all">
                                 @error('password', 'updatePassword') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase">{{ $message }}</p> @enderror
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Konfirmasi Kata Sandi</label>
-                                <input type="password" name="password_confirmation" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#F53003]/50 outline-none transition-all">
+                                <input type="password" name="password_confirmation" class="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] p-5 text-[#1b1b18] font-bold focus:border-[#FFB800]/50 outline-none transition-all">
                                 @error('password_confirmation', 'updatePassword') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase">{{ $message }}</p> @enderror
                             </div>
                         </div>
                     </div>
 
                     <div class="flex justify-end pt-4">
-                        <button type="submit" class="px-10 py-5 bg-[#F53003] text-white rounded-[1.8rem] font-black text-xs tracking-widest uppercase hover:bg-[#FF4433] transition-all shadow-xl shadow-orange-900/20 active:scale-95">
+                        <button type="submit" class="px-10 py-5 bg-[#FFB800] text-white rounded-[1.8rem] font-black text-xs tracking-widest uppercase hover:bg-[#10B981] transition-all shadow-xl shadow-orange-900/20 active:scale-95">
                             UPDATE KATA SANDI
                         </button>
                     </div>

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="mb-8">
-    <a href="javascript:history.back()" class="text-sm font-medium text-[#706f6c] hover:text-[#F53003] flex items-center gap-2">
+    <a href="javascript:history.back()" class="text-sm font-medium text-[#706f6c] hover:text-[#FFB800] flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         Kembali
     </a>
@@ -32,7 +32,7 @@
             </div>
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <h1 class="text-4xl font-bold text-[#1b1b18]">{{ $petani->user->nama ?? 'Anonim' }}</h1>
-                <button id="btn-favorit" data-id="{{ $petani->id }}" class="flex items-center gap-2 px-6 py-2 rounded-2xl font-bold transition-all {{ $isFavorited ? 'bg-orange-100 text-[#F53003] border-orange-200' : 'bg-white text-[#706f6c] border-[#19140015]' }} border">
+                <button id="btn-favorit" data-id="{{ $petani->id }}" class="flex items-center gap-2 px-6 py-2 rounded-2xl font-bold transition-all {{ $isFavorited ? 'bg-orange-100 text-[#FFB800] border-orange-200' : 'bg-white text-[#706f6c] border-[#19140015]' }} border">
                     <svg class="w-5 h-5 {{ $isFavorited ? 'fill-current' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                     <span>{{ $isFavorited ? 'Favorit Saya' : 'Favoritkan' }}</span>
                 </button>
@@ -81,7 +81,7 @@
                         <h3 class="font-bold text-lg mb-1">{{ $listing->jenis_mangga ?? 'Mangga' }}</h3>
                         <p class="text-sm text-[#706f6c] mb-4">{{ $listing->lahan?->kecamatan?->nama ?? 'Lokasi tidak diketahui' }}</p>
                         <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold text-[#F53003]">Rp{{ number_format($listing->harga_per_kg ?? 0, 0, ',', '.') }}/kg</span>
+                            <span class="text-lg font-bold text-[#FFB800]">Rp{{ number_format($listing->harga_per_kg ?? 0, 0, ',', '.') }}/kg</span>
                             <span class="text-xs text-mango font-bold">Detail →</span>
                         </div>
                     </div>
@@ -167,11 +167,11 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.status === 'added') {
                     btn.removeClass('bg-white text-[#706f6c] border-[#19140015]')
-                       .addClass('bg-orange-100 text-[#F53003] border-orange-200');
+                       .addClass('bg-orange-100 text-[#FFB800] border-orange-200');
                     btn.find('svg').addClass('fill-current');
                     btn.find('span').text('Favorit Saya');
                 } else {
-                    btn.removeClass('bg-orange-100 text-[#F53003] border-orange-200')
+                    btn.removeClass('bg-orange-100 text-[#FFB800] border-orange-200')
                        .addClass('bg-white text-[#706f6c] border-[#19140015]');
                     btn.find('svg').removeClass('fill-current');
                     btn.find('span').text('Favoritkan');

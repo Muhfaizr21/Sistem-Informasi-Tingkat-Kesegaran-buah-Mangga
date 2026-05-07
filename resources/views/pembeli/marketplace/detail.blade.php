@@ -7,17 +7,17 @@
     <!-- Breadcrumb -->
     <nav class="flex mb-10 animate-in fade-in slide-in-from-top duration-700" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3 text-[10px] font-black uppercase tracking-[0.2em]">
-            <li class="inline-flex items-center text-gray-400 hover:text-[#F53003] transition-colors">
+            <li class="inline-flex items-center text-gray-400 hover:text-[#FFB800] transition-colors">
                 <a href="{{ route('pembeli.dashboard') }}">DASHBOARD</a>
             </li>
             <li>
                 <div class="flex items-center">
                     <svg class="w-3 h-3 text-gray-300 mx-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                    <a href="{{ route('pembeli.marketplace.katalog') }}" class="text-gray-400 hover:text-[#F53003] transition-colors">KATALOG</a>
+                    <a href="{{ route('pembeli.marketplace.katalog') }}" class="text-gray-400 hover:text-[#FFB800] transition-colors">KATALOG</a>
                 </div>
             </li>
             <li aria-current="page">
-                <div class="flex items-center text-[#F53003]">
+                <div class="flex items-center text-[#FFB800]">
                     <svg class="w-3 h-3 text-gray-300 mx-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                     <span>{{ $listing->jenis_mangga ?? 'DETAIL' }}</span>
                 </div>
@@ -29,7 +29,7 @@
         <!-- Gallery Column -->
         <div class="lg:col-span-5 space-y-6 animate-in fade-in slide-in-from-left duration-700">
             <div class="relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-[#F53003] to-orange-600 rounded-[3rem] blur opacity-20"></div>
+                <div class="absolute -inset-1 bg-gradient-to-r from-[#FFB800] to-orange-600 rounded-[3rem] blur opacity-20"></div>
                 <div class="relative aspect-square bg-gray-50 rounded-[3rem] overflow-hidden border border-gray-100 shadow-2xl">
                     @php $foto = is_array($listing->foto_batch) ? ($listing->foto_batch[0] ?? null) : $listing->foto_batch; @endphp
                     @if($foto)
@@ -52,7 +52,7 @@
             <div class="grid grid-cols-4 gap-4">
                 @php $additionalImages = is_array($listing->foto_batch) ? array_slice($listing->foto_batch, 1) : []; @endphp
                 @foreach($additionalImages as $foto)
-                    <div class="aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#F53003] transition-all cursor-pointer group shadow-sm">
+                    <div class="aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFB800] transition-all cursor-pointer group shadow-sm">
                         <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
                 @endforeach
@@ -64,11 +64,11 @@
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
                     <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100">AI Score: {{ number_format($listing->skor_kesegaran ?? 0, 0) }}%</span>
-                    <span class="px-3 py-1 bg-[#F53003]/10 text-[#F53003] rounded-full text-[9px] font-black uppercase tracking-widest border border-[#F53003]/10">Premium Batch</span>
+                    <span class="px-3 py-1 bg-[#FFB800]/10 text-[#FFB800] rounded-full text-[9px] font-black uppercase tracking-widest border border-[#FFB800]/10">Premium Batch</span>
                 </div>
                 <h1 class="text-5xl md:text-6xl font-black text-[#1b1b18] tracking-tight leading-none">{{ $listing->jenis_mangga ?? 'Mangga Premium' }}</h1>
                 <div class="flex items-center gap-4">
-                    <p class="text-4xl font-black text-[#F53003]">Rp{{ number_format($listing->harga_per_kg, 0, ',', '.') }}</p>
+                    <p class="text-4xl font-black text-[#FFB800]">Rp{{ number_format($listing->harga_per_kg, 0, ',', '.') }}</p>
                     <span class="text-lg text-gray-400 font-bold uppercase tracking-widest mt-2">/ Kilogram</span>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                     <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Kecamatan</span>
                     <span class="text-xl font-black text-[#1b1b18] truncate w-full px-2">{{ $listing->lahan?->kecamatan?->nama ?? 'Indramayu' }}</span>
                 </div>
-                <div class="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center text-[#F53003]">
+                <div class="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center text-[#FFB800]">
                     <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Akurasi AI</span>
                     <span class="text-xl font-black">99.8%</span>
                 </div>
@@ -140,7 +140,7 @@
                     @if($listing->petani?->user?->foto_profil)
                         <img src="{{ asset('storage/' . $listing->petani->user->foto_profil) }}" class="w-full h-full object-cover">
                     @else
-                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#F53003] to-orange-600 text-white text-6xl font-black">
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#FFB800] to-orange-600 text-white text-6xl font-black">
                             {{ substr($listing->petani?->user?->nama ?? 'P', 0, 1) }}
                         </div>
                     @endif

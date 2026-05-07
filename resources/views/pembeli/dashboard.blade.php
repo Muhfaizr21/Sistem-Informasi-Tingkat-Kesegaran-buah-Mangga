@@ -8,7 +8,7 @@
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 animate-in fade-in slide-in-from-left duration-700">
         <div>
             <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">
-                Halo, <span class="text-[#F53003]">{{ explode(' ', $user->nama)[0] }}</span>! 👋
+                Halo, <span class="text-[#FFB800]">{{ explode(' ', $user->nama)[0] }}</span>! 👋
             </h1>
             <p class="text-lg text-[#706f6c] font-medium">Temukan mangga terbaik dari tanah Indramayu hari ini.</p>
         </div>
@@ -23,7 +23,7 @@
     <!-- Metrics Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 animate-in fade-in slide-in-from-bottom duration-700 delay-100">
         <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all group">
-            <div class="w-12 h-12 bg-orange-50 text-[#F53003] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 bg-orange-50 text-[#FFB800] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             </div>
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Total Scan</p>
@@ -46,7 +46,7 @@
             <p class="text-3xl font-black text-[#1b1b18]">{{ number_format($stats['poin_loyalitas'] ?? 0) }}</p>
         </div>
 
-        <div class="bg-[#F53003] p-8 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(245,48,3,0.3)] hover:shadow-[0_30px_60px_-15px_rgba(245,48,3,0.4)] transition-all group relative overflow-hidden">
+        <div class="bg-[#FFB800] p-8 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(255,184,0,0.3)] hover:shadow-[0_30px_60px_-15px_rgba(255,184,0,0.4)] transition-all group relative overflow-hidden">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
             <div class="relative z-10">
                 <p class="text-[10px] font-bold text-white/60 uppercase tracking-[0.2em] mb-1">Membership</p>
@@ -72,9 +72,9 @@
                 </div>
                 
                 <div class="relative z-10 max-w-md">
-                    <h2 class="text-4xl font-black text-white tracking-tight mb-6">Diagnosa Kualitas <br><span class="text-[#F53003]">Tanpa Ragu.</span></h2>
+                    <h2 class="text-4xl font-black text-white tracking-tight mb-6">Diagnosa Kualitas <br><span class="text-[#FFB800]">Tanpa Ragu.</span></h2>
                     <p class="text-lg text-gray-400 mb-10 leading-relaxed font-medium">Gunakan teknologi Deep Neural Network kami untuk memverifikasi tingkat kematangan mangga Anda secara instan.</p>
-                    <a href="{{ route('pembeli.scan') }}" class="inline-flex items-center px-10 py-5 bg-[#F53003] text-white rounded-[2rem] font-black text-sm tracking-widest uppercase hover:bg-[#FF4433] hover:scale-105 transition-all shadow-xl shadow-orange-900/40 group">
+                    <a href="{{ route('pembeli.scan') }}" class="inline-flex items-center px-10 py-5 bg-[#FFB800] text-white rounded-[2rem] font-black text-sm tracking-widest uppercase hover:bg-[#10B981] hover:scale-105 transition-all shadow-xl shadow-orange-900/40 group">
                         MULAI SCAN AI
                         <svg class="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
@@ -88,7 +88,7 @@
                         <h3 class="text-2xl font-black text-[#1b1b18] tracking-tight">Panen Unggulan</h3>
                         <p class="text-sm text-gray-400 font-medium mt-1">Hasil kurasi terbaik hari ini</p>
                     </div>
-                    <a href="{{ route('pembeli.marketplace.katalog') }}" class="text-xs font-black text-[#F53003] uppercase tracking-widest hover:underline">Lihat Katalog</a>
+                    <a href="{{ route('pembeli.marketplace.katalog') }}" class="text-xs font-black text-[#FFB800] uppercase tracking-widest hover:underline">Lihat Katalog</a>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -113,7 +113,7 @@
                         
                         <div class="px-4 pb-4">
                             <div class="flex justify-between items-start mb-2">
-                                <h4 class="text-lg font-black text-[#1b1b18] group-hover:text-[#F53003] transition-colors truncate pr-2">{{ optional($listing)->jenis_mangga ?? 'Mangga Premium' }}</h4>
+                                <h4 class="text-lg font-black text-[#1b1b18] group-hover:text-[#FFB800] transition-colors truncate pr-2">{{ optional($listing)->jenis_mangga ?? 'Mangga Premium' }}</h4>
                                 <span class="text-lg font-black text-[#1b1b18]">Rp{{ number_format(optional($listing)->harga_per_kg ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex items-center justify-between">
@@ -122,7 +122,7 @@
                                     {{ optional(optional(optional($listing)->lahan)->kecamatan)->nama ?? 'Indramayu' }}
                                 </p>
                                 @if(isset($listing->id))
-                                <a href="{{ route('pembeli.marketplace.detail', $listing->id) }}" class="text-[9px] font-black text-gray-400 uppercase tracking-widest hover:text-[#F53003] transition-colors">Beli Sekarang</a>
+                                <a href="{{ route('pembeli.marketplace.detail', $listing->id) }}" class="text-[9px] font-black text-gray-400 uppercase tracking-widest hover:text-[#FFB800] transition-colors">Beli Sekarang</a>
                                 @endif
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                 
                 <div class="space-y-4">
                     <a href="{{ route('pembeli.pesanan.index') }}" class="flex items-center p-4 rounded-3xl border border-transparent hover:border-gray-100 hover:bg-gray-50 transition-all group">
-                        <div class="w-14 h-14 bg-orange-50 text-[#F53003] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div class="w-14 h-14 bg-orange-50 text-[#FFB800] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                         </div>
                         <div class="ml-5">
@@ -185,7 +185,7 @@
             </div>
 
             <!-- Loyalty Box -->
-            <div class="bg-gradient-to-br from-[#F53003] to-orange-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-orange-900/20 relative overflow-hidden group">
+            <div class="bg-gradient-to-br from-[#FFB800] to-orange-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-orange-900/20 relative overflow-hidden group">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
                 <div class="relative z-10">
                     <h4 class="text-lg font-black uppercase tracking-widest mb-4 flex items-center gap-2">

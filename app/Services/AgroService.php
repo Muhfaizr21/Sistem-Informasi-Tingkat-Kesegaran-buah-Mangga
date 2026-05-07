@@ -24,7 +24,7 @@ class AgroService
         if (!$this->apiKey) return $this->mockNDVI();
 
         return Cache::remember("agro_ndvi_{$polygonId}", 3600 * 24, function () use ($polygonId) {
-            $response = Http::get("{$this->baseUrl}/ndvi/history", [
+            $response = Http::withoutVerifying()->get("{$this->baseUrl}/ndvi/history", [
                 'polyid' => $polygonId,
                 'start' => now()->subMonths(1)->timestamp,
                 'end' => now()->timestamp,
@@ -43,7 +43,7 @@ class AgroService
         if (!$this->apiKey) return $this->mockSoil();
 
         return Cache::remember("agro_soil_{$polygonId}", 3600, function () use ($polygonId) {
-            $response = Http::get("{$this->baseUrl}/soil", [
+            $response = Http::withoutVerifying()->get("{$this->baseUrl}/soil", [
                 'polyid' => $polygonId,
                 'appid' => $this->apiKey
             ]);

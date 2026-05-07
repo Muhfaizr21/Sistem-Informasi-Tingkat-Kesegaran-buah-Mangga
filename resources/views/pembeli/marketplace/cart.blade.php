@@ -6,7 +6,7 @@
 <div class="relative min-h-screen pb-20">
     <!-- Header -->
     <div class="mb-12 animate-in fade-in slide-in-from-left duration-700">
-        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Keranjang <span class="text-[#F53003]">Belanja</span></h1>
+        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Keranjang <span class="text-[#FFB800]">Belanja</span></h1>
         <p class="text-lg text-[#706f6c] font-medium">Tinjau kembali pilihan mangga terbaik Anda sebelum dikirim.</p>
     </div>
 
@@ -26,7 +26,7 @@
             <div class="bg-white rounded-[3rem] border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] overflow-hidden">
                 <div class="px-10 py-6 bg-gray-50/50 border-b border-gray-100 flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-[#F53003] text-white rounded-2xl flex items-center justify-center font-black text-sm">
+                        <div class="w-10 h-10 bg-[#FFB800] text-white rounded-2xl flex items-center justify-center font-black text-sm">
                             {{ substr($group['petani_nama'], 0, 1) }}
                         </div>
                         <div>
@@ -51,7 +51,7 @@
                         </div>
                         
                         <div class="flex-1 text-center sm:text-left">
-                            <h3 class="text-xl font-black text-[#1b1b18] mb-1 group-hover:text-[#F53003] transition-colors">{{ $item['nama'] }}</h3>
+                            <h3 class="text-xl font-black text-[#1b1b18] mb-1 group-hover:text-[#FFB800] transition-colors">{{ $item['nama'] }}</h3>
                             <p class="text-sm text-gray-400 font-bold uppercase tracking-widest mb-3">Rp{{ number_format($item['harga'], 0, ',', '.') }} <span class="text-[10px] opacity-60">/kg</span></p>
                             <div class="flex items-center justify-center sm:justify-start gap-4">
                                 <span class="px-4 py-1.5 bg-gray-50 text-[#1b1b18] border border-gray-100 rounded-xl text-xs font-black">{{ $item['jumlah'] }} KG</span>
@@ -112,11 +112,11 @@
                     
                     <div class="pt-8 border-t border-gray-100 space-y-2">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">Total Pembayaran</p>
-                        <p class="text-4xl font-black text-[#F53003] text-center">Rp{{ number_format($totalPrice + 2500, 0, ',', '.') }}</p>
+                        <p class="text-4xl font-black text-[#FFB800] text-center">Rp{{ number_format($totalPrice + 2500, 0, ',', '.') }}</p>
                     </div>
                 </div>
                 
-                <a href="{{ route('pembeli.checkout.index') }}" class="w-full py-6 bg-[#F53003] text-white rounded-[2.2rem] font-black text-sm tracking-[0.2em] uppercase shadow-2xl shadow-orange-900/30 hover:bg-[#FF4433] transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
+                <a href="{{ route('pembeli.checkout.index') }}" class="w-full py-6 bg-[#FFB800] text-white rounded-[2.2rem] font-black text-sm tracking-[0.2em] uppercase shadow-2xl shadow-orange-900/30 hover:bg-[#10B981] transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
                     LANJUT CHECKOUT
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                 </a>
@@ -129,9 +129,9 @@
 
             <!-- Promotion Card -->
             <div class="bg-[#1b1b18] rounded-[3rem] p-8 text-white relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-[#F53003] rounded-full blur-3xl opacity-20 group-hover:scale-150 transition-transform"></div>
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-[#FFB800] rounded-full blur-3xl opacity-20 group-hover:scale-150 transition-transform"></div>
                 <div class="relative z-10">
-                    <h4 class="text-xs font-black uppercase tracking-[0.2em] mb-2 text-[#F53003]">Promo Spesial</h4>
+                    <h4 class="text-xs font-black uppercase tracking-[0.2em] mb-2 text-[#FFB800]">Promo Spesial</h4>
                     <p class="text-lg font-bold leading-tight">Gunakan poin Anda untuk potongan pengiriman!</p>
                 </div>
             </div>

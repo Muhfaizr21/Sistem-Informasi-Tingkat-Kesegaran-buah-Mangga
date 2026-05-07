@@ -4,13 +4,12 @@
     <div class="flex flex-col h-full py-6">
         <!-- Brand Logo Area -->
         <div class="px-6 mb-8 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden shrink-0">
-                <span class="material-symbols-outlined text-white"
-                    style="font-variation-settings: 'FILL' 1;">park</span>
+            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
+                <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="w-full h-full object-contain" alt="Logo" />
             </div>
             <div>
-                <div class="text-xl font-bold tracking-tight text-white leading-tight">Mangga Indramayu</div>
-                <div class="text-slate-400 text-xs">Sistem Admin Pusat</div>
+                <div class="text-xl font-bold tracking-tight text-white leading-tight">SI-Mangga</div>
+                <div class="text-slate-400 text-xs font-medium tracking-wide uppercase">Admin Pusat</div>
             </div>
         </div>
         <!-- Primary Navigation -->

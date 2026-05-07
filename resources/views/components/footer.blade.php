@@ -3,8 +3,8 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div class="col-span-1 md:col-span-2">
                 <a href="{{ route('landing') }}" class="flex items-center gap-2">
-                    <x-application-logo class="block h-8 w-auto fill-current text-yellow-500" />
-                    <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Mango<span class="text-yellow-500">Fresh</span></span>
+                    <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="block h-8 w-auto object-contain" alt="SI-Mangga Logo" />
+                    <span class="font-bold text-xl tracking-tight text-[#1b1b18] dark:text-white">SI-<span class="text-[#FFB800]">Mangga</span></span>
                 </a>
                 <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm max-w-xs">
                     Sistem informasi cerdas untuk mendukung digitalisasi pertanian mangga di wilayah Indramayu dan sekitarnya.
@@ -28,7 +28,7 @@
         </div>
         <div class="mt-8 border-t border-gray-100 dark:border-gray-800 pt-8 flex items-center justify-between">
             <p class="text-base text-gray-400 xl:text-center">
-                &copy; {{ date('Y') }} MangoFresh Indramayu. All rights reserved.
+                &copy; {{ date('Y') }} SI-Mangga Indramayu. All rights reserved.
             </p>
             <div class="flex space-x-6">
                 <!-- Social Icons would go here -->

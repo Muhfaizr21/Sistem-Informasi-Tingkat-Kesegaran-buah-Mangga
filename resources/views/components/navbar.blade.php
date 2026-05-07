@@ -6,8 +6,8 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('landing') }}" class="flex items-center gap-2">
-                        <x-application-logo class="block h-9 w-auto fill-current text-yellow-500" />
-                        <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Mango<span class="text-yellow-500">Fresh</span></span>
+                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="block h-9 w-auto object-contain" alt="SI-Mangga Logo" />
+                        <span class="font-bold text-xl tracking-tight text-[#1b1b18] dark:text-white">SI-<span class="text-[#FFB800]">Mangga</span></span>
                     </a>
                 </div>
 

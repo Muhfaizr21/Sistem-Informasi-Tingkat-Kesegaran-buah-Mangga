@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DataCuaca;
 use Carbon\Carbon;
 
@@ -14,7 +15,7 @@ class WeatherService
         $cacheKey = "weather_forecast_v4_{$lat}_{$lon}";
 
         return Cache::remember($cacheKey, 3600, function () use ($lat, $lon) {
-            $response = Http::get('https://api.open-meteo.com/v1/forecast', [
+            $response = Http::withoutVerifying()->get('http://api.open-meteo.com/v1/forecast', [
                 'latitude' => $lat,
                 'longitude' => $lon,
                 'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,relative_humidity_2m_max,wind_speed_10m_max,uv_index_max,shortwave_radiation_sum',

@@ -16,11 +16,11 @@
         <div class="lg:col-span-8 space-y-10 animate-in fade-in slide-in-from-left duration-1000">
             <!-- Tracking Timeline -->
             <div class="bg-white rounded-[3.5rem] p-10 lg:p-14 border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden group">
-                <div class="absolute -top-20 -right-20 w-64 h-64 bg-[#F53003] rounded-full blur-3xl opacity-5 group-hover:opacity-10 transition-opacity"></div>
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-[#FFB800] rounded-full blur-3xl opacity-5 group-hover:opacity-10 transition-opacity"></div>
                 
                 <h2 class="text-2xl font-black text-[#1b1b18] tracking-tight mb-12 relative z-10 flex items-center gap-4">
                     Status Pengiriman
-                    <span class="px-3 py-1 bg-orange-50 text-[#F53003] text-[10px] uppercase tracking-widest rounded-lg border border-orange-100">Live Track</span>
+                    <span class="px-3 py-1 bg-orange-50 text-[#FFB800] text-[10px] uppercase tracking-widest rounded-lg border border-orange-100">Live Track</span>
                 </h2>
                 
                 <div class="relative z-10 space-y-10">
@@ -39,10 +39,10 @@
                     @foreach($steps as $status => $data)
                     <div class="flex gap-8 relative group/step">
                         @if(!$loop->last)
-                        <div class="absolute left-[27px] top-[56px] w-[2px] h-[calc(100%-16px)] {{ $reached ? 'bg-[#F53003]' : 'bg-gray-100' }} transition-colors duration-500"></div>
+                        <div class="absolute left-[27px] top-[56px] w-[2px] h-[calc(100%-16px)] {{ $reached ? 'bg-[#FFB800]' : 'bg-gray-100' }} transition-colors duration-500"></div>
                         @endif
                         
-                        <div class="w-14 h-14 rounded-[1.2rem] flex items-center justify-center shrink-0 z-10 transition-all duration-500 {{ $reached ? 'bg-[#F53003] text-white shadow-xl shadow-orange-900/30 scale-110' : 'bg-gray-50 border border-gray-100 text-gray-400' }}">
+                        <div class="w-14 h-14 rounded-[1.2rem] flex items-center justify-center shrink-0 z-10 transition-all duration-500 {{ $reached ? 'bg-[#FFB800] text-white shadow-xl shadow-orange-900/30 scale-110' : 'bg-gray-50 border border-gray-100 text-gray-400' }}">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $data['icon'] }}"></path></svg>
                         </div>
                         
@@ -84,7 +84,7 @@
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $item->jumlah_kg }} KG × Rp{{ number_format($item->harga_satuan, 0, ',', '.') }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xl font-black text-[#F53003]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                            <p class="text-xl font-black text-[#FFB800]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
                         </div>
                     </div>
                     @endforeach
@@ -110,7 +110,7 @@
                             @for($i = 1; $i <= 5; $i++)
                             <label class="cursor-pointer group">
                                 <input type="radio" name="rating" value="{{ $i }}" class="hidden peer" required>
-                                <div class="w-14 h-14 rounded-2xl bg-white border-2 border-transparent flex items-center justify-center peer-checked:bg-[#F53003] peer-checked:border-[#F53003] peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-orange-900/20 text-[#1b1b18] transition-all transform group-hover:scale-110 shadow-sm">
+                                <div class="w-14 h-14 rounded-2xl bg-white border-2 border-transparent flex items-center justify-center peer-checked:bg-[#FFB800] peer-checked:border-[#FFB800] peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-orange-900/20 text-[#1b1b18] transition-all transform group-hover:scale-110 shadow-sm">
                                     <span class="text-xl font-black">{{ $i }}</span>
                                 </div>
                             </label>
@@ -200,7 +200,7 @@
                         </div>
                         
                         @if($pesanan->diskon > 0)
-                        <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#F53003] bg-[#F53003]/10 p-3 rounded-xl border border-[#F53003]/20">
+                        <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#FFB800] bg-[#FFB800]/10 p-3 rounded-xl border border-[#FFB800]/20">
                             <span>Diskon Loyalty</span>
                             <span>-Rp{{ number_format($pesanan->diskon, 0, ',', '.') }}</span>
                         </div>
@@ -208,7 +208,7 @@
                         
                         <div class="pt-6 mt-6 border-t border-white/10 flex justify-between items-end">
                             <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Bayar</span>
-                            <span class="text-3xl font-black text-[#F53003]">Rp{{ number_format($pesanan->total_bayar, 0, ',', '.') }}</span>
+                            <span class="text-3xl font-black text-[#FFB800]">Rp{{ number_format($pesanan->total_bayar, 0, ',', '.') }}</span>
                         </div>
                     </div>
                     

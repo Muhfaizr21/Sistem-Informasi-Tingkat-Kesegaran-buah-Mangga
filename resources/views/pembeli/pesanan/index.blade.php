@@ -6,7 +6,7 @@
 <div class="relative min-h-screen pb-20">
     <!-- Header -->
     <div class="mb-12 animate-in fade-in slide-in-from-left duration-700">
-        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Pesanan <span class="text-[#F53003]">Saya</span></h1>
+        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Pesanan <span class="text-[#FFB800]">Saya</span></h1>
         <p class="text-lg text-[#706f6c] font-medium">Pantau status pengiriman dan riwayat belanja Anda dengan mudah.</p>
     </div>
 
@@ -28,7 +28,7 @@
                     <div class="flex flex-wrap items-center gap-3 mb-6">
                         <span class="px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $pesanan->created_at->format('d M Y, H:i') }}</span>
                         <span class="text-[10px] font-black text-gray-300">|</span>
-                        <span class="text-[10px] font-black text-[#F53003] tracking-widest">{{ $pesanan->kode_pesanan }}</span>
+                        <span class="text-[10px] font-black text-[#FFB800] tracking-widest">{{ $pesanan->kode_pesanan }}</span>
                         
                         @php
                             $statusConfig = [
@@ -57,7 +57,7 @@
                             @endif
                         </div>
                         <div>
-                            <h3 class="text-xl font-black text-[#1b1b18] mb-1 group-hover:text-[#F53003] transition-colors">{{ $pesanan->items->first()?->listing?->jenis_mangga ?? 'Mangga Premium' }}</h3>
+                            <h3 class="text-xl font-black text-[#1b1b18] mb-1 group-hover:text-[#FFB800] transition-colors">{{ $pesanan->items->first()?->listing?->jenis_mangga ?? 'Mangga Premium' }}</h3>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $pesanan->items->count() }} Produk • Total {{ number_format($pesanan->items->sum('jumlah_kg'), 1) }} kg</p>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         @endif
 
                         @if($pesanan->status === 'menunggu_bayar')
-                        <a href="{{ route('pembeli.pesanan.show', $pesanan->id) }}" class="flex-1 md:flex-none px-6 py-3 bg-[#F53003] text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-[#FF4433] transition-colors shadow-lg shadow-orange-900/20">
+                        <a href="{{ route('pembeli.pesanan.show', $pesanan->id) }}" class="flex-1 md:flex-none px-6 py-3 bg-[#FFB800] text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-[#10B981] transition-colors shadow-lg shadow-orange-900/20">
                             BAYAR SEKARANG
                         </a>
                         @endif
@@ -100,7 +100,7 @@
             </div>
             <h3 class="text-2xl font-black text-[#1b1b18] mb-2">Belum Ada Pesanan</h3>
             <p class="text-gray-400 font-medium mb-10 max-w-md mx-auto">Anda belum pernah melakukan pemesanan. Ayo mulai belanja mangga premium sekarang!</p>
-            <a href="{{ route('pembeli.marketplace.katalog') }}" class="inline-flex items-center gap-3 px-8 py-4 bg-[#F53003] text-white rounded-[2rem] font-black text-xs tracking-widest uppercase shadow-xl shadow-orange-900/20 hover:bg-[#FF4433] hover:scale-105 transition-all">
+            <a href="{{ route('pembeli.marketplace.katalog') }}" class="inline-flex items-center gap-3 px-8 py-4 bg-[#FFB800] text-white rounded-[2rem] font-black text-xs tracking-widest uppercase shadow-xl shadow-orange-900/20 hover:bg-[#10B981] hover:scale-105 transition-all">
                 BUKA MARKETPLACE
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>

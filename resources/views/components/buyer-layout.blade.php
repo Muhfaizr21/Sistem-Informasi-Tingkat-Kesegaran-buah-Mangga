@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Buyer' }} - {{ config('app.name', 'MangoFresh') }}</title>
+    <title>{{ $title ?? 'Buyer' }} - {{ config('app.name', 'SI-Mangga') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,8 +39,8 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-8">
                     <a href="{{ route('landing') }}" class="flex items-center gap-2">
-                        <x-application-logo class="block h-8 w-auto fill-current text-primary" />
-                        <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Mango<span class="text-primary">Fresh</span></span>
+                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" alt="SI-Mangga" class="block h-8 w-auto object-contain" />
+                        <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">SI-<span class="text-primary">Mangga</span></span>
                     </a>
                     <div class="hidden md:flex gap-6">
                         <a href="{{ route('buyer.catalog') }}" class="text-sm font-medium {{ request()->routeIs('buyer.catalog') ? 'text-primary' : 'text-gray-500 hover:text-gray-900' }}">Katalog</a>
@@ -81,7 +81,7 @@
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-sm text-gray-500">&copy; {{ date('Y') }} MangoFresh Indramayu. Bangga Buatan Lokal.</p>
+            <p class="text-sm text-gray-500">&copy; {{ date('Y') }} SI-Mangga Indramayu. Bangga Buatan Lokal.</p>
         </div>
     </footer>
 </body>

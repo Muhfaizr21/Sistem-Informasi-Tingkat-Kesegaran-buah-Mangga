@@ -8,7 +8,7 @@
         <h1 class="text-3xl font-bold text-[#1b1b18] mb-1">Riwayat Analisis AI</h1>
         <p class="text-[#706f6c]">Lihat kembali hasil pengecekan kesegaran mangga yang telah Anda lakukan.</p>
     </div>
-    <a href="{{ route('pembeli.scan') }}" class="px-6 py-3 bg-[#F53003] text-white rounded-2xl font-bold hover:bg-[#FF4433] transition-all flex items-center gap-2">
+    <a href="{{ route('pembeli.scan') }}" class="px-6 py-3 bg-[#FFB800] text-white rounded-2xl font-bold hover:bg-[#10B981] transition-all flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Scan Lagi
     </a>
@@ -20,7 +20,7 @@
         <div class="aspect-square bg-gray-50 relative overflow-hidden">
             <img src="{{ asset('storage/' . $scan->path_foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
             <div class="absolute top-4 right-4">
-                <div class="px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-black text-[#F53003] shadow-sm border border-white">
+                <div class="px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-black text-[#FFB800] shadow-sm border border-white">
                     {{ $scan->skor_kesegaran }}% FRESH
                 </div>
             </div>
@@ -37,7 +37,7 @@
             <div class="grid grid-cols-3 gap-2 pt-6 border-t border-gray-50">
                 <div>
                     <p class="text-[8px] text-gray-400 uppercase font-bold mb-1">Warna</p>
-                    <p class="font-bold text-xs text-[#F53003]">{{ $scan->persentase_warna }}%</p>
+                    <p class="font-bold text-xs text-[#FFB800]">{{ $scan->persentase_warna }}%</p>
                 </div>
                 <div>
                     <p class="text-[8px] text-gray-400 uppercase font-bold mb-1">Tekstur</p>
@@ -80,7 +80,7 @@
         </div>
         <h3 class="text-xl font-bold">Belum Ada Riwayat</h3>
         <p class="text-[#706f6c] mb-6">Mulai pindai mangga Anda untuk melihat hasil analisis AI di sini.</p>
-        <a href="{{ route('pembeli.scan') }}" class="px-8 py-3 bg-[#F53003] text-white rounded-2xl font-bold hover:bg-[#FF4433] transition-all">Scan Sekarang</a>
+        <a href="{{ route('pembeli.scan') }}" class="px-8 py-3 bg-[#FFB800] text-white rounded-2xl font-bold hover:bg-[#10B981] transition-all">Scan Sekarang</a>
     </div>
     @endforelse
 </div>
@@ -99,7 +99,7 @@ document.querySelectorAll('.btn-delete').forEach(button => {
             text: "Data hasil scan ini akan dihapus permanen.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#F53003',
+            confirmButtonColor: '#FFB800',
             cancelButtonColor: '#706f6c',
             confirmButtonText: 'Ya, Hapus!',
             cancelButtonText: 'Batal',

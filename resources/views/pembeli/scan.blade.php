@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AI Scanner Mangga - MANGOFRESH</title>
+    <title>AI Scanner Mangga - SI-Mangga</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -11,9 +11,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Instrument Sans', sans-serif; background-color: #0c0c0b; color: white; }
-        .scanner-view { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; border-radius: 40px; overflow: hidden; background: #000; border: 4px solid #F53003; }
-        .scanner-overlay { position: absolute; inset: 0; border: 2px solid rgba(245, 48, 3, 0.3); border-radius: 36px; pointer-events: none; }
-        .scanner-line { position: absolute; left: 0; right: 0; height: 2px; background: #F53003; box-shadow: 0 0 20px #F53003; animation: scan 3s infinite linear; }
+        .scanner-view { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; border-radius: 40px; overflow: hidden; background: #000; border: 4px solid #FFB800; }
+        .scanner-overlay { position: absolute; inset: 0; border: 2px solid rgba(255, 184, 0, 0.3); border-radius: 36px; pointer-events: none; }
+        .scanner-line { position: absolute; left: 0; right: 0; height: 2px; background: #FFB800; box-shadow: 0 0 20px #FFB800; animation: scan 3s infinite linear; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
         
         .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
@@ -31,7 +31,7 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
-<body class="antialiased selection:bg-[#F53003]/30 min-h-screen">
+<body class="antialiased selection:bg-[#FFB800]/30 min-h-screen">
     <!-- Header -->
     <div class="fixed top-0 left-0 right-0 p-6 flex items-center justify-between z-[110] bg-gradient-to-b from-[#0c0c0b] via-[#0c0c0b]/80 to-transparent">
         <a href="{{ route('pembeli.dashboard') }}" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group backdrop-blur-md">
@@ -49,7 +49,7 @@
 
     <!-- Scanner View -->
     <div class="flex flex-col items-center justify-center min-h-screen px-6 pt-24 pb-12">
-        <div class="scanner-view mb-12 shadow-[0_0_50px_-12px_rgba(245,48,3,0.5)] border-white/5">
+        <div class="scanner-view mb-12 shadow-[0_0_50px_-12px_rgba(255,184,0,0.5)] border-white/5">
             <video id="video" class="w-full h-full object-cover scale-x-[-1]" autoplay playsinline></video>
             <div class="scanner-overlay"></div>
             <div id="scan-line" class="scanner-line hidden"></div>
@@ -60,7 +60,7 @@
             <div class="space-y-4">
                 <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Pilih Varietas</label>
                 <div class="relative">
-                    <select id="jenis_mangga" class="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-white appearance-none focus:border-[#F53003]/50 outline-none transition-all cursor-pointer">
+                    <select id="jenis_mangga" class="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-white appearance-none focus:border-[#FFB800]/50 outline-none transition-all cursor-pointer">
                         <option value="Harum Manis" class="bg-[#0c0c0b]">Harum Manis (Default)</option>
                         <option value="Gedong Gincu" class="bg-[#0c0c0b]">Gedong Gincu</option>
                         <option value="Manalagi" class="bg-[#0c0c0b]">Manalagi</option>
@@ -77,7 +77,7 @@
                 </div>
                 
                 <div class="flex flex-col gap-3">
-                    <button id="capture-btn" class="w-full py-6 bg-[#F53003] hover:bg-[#FF4433] rounded-[2rem] font-black text-lg shadow-2xl shadow-orange-900/40 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
+                    <button id="capture-btn" class="w-full py-6 bg-[#FFB800] hover:bg-[#10B981] rounded-[2rem] font-black text-lg shadow-2xl shadow-orange-900/40 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         SCAN KAMERA
                     </button>
@@ -110,7 +110,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     <div class="lg:col-span-5 animate-stagger-2">
                         <div class="relative group">
-                            <div class="absolute -inset-1 bg-gradient-to-r from-[#F53003] to-orange-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
+                            <div class="absolute -inset-1 bg-gradient-to-r from-[#FFB800] to-orange-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
                             <div class="relative rounded-[2.5rem] overflow-hidden border border-white/10 aspect-square bg-black">
                                 <img id="result-img" src="" class="w-full h-full object-cover">
                                 <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
@@ -129,7 +129,7 @@
                                 <div class="relative w-32 h-32 mb-4">
                                     <svg class="w-full h-full" viewBox="0 0 100 100">
                                         <circle class="text-white/5" stroke-width="8" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50"/>
-                                        <circle id="progress-circle" class="text-[#F53003] progress-ring__circle" stroke-width="8" stroke-dasharray="263.89" stroke-dashoffset="263.89" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50"/>
+                                        <circle id="progress-circle" class="text-[#FFB800] progress-ring__circle" stroke-width="8" stroke-dasharray="263.89" stroke-dashoffset="263.89" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50"/>
                                     </svg>
                                     <div class="absolute inset-0 flex items-center justify-center flex-col">
                                         <span id="result-score" class="text-4xl font-black text-white">0%</span>
@@ -164,7 +164,7 @@
                         <div class="grid grid-cols-3 gap-4">
                             <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
                                 <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Warna</p>
-                                <p id="result-warna" class="text-lg font-bold text-[#F53003]">-</p>
+                                <p id="result-warna" class="text-lg font-bold text-[#FFB800]">-</p>
                             </div>
                             <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
                                 <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Tekstur</p>
@@ -247,7 +247,7 @@
                 });
                 video.srcObject = stream;
             } catch (err) {
-                Swal.fire({ title: 'Akses Kamera Gagal', text: 'Berikan izin kamera.', icon: 'error', confirmButtonColor: '#F53003' });
+                Swal.fire({ title: 'Akses Kamera Gagal', text: 'Berikan izin kamera.', icon: 'error', confirmButtonColor: '#FFB800' });
             }
         }
 
@@ -286,10 +286,10 @@
                             title: 'Objek Tidak Valid',
                             text: xhr.responseJSON.message,
                             icon: 'warning',
-                            confirmButtonColor: '#F53003'
+                            confirmButtonColor: '#FFB800'
                         });
                     } else {
-                        Swal.fire({ title: 'Error', text: 'Gagal menghubungi AI Server.', icon: 'error', confirmButtonColor: '#F53003' });
+                        Swal.fire({ title: 'Error', text: 'Gagal menghubungi AI Server.', icon: 'error', confirmButtonColor: '#FFB800' });
                     }
                     
                     // Reset UI Buttons
@@ -348,7 +348,7 @@
                 method: "POST",
                 data: { _token: "{{ csrf_token() }}", temp_path: currentTempPath, jenis_mangga: $('#jenis_mangga').val(), ...currentAnalysis },
                 success: function() {
-                    Swal.fire({ icon: 'success', title: 'Tersimpan!', confirmButtonColor: '#F53003' }).then(() => {
+                    Swal.fire({ icon: 'success', title: 'Tersimpan!', confirmButtonColor: '#FFB800' }).then(() => {
                         window.location.href = "{{ route('pembeli.scan.history') }}";
                     });
                 }

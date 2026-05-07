@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Petani' }} - {{ config('app.name', 'MangoFresh') }}</title>
+    <title>{{ $title ?? 'Petani' }} - {{ config('app.name', 'SI-Mangga') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +42,7 @@
                             600: '#059669',
                             700: '#047857',
                         },
-                        secondary: "#FBBF24",
+                        secondary: "#FFB800",
                         dark: "#064E3B",
                     },
                     borderRadius: {
@@ -66,11 +66,9 @@
     <aside class="hidden lg:flex flex-col w-72 bg-white/80 backdrop-blur-xl h-screen fixed left-0 top-0 rounded-r-[3.5rem] border-r border-slate-100 shadow-2xl z-50">
         <div class="p-8">
             <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary-500/20">
-                    <span class="material-symbols-outlined text-2xl">eco</span>
-                </div>
+                <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-tight text-slate-900 leading-none">Mango<span class="text-primary-500">Fresh</span></h1>
+                    <h1 class="font-extrabold text-xl tracking-tight text-[#1b1b18] leading-none">SI-<span class="text-[#FFB800]">Mangga</span></h1>
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Farmer Ecosystem</p>
                 </div>
             </a>
@@ -115,7 +113,7 @@
             <button @click="sidebarOpen = true" class="w-10 h-10 flex items-center justify-center text-slate-500">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <h1 class="font-extrabold text-lg text-slate-900">Mango<span class="text-primary-500">Fresh</span></h1>
+            <h1 class="font-extrabold text-lg text-slate-900">SI-<span class="text-primary-500">Mangga</span></h1>
         </div>
         <a href="{{ route('petani.profil') }}" class="w-10 h-10 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 font-bold">
             {{ substr(Auth::user()->nama ?? 'P', 0, 1) }}
@@ -132,10 +130,8 @@
                 <!-- Mobile Sidebar Content (Same as desktop but adapted) -->
                 <div class="flex justify-between items-center mb-10">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-primary-500 rounded-2xl flex items-center justify-center text-white">
-                            <span class="material-symbols-outlined">eco</span>
-                        </div>
-                        <h1 class="font-extrabold text-xl text-slate-900">Mango<span class="text-primary-500">Fresh</span></h1>
+                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
+                        <h1 class="font-extrabold text-xl text-slate-900">SI-<span class="text-primary-500">Mangga</span></h1>
                     </div>
                     <button @click="sidebarOpen = false" class="text-slate-400"><span class="material-symbols-outlined">close</span></button>
                 </div>
@@ -226,7 +222,7 @@
                         </div>
                         @if($notifications->count() > 0)
                         <div class="p-4 bg-slate-50/50 text-center border-t border-slate-50">
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Data Sinkron Melalui MangoFresh Intelligence</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Data Sinkron Melalui SI-Mangga Intelligence</p>
                         </div>
                         @endif
                     </div>
