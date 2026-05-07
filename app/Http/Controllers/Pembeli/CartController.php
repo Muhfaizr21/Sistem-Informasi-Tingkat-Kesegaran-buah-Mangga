@@ -16,7 +16,23 @@ class CartController extends Controller
         $groupedCart = [];
         $totalPrice = 0;
         
+        $hasChanges = false;
         foreach ($cart as $id => $details) {
+            $listing = ListingMangga::find($id);
+            
+            // Remove if product deleted or inactive or stock is 0
+            if (!$listing || !$listing->aktif || $listing->stok_tersedia_kg <= 0) {
+                unset($cart[$id]);
+                $hasChanges = true;
+                continue;
+            }
+
+            // Adjust quantity if exceeds stock
+            if ($details['jumlah'] > $listing->stok_tersedia_kg) {
+                $cart[$id]['jumlah'] = $listing->stok_tersedia_kg;
+                $hasChanges = true;
+            }
+
             $petaniId = $details['petani_id'];
             if (!isset($groupedCart[$petaniId])) {
                 $groupedCart[$petaniId] = [
@@ -24,8 +40,12 @@ class CartController extends Controller
                     'items' => []
                 ];
             }
-            $groupedCart[$petaniId]['items'][$id] = $details;
-            $totalPrice += $details['harga'] * $details['jumlah'];
+            $groupedCart[$petaniId]['items'][$id] = $cart[$id];
+            $totalPrice += $cart[$id]['harga'] * $cart[$id]['jumlah'];
+        }
+
+        if ($hasChanges) {
+            session()->put('cart', $cart);
         }
 
         return view('pembeli.marketplace.cart', compact('groupedCart', 'totalPrice'));
@@ -36,8 +56,15 @@ class CartController extends Controller
         $listing = ListingMangga::with('petani.user')->findOrFail($request->listing_id);
         $cart = session()->get('cart', []);
 
+        $currentQty = isset($cart[$listing->id]) ? $cart[$listing->id]['jumlah'] : 0;
+        $requestedQty = $currentQty + $request->jumlah_kg;
+
+        if ($requestedQty > $listing->stok_tersedia_kg) {
+            return redirect()->back()->with('error', "Stok tidak mencukupi. Tersisa {$listing->stok_tersedia_kg} kg.");
+        }
+
         if(isset($cart[$listing->id])) {
-            $cart[$listing->id]['jumlah'] += $request->jumlah_kg;
+            $cart[$listing->id]['jumlah'] = $requestedQty;
         } else {
             $cart[$listing->id] = [
                 "nama" => $listing->jenis_mangga,
@@ -57,6 +84,10 @@ class CartController extends Controller
     public function update(Request $request)
     {
         if($request->id && $request->jumlah){
+            $listing = ListingMangga::find($request->id);
+            if ($request->jumlah > $listing->stok_tersedia_kg) {
+                return response()->json(['success' => false, 'message' => "Stok tidak mencukupi. Tersisa {$listing->stok_tersedia_kg} kg."], 422);
+            }
             $cart = session()->get('cart');
             $cart[$request->id]["jumlah"] = $request->jumlah;
             session()->put('cart', $cart);

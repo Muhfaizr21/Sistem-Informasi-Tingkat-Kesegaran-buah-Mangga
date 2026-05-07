@@ -5,9 +5,52 @@
 @section('content')
 <div class="relative min-h-screen pb-20">
     <!-- Header -->
-    <div class="mb-12 animate-in fade-in slide-in-from-left duration-700">
+    <div class="mb-10 animate-in fade-in slide-in-from-left duration-700">
         <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">Pesanan <span class="text-[#FFB800]">Saya</span></h1>
         <p class="text-lg text-[#706f6c] font-medium">Pantau status pengiriman dan riwayat belanja Anda dengan mudah.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-12 space-y-6 animate-in fade-in slide-in-from-top duration-1000">
+        <div class="flex flex-wrap gap-3">
+            @php
+                $statusFilters = [
+                    '' => 'Semua Status',
+                    'menunggu_bayar' => 'Belum Bayar',
+                    'menunggu_verifikasi' => 'Verifikasi',
+                    'dikonfirmasi' => 'Dikonfirmasi',
+                    'dikemas' => 'Dikemas',
+                    'dikirim' => 'Dikirim',
+                    'selesai' => 'Selesai',
+                    'dibatalkan' => 'Batal',
+                ];
+                $currentStatus = request('status', '');
+            @endphp
+            @foreach($statusFilters as $value => $label)
+                <a href="{{ route('pembeli.pesanan.index', ['status' => $value, 'metode' => request('metode')]) }}" 
+                   class="px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ $currentStatus == $value ? 'bg-[#FFB800] text-white shadow-lg shadow-orange-900/20' : 'bg-white text-gray-500 border border-gray-100 hover:border-orange-200' }}">
+                    {{ $label }}
+                </a>
+            @endforeach
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+            @php
+                $metodeFilters = [
+                    '' => 'Semua Metode',
+                    'midtrans' => 'Midtrans',
+                    'transfer' => 'Transfer Bank',
+                    'cod' => 'COD',
+                ];
+                $currentMetode = request('metode', '');
+            @endphp
+            @foreach($metodeFilters as $value => $label)
+                <a href="{{ route('pembeli.pesanan.index', ['metode' => $value, 'status' => request('status')]) }}" 
+                   class="px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ $currentMetode == $value ? 'bg-[#1b1b18] text-white shadow-lg shadow-black/20' : 'bg-white text-gray-400 border border-gray-100 hover:border-gray-300' }}">
+                    {{ $label }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     @if(session('success'))
@@ -33,6 +76,7 @@
                         @php
                             $statusConfig = [
                                 'menunggu_bayar' => ['bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'label' => 'Menunggu Pembayaran'],
+                                'menunggu_verifikasi' => ['bg' => 'bg-indigo-100', 'text' => 'text-indigo-700', 'label' => 'Verifikasi'],
                                 'dikonfirmasi' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-700', 'label' => 'Dikonfirmasi'],
                                 'dikemas' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-700', 'label' => 'Sedang Dikemas'],
                                 'dikirim' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-700', 'label' => 'Dalam Pengiriman'],
@@ -43,6 +87,9 @@
                         @endphp
                         <span class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest {{ $status['bg'] }} {{ $status['text'] }}">
                             {{ $status['label'] }}
+                        </span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-xl text-[9px] font-black uppercase tracking-widest">
+                            {{ strtoupper(str_replace('_', ' ', $pesanan->metode_pembayaran)) }}
                         </span>
                     </div>
 
@@ -70,24 +117,45 @@
                         <p class="text-2xl font-black text-[#1b1b18]">Rp{{ number_format($pesanan->total_bayar, 0, ',', '.') }}</p>
                     </div>
                     
-                    <div class="flex gap-3 w-full md:w-auto">
+                    <div class="flex flex-wrap gap-3 w-full md:w-auto justify-end">
                         <a href="{{ route('pembeli.pesanan.show', $pesanan->id) }}" class="flex-1 md:flex-none px-6 py-3 bg-gray-50 border border-gray-200 rounded-[1.2rem] text-[10px] font-black text-[#1b1b18] text-center uppercase tracking-widest hover:bg-gray-100 transition-colors">
-                            DETAIL PESANAN
+                            DETAIL
                         </a>
                         
                         @if($pesanan->status === 'dikirim')
-                        <form action="{{ route('pembeli.pesanan.selesai', $pesanan->id) }}" method="POST" class="flex-1 md:flex-none">
+                        <form action="{{ route('pembeli.pesanan.selesai', $pesanan->id) }}" method="POST" enctype="multipart/form-data" class="flex-1 md:flex-none flex items-center gap-2">
                             @csrf
-                            <button type="submit" class="w-full px-6 py-3 bg-emerald-500 text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30">
-                                PESANAN DITERIMA
+                            <input type="file" name="foto_selesai" id="foto_selesai_{{ $pesanan->id }}" class="hidden" onchange="this.form.submit()" accept="image/*">
+                            <button type="button" onclick="document.getElementById('foto_selesai_{{ $pesanan->id }}').click()" class="w-full px-6 py-3 bg-emerald-500 text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                SELESAI
                             </button>
                         </form>
                         @endif
 
                         @if($pesanan->status === 'menunggu_bayar')
-                        <a href="{{ route('pembeli.pesanan.show', $pesanan->id) }}" class="flex-1 md:flex-none px-6 py-3 bg-[#FFB800] text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-[#10B981] transition-colors shadow-lg shadow-orange-900/20">
-                            BAYAR SEKARANG
-                        </a>
+                            @if($pesanan->metode_pembayaran === 'midtrans' && $pesanan->snap_token)
+                            <button type="button" onclick="triggerSnap('{{ $pesanan->snap_token }}')" class="flex-1 md:flex-none px-6 py-3 bg-[#FFB800] text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-amber-500 transition-colors shadow-lg shadow-orange-900/20 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                BAYAR SEKARANG
+                            </button>
+                            @elseif($pesanan->metode_pembayaran === 'transfer')
+                            <form action="{{ route('pembeli.pesanan.bayar', $pesanan->id) }}" method="POST" enctype="multipart/form-data" class="flex-1 md:flex-none flex items-center gap-2">
+                                @csrf
+                                <input type="file" name="bukti_pembayaran" id="bukti_{{ $pesanan->id }}" class="hidden" onchange="this.form.submit()" accept="image/*">
+                                <button type="button" onclick="document.getElementById('bukti_{{ $pesanan->id }}').click()" class="w-full px-6 py-3 bg-[#FFB800] text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-amber-500 transition-colors shadow-lg shadow-orange-900/20 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                    UPLOAD BUKTI
+                                </button>
+                            </form>
+                            @endif
+
+                            <form action="{{ route('pembeli.pesanan.batal', $pesanan->id) }}" method="POST" class="flex-1 md:flex-none" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
+                                @csrf
+                                <button type="submit" class="w-full px-6 py-3 bg-red-50 text-red-500 border border-red-100 rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-red-100 transition-colors">
+                                    BATAL
+                                </button>
+                            </form>
                         @endif
                     </div>
                 </div>
@@ -108,8 +176,22 @@
         @endforelse
 
         <div class="mt-12">
-            {{ $pesanans->links() }}
+            {{ $pesanans->appends(request()->query())->links() }}
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+<script>
+    function triggerSnap(token) {
+        window.snap.pay(token, {
+            onSuccess: function (result) { window.location.reload(); },
+            onPending: function (result) { window.location.reload(); },
+            onError: function (result) { alert("Pembayaran gagal!"); },
+            onClose: function () { console.log('User closed the popup'); }
+        });
+    }
+</script>
+@endpush

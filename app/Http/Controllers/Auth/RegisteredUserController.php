@@ -34,19 +34,28 @@ class RegisteredUserController extends Controller
             'nama' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in:petani,pembeli'],
         ]);
 
         $user = User::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'pembeli',
+            'role' => $request->role,
         ]);
+
+        // Otomatis buat profil berdasarkan role
+        if ($user->role === 'petani') {
+            $user->petani()->create();
+        } else {
+            $user->pembeli()->create();
+        }
 
         event(new Registered($user));
 
         Auth::login($user);
 
+        // Redirect sesuai role jika perlu, tapi untuk sekarang ke dashboard umum
         return redirect(route('dashboard', absolute: false));
     }
 }

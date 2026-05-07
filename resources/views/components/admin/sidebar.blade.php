@@ -58,6 +58,20 @@
                 Integrasi API
             </a>
 
+            <!-- Pesanan -->
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.pesanan.*') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"
+                href="{{ route('admin.pesanan.index') }}">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('admin.pesanan.*') ? '1' : '0' }};">shopping_bag</span>
+                Pesanan
+            </a>
+
+            <!-- Verifikasi Pembayaran -->
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.verifikasi-pembayaran') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"
+                href="{{ route('admin.verifikasi-pembayaran') }}">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('admin.verifikasi-pembayaran') ? '1' : '0' }};">verified</span>
+                Verifikasi Bayar
+            </a>
+
             <!-- Konfigurasi -->
             <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.config') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"
                 href="{{ route('admin.config') }}">

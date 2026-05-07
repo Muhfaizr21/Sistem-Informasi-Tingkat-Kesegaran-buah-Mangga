@@ -33,9 +33,9 @@
                     <div class="relative z-10">
                         <div class="flex justify-between items-center mb-8">
                             <h2 class="text-2xl font-black text-[#1b1b18] tracking-tight">Alamat Tujuan</h2>
-                            <button type="button" class="px-4 py-2 bg-gray-50 text-[#1b1b18] rounded-xl font-black text-[10px] tracking-widest uppercase hover:bg-gray-100 transition-all border border-gray-100">
+                            <a href="{{ route('pembeli.alamat.index') }}" class="px-4 py-2 bg-gray-50 text-[#1b1b18] rounded-xl font-black text-[10px] tracking-widest uppercase hover:bg-gray-100 transition-all border border-gray-100">
                                 + ALAMAT BARU
-                            </button>
+                            </a>
                         </div>
                         
                         <div class="space-y-4">
@@ -55,9 +55,15 @@
                                         @endif
                                     </div>
                                     <div class="pl-11">
-                                        <p class="font-black text-lg text-[#1b1b18] mb-1">{{ $alamat->nama_penerima }}</p>
-                                        <p class="text-sm font-bold text-gray-500 mb-2">{{ $alamat->no_telepon }}</p>
-                                        <p class="text-sm font-medium text-[#706f6c] leading-relaxed">{{ $alamat->alamat_lengkap }}, {{ $alamat->kecamatan->nama }}, {{ $alamat->kota }}, {{ $alamat->kode_pos }}</p>
+                                        <p class="font-black text-lg text-[#1b1b18] leading-tight">{{ $alamat->nama_penerima ?? 'Penerima' }}</p>
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $alamat->no_telepon ?? '-' }}</p>
+                                        <div class="pt-4 mt-4 border-t border-gray-100">
+                                            <p class="text-sm font-medium text-[#706f6c] leading-relaxed">
+                                                {{ $alamat->alamat_lengkap ?? '-' }}<br>
+                                                {{ $alamat->kecamatan?->nama ?? 'Kecamatan tidak diketahui' }}, {{ $alamat->kota ?? 'Indramayu' }}<br>
+                                                {{ $alamat->kode_pos ?? '-' }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="absolute top-8 right-8 hidden peer-checked:block text-[#FFB800]">
@@ -71,7 +77,7 @@
                                 </div>
                                 <p class="text-lg font-bold text-[#1b1b18] mb-2">Belum Ada Alamat</p>
                                 <p class="text-gray-500 font-medium mb-6">Silakan tambahkan alamat pengiriman terlebih dahulu.</p>
-                                <button type="button" class="px-8 py-4 bg-[#1b1b18] text-white rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-black transition-all shadow-xl shadow-black/10">TAMBAH ALAMAT BARU</button>
+                                <a href="{{ route('pembeli.alamat.index') }}" class="px-8 py-4 bg-[#1b1b18] text-white rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-black transition-all shadow-xl shadow-black/10 inline-block">TAMBAH ALAMAT BARU</a>
                             </div>
                             @endforelse
                         </div>
@@ -79,7 +85,7 @@
                 </div>
 
                 <!-- Metode Pengiriman -->
-                <div class="bg-white rounded-[3.5rem] p-10 border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
+                <div class="bg-white rounded-[3.5rem] p-10 border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden mb-10">
                     <h2 class="text-2xl font-black text-[#1b1b18] tracking-tight mb-8">Pilih Pengiriman</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <label class="relative cursor-pointer group">
@@ -132,32 +138,59 @@
 
                 <!-- Metode Pembayaran -->
                 <div class="bg-white rounded-[3.5rem] p-10 border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
-                    <h2 class="text-2xl font-black text-[#1b1b18] tracking-tight mb-8">Cara Pembayaran</h2>
+                    <h2 class="text-2xl font-black text-[#1b1b18] tracking-tight mb-8">Pilih Pembayaran</h2>
                     <div class="space-y-4">
-                        <label class="flex items-center p-6 bg-gray-50 border border-gray-100 rounded-[2rem] cursor-pointer hover:bg-gray-100 transition-colors group">
-                            <input type="radio" name="metode_pembayaran" value="transfer" class="w-5 h-5 text-[#FFB800] focus:ring-[#FFB800] border-gray-300" checked>
-                            <div class="ml-6 flex-1">
-                                <p class="font-black text-lg text-[#1b1b18]">Transfer Bank</p>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Verifikasi Manual 5 Menit</p>
-                            </div>
-                            <div class="flex gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                <div class="w-12 h-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center font-black text-[8px] text-[#0066AE]">BCA</div>
-                                <div class="w-12 h-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center font-black text-[8px] text-[#003D79]">MANDIRI</div>
+                        <label class="block relative cursor-pointer group">
+                            <input type="radio" name="metode_pembayaran" value="midtrans" class="peer absolute opacity-0" checked>
+                            <div class="p-8 bg-gray-50 border border-gray-100 rounded-[2.5rem] peer-checked:border-[#FFB800] peer-checked:bg-orange-50/50 transition-all group-hover:border-gray-200 shadow-sm flex items-center gap-6">
+                                <div class="w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-[#FFB800] shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-black text-[#1b1b18] leading-tight">Pembayaran Instan</h4>
+                                    <p class="text-xs font-medium text-[#706f6c]">QRIS, GOPAY, OVO, Virtual Account (Verifikasi Otomatis)</p>
+                                </div>
+                                <div class="hidden peer-checked:block text-[#FFB800]">
+                                    <svg class="w-6 h-6 animate-in zoom-in duration-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </div>
                             </div>
                         </label>
-                        <label class="flex items-center p-6 bg-gray-50 border border-gray-100 rounded-[2rem] cursor-pointer hover:bg-gray-100 transition-colors group">
-                            <input type="radio" name="metode_pembayaran" value="ewallet" class="w-5 h-5 text-[#FFB800] focus:ring-[#FFB800] border-gray-300">
-                            <div class="ml-6 flex-1">
-                                <p class="font-black text-lg text-[#1b1b18]">E-Wallet / QRIS</p>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Konfirmasi Instan</p>
+
+                        <label class="block relative cursor-pointer group">
+                            <input type="radio" name="metode_pembayaran" value="transfer" class="peer absolute opacity-0">
+                            <div class="p-8 bg-gray-50 border border-gray-100 rounded-[2.5rem] peer-checked:border-[#FFB800] peer-checked:bg-orange-50/50 transition-all group-hover:border-gray-200 shadow-sm flex items-center gap-6">
+                                <div class="w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-[#FFB800] shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-black text-[#1b1b18] leading-tight">Transfer Bank Manual</h4>
+                                    <p class="text-xs font-medium text-[#706f6c]">Transfer ke rekening admin (Verifikasi 5-10 menit)</p>
+                                </div>
+                                <div class="hidden peer-checked:block text-[#FFB800]">
+                                    <svg class="w-6 h-6 animate-in zoom-in duration-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </div>
                             </div>
-                            <div class="flex gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                <div class="w-12 h-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center font-black text-[8px] text-[#00AEEF]">GOPAY</div>
-                                <div class="w-12 h-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center font-black text-[8px] text-[#4C2A86]">OVO</div>
+                        </label>
+
+                        <label class="block relative cursor-pointer group">
+                            <input type="radio" name="metode_pembayaran" value="cod" class="peer absolute opacity-0">
+                            <div class="p-8 bg-gray-50 border border-gray-100 rounded-[2.5rem] peer-checked:border-[#FFB800] peer-checked:bg-orange-50/50 transition-all group-hover:border-gray-200 shadow-sm flex items-center gap-6">
+                                <div class="w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-[#FFB800] shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-black text-[#1b1b18] leading-tight">Bayar di Tempat (COD)</h4>
+                                    <p class="text-xs font-medium text-[#706f6c]">Bayar langsung ke kurir saat barang sampai</p>
+                                </div>
+                                <div class="hidden peer-checked:block text-[#FFB800]">
+                                    <svg class="w-6 h-6 animate-in zoom-in duration-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </div>
                             </div>
                         </label>
                     </div>
                 </div>
+
+
             </div>
 
             <!-- Ringkasan Sticky Column -->
@@ -170,31 +203,28 @@
                         
                         <div class="max-h-64 overflow-y-auto mb-8 pr-4 space-y-6 scrollbar-thin scrollbar-thumb-white/10">
                             @foreach($cart as $item)
-                            <div class="flex gap-4 items-center group">
-                                <div class="w-16 h-16 bg-white/5 rounded-2xl overflow-hidden shrink-0">
-                                    @if($item['foto'])
-                                        <img src="{{ asset('storage/' . $item['foto']) }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center gap-6 p-4 rounded-[2rem] hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                                <div class="w-24 h-24 bg-gray-100 rounded-[1.5rem] overflow-hidden shrink-0 shadow-sm">
+                                    @if(!empty($item['foto']))
+                                        <img src="{{ asset('storage/' . $item['foto']) }}" class="w-full h-full object-cover">
                                     @else
-                                        <div class="w-full h-full flex items-center justify-center bg-white/5"></div>
+                                        <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
                                     @endif
                                 </div>
                                 <div class="flex-1">
-                                    <p class="font-bold leading-tight line-clamp-1">{{ $item['nama'] }}</p>
-                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">{{ $item['jumlah'] }} KG</p>
+                                    <h4 class="text-sm font-black text-[#1b1b18] mb-1">{{ $item['nama'] ?? 'Mangga Premium' }}</h4>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $item['jumlah'] ?? 0 }} KG × Rp{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-black text-sm">Rp{{ number_format($item['harga'] * $item['jumlah'], 0, ',', '.') }}</p>
+                                    <p class="text-xl font-black text-[#FFB800]">Rp{{ number_format(($item['harga'] ?? 0) * ($item['jumlah'] ?? 0), 0, ',', '.') }}</p>
                                 </div>
                             </div>
                             @endforeach
                         </div>
                         
                         @php
-                            $pembeli = auth()->user()->pembeli;
-                            $diskonPercent = 0;
-                            if ($pembeli && $pembeli->tier_member === 'gold') $diskonPercent = 0.05;
-                            elseif ($pembeli && $pembeli->tier_member === 'platinum') $diskonPercent = 0.10;
-                            $diskon = $totalPrice * $diskonPercent;
                             // Asumsi ongkos kirim disesuaikan via JS nanti, untuk demo kita set 15000 fixed default
                             $ongkir = 15000;
                             $biayaLayanan = 2500;
@@ -207,23 +237,17 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ongkos Kirim</span>
-                                <span class="font-black">Rp{{ number_format($ongkir, 0, ',', '.') }}</span>
+                                <span class="font-black" id="display-shipping">Rp{{ number_format($ongkir, 0, ',', '.') }}</span>
+                                <input type="hidden" name="biaya_pengiriman" id="input-shipping" value="{{ $ongkir }}">
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Biaya Layanan</span>
                                 <span class="font-black">Rp{{ number_format($biayaLayanan, 0, ',', '.') }}</span>
                             </div>
                             
-                            @if($diskon > 0)
-                            <div class="flex justify-between items-center text-[#FFB800] bg-[#FFB800]/10 p-3 rounded-xl border border-[#FFB800]/20">
-                                <span class="text-[10px] font-black uppercase tracking-widest">Diskon Elite ({{ $diskonPercent * 100 }}%)</span>
-                                <span class="font-black">-Rp{{ number_format($diskon, 0, ',', '.') }}</span>
-                            </div>
-                            @endif
-                            
                             <div class="pt-6 mt-6 border-t border-white/10">
                                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Pembayaran</p>
-                                <p class="text-4xl font-black text-white">Rp{{ number_format($totalPrice + $ongkir + $biayaLayanan - $diskon, 0, ',', '.') }}</p>
+                                <p class="text-4xl font-black text-white" id="display-total">Rp{{ number_format($totalPrice + $ongkir + $biayaLayanan, 0, ',', '.') }}</p>
                             </div>
                         </div>
                         
@@ -243,3 +267,42 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const shippingInputs = document.querySelectorAll('input[name="metode_pengiriman"]');
+        const subtotal = {{ $totalPrice }};
+        const serviceFee = 2500;
+        
+        // Midtrans config (if needed by Snap.js elsewhere, but here we just need the IDs)
+        const shippingRates = {
+            'same_day': 25000,
+            'next_day': 15000,
+            'reguler': 10000
+        };
+
+        const shippingLabel = document.getElementById('display-shipping');
+        const shippingInput = document.getElementById('input-shipping');
+        const totalLabel = document.getElementById('display-total');
+
+        function updateTotals() {
+            let selectedInput = document.querySelector('input[name="metode_pengiriman"]:checked');
+            let selectedMethod = selectedInput ? selectedInput.value : 'reguler';
+            let shippingCost = shippingRates[selectedMethod] || 15000;
+            let total = subtotal + shippingCost + serviceFee;
+
+            if(shippingLabel) shippingLabel.innerText = 'Rp' + shippingCost.toLocaleString('id-ID');
+            if(shippingInput) shippingInput.value = shippingCost;
+            if(totalLabel) totalLabel.innerText = 'Rp' + total.toLocaleString('id-ID');
+        }
+
+        shippingInputs.forEach(input => {
+            input.addEventListener('change', updateTotals);
+        });
+
+        // Initialize
+        updateTotals();
+    });
+</script>
+@endpush

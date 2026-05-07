@@ -42,7 +42,7 @@
                     <div class="flex flex-col sm:flex-row items-center gap-8 group">
                         <div class="w-32 h-32 bg-gray-100 rounded-[2rem] overflow-hidden shrink-0 shadow-lg border border-white">
                             @if($item['foto'])
-                                <img src="{{ asset('storage/' . $item['foto']) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <img src="{{ str_starts_with($item['foto'], 'http') ? $item['foto'] : asset('storage/' . $item['foto']) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-300">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -77,14 +77,16 @@
                 </div>
             </div>
             @empty
-            <div class="py-32 bg-gray-50 rounded-[4rem] border border-dashed border-gray-200 text-center">
-                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-gray-200/50">
+            <div class="py-20 px-6 bg-white/50 backdrop-blur-sm rounded-[3rem] border border-dashed border-gray-200 text-center flex flex-col items-center justify-center min-h-[400px]">
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 shadow-xl shadow-gray-200/50 relative">
                     <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-[10px] font-black">0</div>
                 </div>
                 <h3 class="text-2xl font-black text-[#1b1b18] mb-4 tracking-tight">Keranjang Anda Kosong</h3>
-                <p class="text-lg text-[#706f6c] max-w-sm mx-auto mb-10 leading-relaxed font-medium">Sepertinya Anda belum menemukan mangga idaman hari ini.</p>
-                <a href="{{ route('pembeli.marketplace.katalog') }}" class="inline-flex items-center px-10 py-5 bg-[#1b1b18] text-white rounded-[2rem] font-black text-sm tracking-widest uppercase hover:bg-black transition-all shadow-xl shadow-black/20">
-                    MULAI BELANJA
+                <p class="text-base text-[#706f6c] max-w-xs mx-auto mb-10 leading-relaxed font-medium">Sepertinya Anda belum menemukan mangga idaman hari ini.</p>
+                <a href="{{ route('pembeli.marketplace.katalog') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-10 py-5 bg-[#1b1b18] text-white rounded-[2rem] font-black text-sm tracking-widest uppercase hover:bg-black transition-all shadow-xl shadow-black/20 group">
+                    <span>MULAI BELANJA</span>
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
             </div>
             @endforelse
@@ -105,11 +107,6 @@
                         <span class="text-sm font-black text-gray-400 uppercase tracking-widest">Biaya Admin</span>
                         <span class="text-lg font-black text-[#1b1b18]">Rp2.500</span>
                     </div>
-                    <div class="flex justify-between items-center text-emerald-600">
-                        <span class="text-sm font-black uppercase tracking-widest">Diskon Member</span>
-                        <span class="text-lg font-black">- Rp0</span>
-                    </div>
-                    
                     <div class="pt-8 border-t border-gray-100 space-y-2">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">Total Pembayaran</p>
                         <p class="text-4xl font-black text-[#FFB800] text-center">Rp{{ number_format($totalPrice + 2500, 0, ',', '.') }}</p>
@@ -127,14 +124,6 @@
                 </div>
             </div>
 
-            <!-- Promotion Card -->
-            <div class="bg-[#1b1b18] rounded-[3rem] p-8 text-white relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-[#FFB800] rounded-full blur-3xl opacity-20 group-hover:scale-150 transition-transform"></div>
-                <div class="relative z-10">
-                    <h4 class="text-xs font-black uppercase tracking-[0.2em] mb-2 text-[#FFB800]">Promo Spesial</h4>
-                    <p class="text-lg font-bold leading-tight">Gunakan poin Anda untuk potongan pengiriman!</p>
-                </div>
-            </div>
         </div>
         @endif
     </div>

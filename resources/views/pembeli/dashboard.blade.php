@@ -21,7 +21,7 @@
     </div>
 
     <!-- Metrics Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 animate-in fade-in slide-in-from-bottom duration-700 delay-100">
+    <div class="grid grid-cols-2 gap-6 mb-16 animate-in fade-in slide-in-from-bottom duration-700 delay-100">
         <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all group">
             <div class="w-12 h-12 bg-orange-50 text-[#FFB800] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
@@ -36,28 +36,6 @@
             </div>
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Pesanan</p>
             <p class="text-3xl font-black text-[#1b1b18]">{{ number_format($stats['total_pesanan'] ?? 0) }}</p>
-        </div>
-
-        <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all group">
-            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Mango Poin</p>
-            <p class="text-3xl font-black text-[#1b1b18]">{{ number_format($stats['poin_loyalitas'] ?? 0) }}</p>
-        </div>
-
-        <div class="bg-[#FFB800] p-8 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(255,184,0,0.3)] hover:shadow-[0_30px_60px_-15px_rgba(255,184,0,0.4)] transition-all group relative overflow-hidden">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
-            <div class="relative z-10">
-                <p class="text-[10px] font-bold text-white/60 uppercase tracking-[0.2em] mb-1">Membership</p>
-                <p class="text-3xl font-black text-white">{{ $stats['tier'] ?? 'Bronze' }}</p>
-                <div class="mt-4 flex items-center gap-2">
-                    <div class="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-                        <div class="h-full bg-white w-2/3"></div>
-                    </div>
-                    <span class="text-[8px] font-black text-white/80 uppercase">Elite Tier</span>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -93,38 +71,44 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     @forelse($recent_listings ?? [] as $listing)
-                    @php 
-                        /** @var \App\Models\ListingMangga $listing */
-                        $foto = isset($listing->foto_batch) && is_array($listing->foto_batch) ? ($listing->foto_batch[0] ?? null) : null;
-                    @endphp
                     <div class="bg-white rounded-[2.5rem] border border-gray-100 p-4 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] transition-all group">
-                        <div class="aspect-[16/10] bg-gray-50 rounded-[2rem] overflow-hidden mb-6 relative">
+                        <div class="relative h-48 rounded-[2rem] overflow-hidden group/img">
+                            @php $foto = is_array($listing->foto_batch) ? ($listing->foto_batch[0] ?? null) : $listing->foto_batch; @endphp
                             @if($foto)
-                                <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                <img src="{{ str_starts_with($foto, 'http') ? $foto : asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500 {{ $listing->stok_tersedia_kg <= 0 ? 'grayscale' : '' }}">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-gray-100">
-                                    <svg class="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                </div>
+                                <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300 italic text-xs">No Photo</div>
                             @endif
-                            <div class="absolute top-4 right-4">
-                                <div class="px-2 py-1 bg-white/90 backdrop-blur rounded-lg text-[9px] font-black text-emerald-600 shadow-sm border border-emerald-50 tracking-tighter">AI: {{ number_format(optional($listing)->skor_kesegaran ?? 0, 0) }}% FRESH</div>
+                            <div class="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
+                                <div class="px-2.5 py-1 bg-white/90 backdrop-blur rounded-full text-[8px] font-black tracking-tighter uppercase shadow-sm border border-white">AI {{ number_format($listing->skor_kesegaran ?? 0, 0) }}% FRESH</div>
+                                @if($listing->stok_tersedia_kg <= 0)
+                                <div class="px-2.5 py-1 bg-red-500 text-white rounded-full text-[8px] font-black tracking-tighter uppercase shadow-lg">Habis</div>
+                                @endif
                             </div>
                         </div>
                         
-                        <div class="px-4 pb-4">
+                        <div class="px-4 pb-4 mt-6">
                             <div class="flex justify-between items-start mb-2">
-                                <h4 class="text-lg font-black text-[#1b1b18] group-hover:text-[#FFB800] transition-colors truncate pr-2">{{ optional($listing)->jenis_mangga ?? 'Mangga Premium' }}</h4>
-                                <span class="text-lg font-black text-[#1b1b18]">Rp{{ number_format(optional($listing)->harga_per_kg ?? 0, 0, ',', '.') }}</span>
+                                <h4 class="text-lg font-black text-[#1b1b18] group-hover:text-[#FFB800] transition-colors truncate pr-2">{{ $listing->jenis_mangga ?? 'Mangga Premium' }}</h4>
+                                <span class="text-lg font-black text-[#1b1b18]">Rp{{ number_format($listing->harga_per_kg ?? 0, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <p class="text-xs text-gray-400 font-medium flex items-center">
-                                    <svg class="w-3 h-3 mr-1 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                    {{ optional(optional(optional($listing)->lahan)->kecamatan)->nama ?? 'Indramayu' }}
-                                </p>
-                                @if(isset($listing->id))
-                                <a href="{{ route('pembeli.marketplace.detail', $listing->id) }}" class="text-[9px] font-black text-gray-400 uppercase tracking-widest hover:text-[#FFB800] transition-colors">Beli Sekarang</a>
-                                @endif
-                            </div>
+                            
+                            <p class="text-xs text-gray-400 font-medium flex items-center mb-6">
+                                <svg class="w-3 h-3 mr-1 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                {{ $listing->lahan?->kecamatan?->nama ?? 'Indramayu' }}
+                            </p>
+
+                            @if(($listing->stok_tersedia_kg ?? 0) > 0)
+                                <a href="{{ route('pembeli.marketplace.detail', $listing->id) }}" class="w-full py-4 bg-[#1b1b18] text-white rounded-2xl text-[10px] font-black text-center uppercase tracking-widest hover:bg-[#FFB800] transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-2 group/btn">
+                                    <span>BELI SEKARANG</span>
+                                    <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                </a>
+                            @else
+                                <button disabled class="w-full py-4 bg-gray-100 text-gray-400 rounded-2xl text-[10px] font-black text-center uppercase tracking-widest cursor-not-allowed flex items-center justify-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                                    <span>HABIS TERJUAL</span>
+                                </button>
+                            @endif
                         </div>
                     </div>
                     @empty
@@ -184,18 +168,6 @@
                 </div>
             </div>
 
-            <!-- Loyalty Box -->
-            <div class="bg-gradient-to-br from-[#FFB800] to-orange-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-orange-900/20 relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
-                <div class="relative z-10">
-                    <h4 class="text-lg font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                        Poin Loyalitas
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    </h4>
-                    <p class="text-5xl font-black mb-6">{{ number_format($stats['poin_loyalitas'] ?? 0) }}</p>
-                    <p class="text-xs font-bold text-white/70 leading-relaxed uppercase tracking-tighter">Gunakan poin Anda untuk mendapatkan diskon eksklusif di pembelian berikutnya.</p>
-                </div>
-            </div>
         </div>
     </div>
 </div>

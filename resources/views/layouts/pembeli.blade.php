@@ -9,7 +9,12 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { font-family: 'Instrument Sans', sans-serif; background-color: #FDFDFC; }
+        body { 
+            font-family: 'Instrument Sans', sans-serif; 
+            background: linear-gradient(135deg, #f0f9eb 0%, #fffce6 50%, #f7fee7 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
         .mango-gradient { background: linear-gradient(135deg, #FFB800 0%, #10B981 100%); }
         .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(26, 26, 0, 0.1); }
         .text-mango { color: #FFB800; }
@@ -17,7 +22,14 @@
     </style>
     @stack('styles')
 </head>
-<body class="antialiased text-[#1b1b18]">
+<body class="antialiased text-[#1b1b18] relative">
+    <!-- Decorative Background Elements -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-[#10B981]/5 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-[#FFB800]/5 rounded-full blur-[100px]"></div>
+        <div class="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] bg-[#10B981]/5 rounded-full blur-[110px]"></div>
+    </div>
+
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-[#19140015]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,7 +44,15 @@
                 <div class="flex items-center gap-6">
                     <div class="hidden md:flex items-center gap-6 text-sm font-medium">
                         <a href="{{ route('pembeli.marketplace.katalog') }}" class="{{ request()->routeIs('pembeli.marketplace.*') ? 'text-[#FFB800]' : 'text-[#706f6c] hover:text-[#FFB800]' }} transition-colors">Marketplace</a>
-                        <a href="{{ route('pembeli.pesanan.index') }}" class="{{ request()->routeIs('pembeli.pesanan.*') ? 'text-[#FFB800]' : 'text-[#706f6c] hover:text-[#FFB800]' }} transition-colors">Pesanan Saya</a>
+                        <a href="{{ route('pembeli.pesanan.index') }}" class="{{ request()->routeIs('pembeli.pesanan.*') ? 'text-[#FFB800]' : 'text-[#706f6c] hover:text-[#FFB800]' }} transition-colors relative">
+                            Pesanan Saya
+                            @php
+                                $activeOrderCount = Auth::user()->pembeli?->pesanan()->whereIn('status', ['menunggu_bayar', 'menunggu_verifikasi', 'dikonfirmasi', 'dikemas', 'dikirim'])->count() ?? 0;
+                            @endphp
+                            @if($activeOrderCount > 0)
+                                <span class="absolute -top-2 -right-4 inline-flex items-center justify-center px-1.5 py-0.5 text-[8px] font-black leading-none text-white bg-[#FFB800] rounded-full border border-white">{{ $activeOrderCount }}</span>
+                            @endif
+                        </a>
                         <a href="{{ route('pembeli.scan.history') }}" class="{{ request()->routeIs('pembeli.scan.history') ? 'text-[#FFB800]' : 'text-[#706f6c] hover:text-[#FFB800]' }} transition-colors">Riwayat Scan</a>
                         <a href="{{ route('pembeli.scan') }}" class="{{ request()->routeIs('pembeli.scan') ? 'text-[#FFB800]' : 'text-[#706f6c] hover:text-[#FFB800]' }} transition-colors">Scan AI</a>
                     </div>

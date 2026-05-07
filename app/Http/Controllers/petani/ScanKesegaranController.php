@@ -8,6 +8,7 @@ use App\Models\Lahan;
 use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class ScanKesegaranController extends Controller
@@ -22,85 +23,134 @@ class ScanKesegaranController extends Controller
 
     public function analyze(Request $request)
     {
-        $request->validate([
-            'image' => 'required|string', // Base64 image
-            'jenis_mangga' => 'required|string',
-            'berat_gram' => 'nullable|numeric',
-            'diameter_cm' => 'nullable|numeric',
-            'lahan_id' => 'nullable|exists:lahan,id'
-        ]);
+        try {
+            $request->validate([
+                'image' => 'required|string', // Base64 image
+                'jenis_mangga' => 'required|string',
+            ]);
 
-        // Mock CV Analysis Logic
-        $skorKesegaran = rand(60, 95);
-        $persentaseWarna = rand(40, 90);
-        $skorTekstur = rand(70, 98);
-        $skorKepercayaan = rand(85, 99);
-        
-        $kategori = 'matang';
-        if ($persentaseWarna < 30) $kategori = 'mentah';
-        elseif ($persentaseWarna < 60) $kategori = 'setengah_matang';
-        elseif ($persentaseWarna > 85) $kategori = 'sangat_matang';
+            // Save temporary image
+            $img = $request->image;
+            $img = preg_replace('/^data:image\/\w+;base64,/', '', $img);
+            $img = str_replace(' ', '+', $img);
+            $data = base64_decode($img);
+            $tempName = 'scan/temp/' . Str::random(10) . '_' . time() . '.webp';
+            Storage::disk('public')->put($tempName, $data);
 
-        $rekomendasi = 'siap_jual';
-        if ($skorKesegaran < 50) $rekomendasi = 'belum_siap';
-        elseif ($skorKesegaran < 75) $rekomendasi = 'perlu_penyimpanan';
+            $imageAbsolutePath = storage_path('app/public/' . $tempName);
+            
+            // Call FastAPI AI Server
+            $response = \Illuminate\Support\Facades\Http::timeout(15)
+                ->attach('image', file_get_contents($imageAbsolutePath), 'scan.webp')
+                ->post('http://127.0.0.1:8001/api/scan', [
+                    'jenis_mangga' => $request->jenis_mangga,
+                ]);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'skor_kesegaran' => $skorKesegaran,
-                'persentase_warna' => $persentaseWarna,
-                'skor_tekstur' => $skorTekstur,
-                'skor_kepercayaan' => $skorKepercayaan,
-                'kategori' => $kategori,
-                'rekomendasi' => $rekomendasi,
-                'cacat_terdeteksi' => rand(0, 10) > 8,
-            ]
-        ]);
+            if ($response->failed()) {
+                Storage::disk('public')->delete($tempName);
+                throw new \Exception('Server AI (FastAPI) mengembalikan error.');
+            }
+            
+            $result = $response->json();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'skor_kesegaran' => $result['skor_kesegaran'],
+                    'kategori' => $result['kategori'],
+                    'rekomendasi' => $result['rekomendasi'],
+                    'skor_kepercayaan' => $result['skor_kepercayaan'],
+                    'persentase_warna' => $result['persentase_warna'],
+                    'skor_tekstur' => $result['skor_tekstur'],
+                    'skor_bentuk' => $result['skor_bentuk'],
+                    'panjang_cm' => $result['panjang_cm'],
+                    'berat_gr' => $result['berat_gr'],
+                    'estimasi_ukuran' => $result['estimasi_ukuran'],
+                    'skor_aroma' => $result['skor_aroma'],
+                ],
+                'temp_path' => $tempName,
+                'image_url' => asset('storage/' . $tempName)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'image' => 'required|string',
-            'jenis_mangga' => 'required|string',
-            'berat_gram' => 'nullable|numeric',
-            'diameter_cm' => 'nullable|numeric',
-            'lahan_id' => 'nullable|exists:lahan,id',
-            'results' => 'required|array'
-        ]);
+        try {
+            $request->validate([
+                'temp_path' => 'required|string',
+                'jenis_mangga' => 'required|string',
+                'berat_gram' => 'nullable|numeric',
+                'diameter_cm' => 'nullable|numeric',
+                'lahan_id' => 'nullable|exists:lahan,id',
+                'results' => 'required|array'
+            ]);
 
-        $petani = Petani::where('pengguna_id', auth()->id())->first();
-        
-        // Save Image
-        $imageData = $request->image;
-        $imageData = str_replace('data:image/jpeg;base64,', '', $imageData);
-        $imageData = str_replace(' ', '+', $imageData);
-        $imageName = 'scan_' . time() . '.jpg';
-        Storage::disk('public')->put('scans/' . $imageName, base64_decode($imageData));
+            $petani = Petani::where('pengguna_id', auth()->id())->first();
+            if (!$petani) {
+                throw new \Exception('Profil Petani tidak ditemukan. Harap lengkapi profil Anda.');
+            }
 
-        $scan = ScanKesegaran::create([
-            'petani_id' => $petani->id,
-            'lahan_id' => $request->lahan_id,
-            'path_foto' => 'scans/' . $imageName,
-            'berat_gram' => $request->berat_gram,
-            'diameter_cm' => $request->diameter_cm,
-            'jenis_mangga' => $request->jenis_mangga,
-            'skor_kesegaran' => $request->results['skor_kesegaran'],
-            'persentase_warna' => $request->results['persentase_warna'],
-            'skor_tekstur' => $request->results['skor_tekstur'],
-            'cacat_terdeteksi' => $request->results['cacat_terdeteksi'],
-            'kategori' => $request->results['kategori'],
-            'rekomendasi' => $request->results['rekomendasi'],
-            'skor_kepercayaan' => $request->results['skor_kepercayaan'],
-            'batch_id' => 'BATCH-' . strtoupper(substr(md5(time()), 0, 8)),
-            'dipindai_pada' => now(),
-        ]);
+            $tempPath = $request->temp_path;
+            
+            if (!Storage::disk('public')->exists($tempPath)) {
+                return response()->json(['status' => 'error', 'message' => 'File tidak ditemukan.'], 404);
+            }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Hasil scan berhasil disimpan!',
-            'scan_id' => $scan->id
-        ]);
+            // Move to permanent
+            $permanentPath = str_replace('temp/', '', $tempPath);
+            Storage::disk('public')->move($tempPath, $permanentPath);
+
+            $scan = ScanKesegaran::create([
+                'petani_id' => $petani->id,
+                'lahan_id' => $request->lahan_id,
+                'path_foto' => $permanentPath,
+                'berat_gram' => $request->berat_gram ?? $request->results['berat_gr'] ?? 0,
+                'diameter_cm' => $request->diameter_cm ?? $request->results['panjang_cm'] ?? 0,
+                'jenis_mangga' => $request->jenis_mangga,
+                'skor_kesegaran' => $request->results['skor_kesegaran'],
+                'persentase_warna' => $request->results['persentase_warna'],
+                'skor_tekstur' => $request->results['skor_tekstur'],
+                'skor_bentuk' => $request->results['skor_bentuk'] ?? null,
+                'skor_aroma' => $request->results['skor_aroma'] ?? null,
+                'kategori' => $request->results['kategori'],
+                'rekomendasi' => $request->results['rekomendasi'],
+                'skor_kepercayaan' => $request->results['skor_kepercayaan'],
+                'batch_id' => 'BATCH-' . strtoupper(Str::random(8)),
+                'dipindai_pada' => now(),
+            ]);
+
+            // Jika user memilih untuk langsung memasarkan
+            if ($request->has('marketplace_data')) {
+                if (!$request->lahan_id) {
+                    throw new \Exception('Harap pilih lahan produksi untuk memasarkan produk.');
+                }
+
+                \App\Models\ListingMangga::create([
+                    'petani_id' => $petani->id,
+                    'lahan_id' => $request->lahan_id,
+                    'scan_id' => $scan->id,
+                    'batch_id' => $scan->batch_id,
+                    'jenis_mangga' => $scan->jenis_mangga,
+                    'skor_kesegaran' => $scan->skor_kesegaran,
+                    'foto_batch' => [$scan->path_foto],
+                    'stok_tersedia_kg' => $request->marketplace_data['stok'],
+                    'harga_per_kg' => $request->marketplace_data['harga'],
+                    'minimal_order_kg' => $request->marketplace_data['min_order'] ?? 1,
+                    'deskripsi' => $request->marketplace_data['deskripsi'] ?? 'Mangga segar hasil scan AI.',
+                    'aktif' => true,
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $request->has('marketplace_data') ? 'Produk berhasil dipasarkan!' : 'Hasil scan berhasil disimpan!',
+                'scan_id' => $scan->id
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 }

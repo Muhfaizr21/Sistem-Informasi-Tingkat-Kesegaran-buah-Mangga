@@ -30,10 +30,10 @@
         <div class="lg:col-span-5 space-y-6 animate-in fade-in slide-in-from-left duration-700">
             <div class="relative group">
                 <div class="absolute -inset-1 bg-gradient-to-r from-[#FFB800] to-orange-600 rounded-[3rem] blur opacity-20"></div>
-                <div class="relative aspect-square bg-gray-50 rounded-[3rem] overflow-hidden border border-gray-100 shadow-2xl">
+                <div class="w-full aspect-square rounded-[4rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-8 border-white relative group">
                     @php $foto = is_array($listing->foto_batch) ? ($listing->foto_batch[0] ?? null) : $listing->foto_batch; @endphp
                     @if($foto)
-                        <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover">
+                        <img src="{{ str_starts_with($foto, 'http') ? $foto : asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 {{ $listing->stok_tersedia_kg <= 0 ? 'grayscale' : '' }}">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-gray-100">
                             <svg class="w-20 h-20 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -53,7 +53,7 @@
                 @php $additionalImages = is_array($listing->foto_batch) ? array_slice($listing->foto_batch, 1) : []; @endphp
                 @foreach($additionalImages as $foto)
                     <div class="aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFB800] transition-all cursor-pointer group shadow-sm">
-                        <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="{{ str_starts_with($foto, 'http') ? $foto : asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
                 @endforeach
             </div>
@@ -63,6 +63,11 @@
         <div class="lg:col-span-7 space-y-10 animate-in fade-in slide-in-from-right duration-700">
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
+                    @if($listing->stok_tersedia_kg > 0)
+                        <div class="px-6 py-2 bg-emerald-500 text-white rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-emerald-200 animate-pulse">Tersedia</div>
+                    @else
+                        <div class="px-6 py-2 bg-red-500 text-white rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-red-200">Habis Terjual</div>
+                    @endif
                     <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100">AI Score: {{ number_format($listing->skor_kesegaran ?? 0, 0) }}%</span>
                     <span class="px-3 py-1 bg-[#FFB800]/10 text-[#FFB800] rounded-full text-[9px] font-black uppercase tracking-widest border border-[#FFB800]/10">Premium Batch</span>
                 </div>
@@ -104,23 +109,30 @@
                     @csrf
                     <input type="hidden" name="listing_id" value="{{ $listing->id }}">
                     <div class="flex items-center bg-gray-50 rounded-[2rem] border border-gray-200 px-6 py-2">
-                        <button type="button" onclick="const input = this.nextElementSibling; if(input.value > input.min) input.stepDown()" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-black transition-colors">
+                        <button type="button" onclick="const input = this.nextElementSibling.querySelector('input'); if(input.value > input.min) input.stepDown()" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-black transition-colors" {{ $listing->stok_tersedia_kg <= 0 ? 'disabled' : '' }}>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                         </button>
                         <div class="flex flex-col items-center px-4">
                             <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Jumlah (KG)</span>
                             <input type="number" name="jumlah_kg" value="{{ $listing->minimal_order_kg ?? 1 }}" min="{{ $listing->minimal_order_kg ?? 1 }}" max="{{ $listing->stok_tersedia_kg }}" 
-                                   class="w-20 bg-transparent border-none focus:ring-0 text-center text-2xl font-black text-[#1b1b18] p-0">
+                                   class="w-20 bg-transparent border-none focus:ring-0 text-center text-2xl font-black text-[#1b1b18] p-0" {{ $listing->stok_tersedia_kg <= 0 ? 'disabled' : '' }}>
                         </div>
-                        <button type="button" onclick="const input = this.previousElementSibling.querySelector('input'); if(input.value < input.max) input.stepUp()" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-black transition-colors">
+                        <button type="button" onclick="const input = this.previousElementSibling.querySelector('input'); if(input.value < input.max) input.stepUp()" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-black transition-colors" {{ $listing->stok_tersedia_kg <= 0 ? 'disabled' : '' }}>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         </button>
                     </div>
                     
-                    <button type="submit" class="flex-1 py-6 bg-[#1b1b18] text-white rounded-[2.2rem] font-black text-sm tracking-[0.2em] uppercase shadow-2xl shadow-black/20 hover:bg-black transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                        MASUKKAN KERANJANG
-                    </button>
+                    @if($listing->stok_tersedia_kg > 0)
+                        <button type="submit" class="flex-1 py-6 bg-[#1b1b18] text-white rounded-[2.2rem] font-black text-sm tracking-[0.2em] uppercase shadow-2xl shadow-black/20 hover:bg-black transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            MASUKKAN KERANJANG
+                        </button>
+                    @else
+                        <button type="button" disabled class="flex-1 py-6 bg-gray-100 text-gray-400 rounded-[2.2rem] font-black text-sm tracking-[0.2em] uppercase cursor-not-allowed flex items-center justify-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                            STOK HABIS
+                        </button>
+                    @endif
                 </form>
             </div>
         </div>

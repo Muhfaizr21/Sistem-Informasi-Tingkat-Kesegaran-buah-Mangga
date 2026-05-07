@@ -18,7 +18,7 @@
     @forelse($scans as $scan)
     <div class="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] transition-all group">
         <div class="aspect-square bg-gray-50 relative overflow-hidden">
-            <img src="{{ asset('storage/' . $scan->path_foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <img src="{{ str_starts_with($scan->path_foto, 'http') ? $scan->path_foto : asset('storage/' . $scan->path_foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
             <div class="absolute top-4 right-4">
                 <div class="px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-black text-[#FFB800] shadow-sm border border-white">
                     {{ $scan->skor_kesegaran }}% FRESH

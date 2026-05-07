@@ -57,7 +57,7 @@
             <div class="aspect-[4/5] bg-gray-50 relative overflow-hidden">
                 @php $foto = is_array($listing->foto_batch) ? ($listing->foto_batch[0] ?? null) : $listing->foto_batch; @endphp
                 @if($foto)
-                    <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <img src="{{ str_starts_with($foto, 'http') ? $foto : asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 {{ $listing->stok_tersedia_kg <= 0 ? 'grayscale' : '' }}">
                 @else
                     <div class="w-full h-full flex items-center justify-center bg-gray-100">
                         <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -65,11 +65,16 @@
                 @endif
 
                 <!-- Badge AI -->
-                <div class="absolute top-5 left-5 z-10">
+                <div class="absolute top-5 left-5 z-10 flex flex-col gap-2">
                     <div class="px-3 py-1.5 bg-white/90 backdrop-blur rounded-full shadow-sm border border-white flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span class="text-[10px] font-black text-[#1b1b18] uppercase tracking-tighter">AI: {{ number_format($listing->skor_kesegaran ?? 0, 0) }}% FRESH</span>
                     </div>
+                    @if($listing->stok_tersedia_kg <= 0)
+                    <div class="px-3 py-1.5 bg-red-500 text-white rounded-full shadow-lg flex items-center gap-2 animate-bounce">
+                        <span class="text-[9px] font-black uppercase tracking-widest">STOK HABIS</span>
+                    </div>
+                    @endif
                 </div>
 
                 <!-- Favorite Toggle (Mock) -->
@@ -90,7 +95,11 @@
                 <div class="mb-4">
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xl font-bold text-[#1b1b18] leading-tight group-hover:text-[#FFB800] transition-colors">{{ $listing->jenis_mangga ?? 'Mangga Premium' }}</h3>
-                        <span class="text-[9px] font-black px-2 py-1 bg-gray-100 rounded-lg text-gray-500 uppercase tracking-widest border border-gray-100">STOK: {{ number_format($listing->stok_tersedia_kg, 0) }}KG</span>
+                        @if($listing->stok_tersedia_kg > 0)
+                            <span class="text-[9px] font-black px-2 py-1 bg-gray-100 rounded-lg text-gray-500 uppercase tracking-widest border border-gray-100">STOK: {{ number_format($listing->stok_tersedia_kg, 0) }}KG</span>
+                        @else
+                            <span class="text-[9px] font-black px-2 py-1 bg-red-100 rounded-lg text-red-600 uppercase tracking-widest border border-red-200">HABIS</span>
+                        @endif
                     </div>
                     <p class="text-xs text-[#706f6c] flex items-center font-medium">
                         <svg class="w-3 h-3 mr-1.5 text-[#FFB800]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
@@ -104,6 +113,7 @@
                         <p class="text-2xl font-black text-[#1b1b18]">Rp{{ number_format($listing->harga_per_kg, 0, ',', '.') }}</p>
                     </div>
 
+                    @if($listing->stok_tersedia_kg > 0)
                     <form action="{{ route('pembeli.cart.add') }}" method="POST">
                         @csrf
                         <input type="hidden" name="listing_id" value="{{ $listing->id }}">
@@ -112,6 +122,11 @@
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         </button>
                     </form>
+                    @else
+                    <button disabled class="w-14 h-14 bg-gray-100 text-gray-300 rounded-2xl flex items-center justify-center cursor-not-allowed">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                    </button>
+                    @endif
                 </div>
             </div>
         </div>

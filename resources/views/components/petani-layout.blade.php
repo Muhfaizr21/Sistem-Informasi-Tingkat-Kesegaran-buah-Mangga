@@ -79,6 +79,8 @@
             <x-nav-item route="petani.wilayah-produksi" icon="explore" label="Wilayah Produksi" />
             <x-nav-item route="petani.rekomendasi" icon="tips_and_updates" label="Rekomendasi AI" />
             <x-nav-item route="petani.cek-kesegaran" icon="center_focus_strong" label="Cek Kesegaran" />
+            <x-nav-item route="petani.produk.index" icon="storefront" label="Produk Saya" />
+            <x-nav-item route="petani.pesanan.index" icon="shopping_bag" label="Pesanan Masuk" />
             <x-nav-item route="petani.data-lahan" icon="map" label="Data Lahan" />
             <x-nav-item route="petani.laporan-panen" icon="analytics" label="Laporan Panen" />
             
@@ -140,6 +142,8 @@
                     <x-nav-item route="petani.wilayah-produksi" icon="explore" label="Wilayah Produksi" />
                     <x-nav-item route="petani.rekomendasi" icon="tips_and_updates" label="Rekomendasi AI" />
                     <x-nav-item route="petani.cek-kesegaran" icon="center_focus_strong" label="Cek Kesegaran" />
+                    <x-nav-item route="petani.produk.index" icon="storefront" label="Produk Saya" />
+                    <x-nav-item route="petani.pesanan.index" icon="shopping_bag" label="Pesanan Masuk" />
                     <x-nav-item route="petani.data-lahan" icon="map" label="Data Lahan" />
                     <x-nav-item route="petani.laporan-panen" icon="analytics" label="Laporan Panen" />
                     <x-nav-item route="petani.profil" icon="person" label="Profil Saya" />

@@ -21,8 +21,6 @@ class DashboardController extends Controller
         $stats = [
             'total_scan' => $pembeli ? $pembeli->scans()->count() : 0, 
             'total_pesanan' => $pembeli ? $pembeli->pesanan()->count() : 0,
-            'poin_loyalitas' => $pembeli?->poin_loyalitas ?? 0,
-            'tier' => $pembeli?->tier_member ?? 'Silver'
         ];
 
         // Ambil 2 listing terbaru untuk preview
