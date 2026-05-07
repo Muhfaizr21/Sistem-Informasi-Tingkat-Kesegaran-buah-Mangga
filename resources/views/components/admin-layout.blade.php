@@ -80,6 +80,7 @@
             }
         }
     </script>
+    @stack('styles')
 </head>
 <body class="bg-background text-on-background font-inter antialiased min-h-screen" x-data="{ sidebarOpen: false }">
     <!-- Mobile Header -->
@@ -121,5 +122,6 @@
 
     <!-- Alpine.js (for mobile toggle) -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

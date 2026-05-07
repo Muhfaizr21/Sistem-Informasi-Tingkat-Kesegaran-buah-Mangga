@@ -4,8 +4,8 @@
     <!-- Header Section -->
     <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-            <h1 class="text-4xl font-bold text-on-surface tracking-tight">Geospasial <span class="gradient-text">Lahan</span></h1>
-            <p class="text-on-surface-variant mt-2 flex items-center gap-2">
+            <h1 class="text-4xl font-black text-on-surface tracking-tighter">Geospasial <span class="text-primary-500">Lahan</span></h1>
+            <p class="text-on-surface-variant mt-2 flex items-center gap-2 font-medium">
                 <span class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
                 Visualisasi distribusi geografis aset komoditas mangga.
             </p>
