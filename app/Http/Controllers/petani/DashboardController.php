@@ -35,16 +35,40 @@ class DashboardController extends Controller
         }
         
         $totalPanenBulanIni = $reports->sum('jumlah_kg');
-        $rataRataKualitas = 85.5; 
+        
+        // Calculate real quality average from scans
+        $rataRataKualitas = 0;
+        if ($petani) {
+            $rataRataKualitas = DB::table('scan_kesegaran')
+                ->where('petani_id', $petani->id)
+                ->avg('skor_kesegaran') ?? 0;
+        }
 
         // Status Penjualan
         $listing = collect();
+        $manggaTerjual = 0;
+        $pendapatanBulanIni = 0;
+
         if ($petani) {
             $listing = DB::table('listing_mangga')->where('petani_id', $petani->id)->get();
+            $manggaTersedia = $listing->sum('stok_tersedia_kg');
+            
+            // Calculate sold items and revenue from orders
+            $salesData = DB::table('detail_pesanan')
+                ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
+                ->where('detail_pesanan.petani_id', $petani->id)
+                ->whereIn('pesanan.status', ['dikonfirmasi', 'dikirim', 'selesai'])
+                ->select(
+                    DB::raw('SUM(detail_pesanan.jumlah_kg) as total_kg'),
+                    DB::raw('SUM(detail_pesanan.subtotal) as total_revenue')
+                )
+                ->first();
+            
+            $manggaTerjual = $salesData->total_kg ?? 0;
+            $pendapatanBulanIni = $salesData->total_revenue ?? 0;
+        } else {
+            $manggaTersedia = 0;
         }
-        $manggaTersedia = $listing->sum('stok_tersedia_kg');
-        $manggaTerjual = 0; 
-        $pendapatanBulanIni = 0; 
 
         // Live Weather based on Primary Land
         $lahanUtama = $lahan->first();

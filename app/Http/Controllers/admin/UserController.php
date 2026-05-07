@@ -51,9 +51,9 @@ class UserController extends Controller
 
         // Create empty profile based on role
         if ($user->role === 'petani') {
-            Petani::create(['user_id' => $user->id, 'status_verifikasi' => 'verified']);
+            Petani::create(['pengguna_id' => $user->id, 'status_verifikasi' => 'verified']);
         } elseif ($user->role === 'pembeli') {
-            Pembeli::create(['user_id' => $user->id]);
+            Pembeli::create(['pengguna_id' => $user->id]);
         }
 
         return redirect()->back()->with('success', 'Pengguna berhasil ditambahkan.');

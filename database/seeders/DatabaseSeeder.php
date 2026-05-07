@@ -3,14 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-<<<<<<< Updated upstream
 use App\Models\ListingMangga;
 use App\Models\LaporanPanen;
 use App\Models\Petani;
-=======
-use App\Models\Product;
-use App\Models\HarvestReport;
->>>>>>> Stashed changes
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +53,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-<<<<<<< Updated upstream
         \DB::table('pembeli')->updateOrInsert(
             ['pengguna_id' => $userPembeli->id],
             [
@@ -74,71 +68,18 @@ class DatabaseSeeder extends Seeder
 
             // Seed Profil Petani
             $petaniProfile = Petani::updateOrCreate(
-=======
-        // Seed Produk Contoh
-        Product::updateOrCreate(
-            ['name' => 'Mangga Harum Manis Super'],
-            [
-                'variety' => 'Harum Manis',
-                'stock' => 150.00,
-                'price' => 25000,
-                'grade' => 'Grade A+',
-                'image' => 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80',
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['name' => 'Mangga Gedong Gincu'],
-            [
-                'variety' => 'Gedong Gincu',
-                'stock' => 85.00,
-                'price' => 35000,
-                'grade' => 'Grade A',
-                'image' => 'https://images.unsplash.com/photo-1591073113125-e46713c829ed?auto=format&fit=crop&w=800&q=80',
-            ]
-        );
-
-        // Seed Laporan Panen Contoh (untuk Petani ID 2)
-        $petani = User::where('email', 'petani@mangga.com')->first();
-        if ($petani) {
-            HarvestReport::updateOrCreate(
-                ['user_id' => $petani->id, 'location' => 'Blok A-1'],
-                [
-                    'variety' => 'Harum Manis',
-                    'weight' => 45.5,
-                    'grade' => 'Grade A',
-                    'note' => 'Panen pagi hari, cuaca cerah.',
-                ]
-            );
-
-            // Seed Profil Petani
-            DB::table('petani')->updateOrInsert(
->>>>>>> Stashed changes
                 ['pengguna_id' => $petani->id],
                 [
                     'nik' => '3212012345678901',
                     'pengalaman_tahun' => 10,
                     'kelompok_tani' => 'Mekar Sari Indramayu',
                     'status_verifikasi' => 'verified',
-<<<<<<< Updated upstream
                 ]
             );
 
             // Seed Lahan
             $lahanId = DB::table('lahan')->updateOrInsert(
                 ['petani_id' => $petaniProfile->id, 'nama_lahan' => 'Kebun Mangga Blok Utama'],
-=======
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]
-            );
-
-            $petani_profile_id = DB::table('petani')->where('pengguna_id', $petani->id)->value('id');
-
-            // Seed Lahan
-            DB::table('lahan')->updateOrInsert(
-                ['petani_id' => $petani_profile_id, 'nama_lahan' => 'Kebun Mangga Blok Utama'],
->>>>>>> Stashed changes
                 [
                     'latitude' => -6.3276,
                     'longitude' => 108.3249,
@@ -153,7 +94,6 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => now(),
                 ]
             );
-<<<<<<< Updated upstream
             
             $lahan = DB::table('lahan')->where('petani_id', $petaniProfile->id)->first();
 
@@ -193,8 +133,6 @@ class DatabaseSeeder extends Seeder
                 ]
             );
 
-=======
->>>>>>> Stashed changes
 
             // Seed Data Cuaca (untuk Rekomendasi)
             DB::table('data_cuaca')->updateOrInsert(

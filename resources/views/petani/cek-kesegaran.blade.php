@@ -72,7 +72,6 @@
                 <div id="captured-preview" class="absolute inset-0 bg-slate-900 hidden z-20">
                     <img id="captured-img" src="" class="w-full h-full object-cover opacity-60 transition-opacity duration-500">
                     <div id="analysis-loading" class="absolute inset-0 flex items-center justify-center flex-col text-white text-center p-10">
-
                         <div class="w-24 h-24 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-8 shadow-2xl shadow-primary-500/20"></div>
                         <h4 class="font-extrabold text-2xl tracking-tight mb-2">Analyzing Biomarkers...</h4>
                         <p class="text-white/60 font-medium text-sm max-w-xs uppercase tracking-widest">Scanning color depth, texture defects, and ripeness indicators.</p>
@@ -91,7 +90,6 @@
                     <span class="text-[10px] uppercase tracking-widest hidden md:block">Upload</span>
                 </button>
                 <input type="file" id="file-upload" accept="image/*" class="hidden">
-                
 
                 <button id="btn-reset" class="px-10 bg-white text-slate-900 font-extrabold rounded-[2.5rem] border border-slate-100 shadow-sm hidden hover:bg-slate-50 transition-all active:scale-95 uppercase tracking-widest text-xs">
                     Ulangi
@@ -279,135 +277,6 @@
                     </div>
                 </div>
             </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dynamic Content Area -->
-                <div class="flex-1 overflow-y-auto custom-scrollbar">
-                    <!-- Input State -->
-                    <div id="input-state" class="p-8 space-y-8 animate-fade-in">
-                        <div class="bg-primary-50 p-6 rounded-[2rem] border border-primary-100 relative overflow-hidden">
-                            <div class="relative z-10">
-                                <h4 class="text-sm font-black text-primary-900 mb-2 uppercase tracking-tight">Parameter Tambahan</h4>
-                                <p class="text-xs text-primary-600 font-medium mb-6">Opsional: Masukkan data fisik jika tersedia untuk akurasi lebih baik.</p>
-                                
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="space-y-2">
-                                        <label class="block text-[9px] font-black text-primary-400 uppercase tracking-widest">Berat (Gram)</label>
-                                        <input type="number" id="input-berat" placeholder="500" class="w-full bg-white border-none rounded-xl px-5 py-4 focus:ring-4 focus:ring-primary-500/20 outline-none font-bold text-sm shadow-sm">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="block text-[9px] font-black text-primary-400 uppercase tracking-widest">Diameter (Cm)</label>
-                                        <input type="number" id="input-diameter" placeholder="12" class="w-full bg-white border-none rounded-xl px-5 py-4 focus:ring-4 focus:ring-primary-500/20 outline-none font-bold text-sm shadow-sm">
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-primary-100/50 rotate-12">scale</span>
-                        </div>
-
-                        <div class="pt-6 text-center">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-50 mb-4">
-                                <span class="material-symbols-outlined text-slate-300 animate-bounce">arrow_back</span>
-                            </div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Ambil Foto di Sisi Kiri Untuk Memulai</p>
-                        </div>
-                    </div>
-
-                    <!-- Results State -->
-                    <div id="results-state" class="hidden animate-fade-in">
-                        <!-- Score Card -->
-                        <div class="p-8 text-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-b from-primary-50/50 to-transparent"></div>
-                            
-                            <div class="relative z-10">
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Freshness Analysis</p>
-                                <div class="flex items-center justify-center gap-6">
-                                    <span id="res-score" class="text-8xl font-black text-slate-900 tracking-tighter drop-shadow-sm">--</span>
-                                    <div class="text-left">
-                                        <p class="text-3xl font-black text-primary-500">%</p>
-                                        <p id="res-rekomendasi" class="text-[9px] font-black px-3 py-1.5 bg-emerald-500 text-white rounded-lg uppercase tracking-widest shadow-lg shadow-emerald-500/20 mb-2 inline-block">READY</p>
-                                        <p id="res-kategori" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">MATANG</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Metrics Grid -->
-                        <div class="px-8 space-y-8">
-                            <div class="grid grid-cols-3 gap-3">
-                                <div class="p-4 bg-slate-50 rounded-2xl text-center border border-slate-100">
-                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">WARNA</p>
-                                    <p id="res-warna" class="text-sm font-black text-orange-500">--%</p>
-                                </div>
-                                <div class="p-4 bg-slate-50 rounded-2xl text-center border border-slate-100">
-                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">TEKSTUR</p>
-                                    <p id="res-tekstur" class="text-sm font-black text-orange-500">--/100</p>
-                                </div>
-                                <div class="p-4 bg-slate-50 rounded-2xl text-center border border-slate-100">
-                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">UKURAN</p>
-                                    <p id="res-ukuran" class="text-[10px] font-black text-emerald-500 truncate">--</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between px-2">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Akurasi AI: <span id="res-confidence" class="text-slate-900 ml-1">--%</span></p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status:</span>
-                                    <span id="res-cacat" class="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Aman</span>
-                                </div>
-                            </div>
-
-                            <!-- Marketplace Context -->
-                            <div id="marketplace-fields" class="p-8 bg-slate-900 rounded-[2.5rem] relative overflow-hidden group shadow-2xl">
-                                <div class="relative z-10 space-y-6">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/40">
-                                            <span class="material-symbols-outlined text-white text-xl">storefront</span>
-                                        </div>
-                                        <div>
-                                            <p class="text-[11px] font-black text-white uppercase tracking-widest">Marketplace Listing</p>
-                                            <p class="text-[9px] text-orange-400 font-bold uppercase tracking-widest">Lengkapi data untuk publikasi</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="space-y-2">
-                                            <label class="block text-[9px] font-black text-slate-500 uppercase tracking-widest">Harga/kg (Rp)</label>
-                                            <input type="number" id="market-harga" placeholder="15000" class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-sm font-bold text-white focus:border-orange-500/50 outline-none transition-all">
-                                        </div>
-                                        <div class="space-y-2">
-                                            <label class="block text-[9px] font-black text-slate-500 uppercase tracking-widest">Stok (kg)</label>
-                                            <input type="number" id="market-stok" placeholder="50" class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-sm font-bold text-white focus:border-orange-500/50 outline-none transition-all">
-                                        </div>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="block text-[9px] font-black text-slate-500 uppercase tracking-widest">Deskripsi Produk</label>
-                                        <textarea id="market-deskripsi" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-xs font-medium text-white focus:border-orange-500/50 outline-none transition-all" placeholder="Contoh: Mangga Harum Manis super manis..."></textarea>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4 pt-4">
-                                        <button id="btn-save" class="bg-white/10 hover:bg-white/20 text-white font-black py-4 rounded-xl transition-all uppercase tracking-widest text-[10px]">
-                                            Simpan Saja
-                                        </button>
-                                        <button id="btn-publish" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl shadow-xl shadow-orange-500/20 transition-all uppercase tracking-widest text-[10px]">
-                                            Publish Produk
-                                        </button>
-                                    </div>
-                                </div>
-                                <span class="material-symbols-outlined absolute -right-8 -bottom-8 text-[120px] text-white/5 rotate-12 group-hover:scale-110 transition-transform">shopping_cart</span>
-                            </div>
-                        </div>
-                        <div class="h-10"></div> <!-- Spacer -->
-                    </div>
-
-                </div>
-            </div>
-        </div>
         </div>
     </div>
 
@@ -434,16 +303,12 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const btnCapture = document.getElementById('btn-capture');
-<<<<<<< Updated upstream
         const btnUpload = document.getElementById('btn-upload');
         const fileUpload = document.getElementById('file-upload');
-=======
->>>>>>> Stashed changes
         const btnReset = document.getElementById('btn-reset');
         const scannerLine = document.getElementById('scanner-line');
         const capturedPreview = document.getElementById('captured-preview');
         const capturedImg = document.getElementById('captured-img');
-<<<<<<< Updated upstream
         
         const unifiedPanel = document.getElementById('unified-panel');
         const inputState = document.getElementById('input-state');
@@ -452,11 +317,6 @@
 
         let lastScanData = null;
         let currentTempPath = null;
-=======
-        const resultsCard = document.getElementById('results-card');
-
-        let lastScanData = null;
->>>>>>> Stashed changes
 
         // Initialize Camera
         async function initCamera() {
@@ -466,17 +326,12 @@
                         facingMode: 'environment',
                         width: { ideal: 1280 },
                         height: { ideal: 720 }
-
                     } 
                 });
                 video.srcObject = stream;
             } catch (err) {
                 console.error("Camera error:", err);
-<<<<<<< Updated upstream
                 alert("Gagal mengakses kamera. Anda masih bisa menggunakan fitur Upload Foto.");
-=======
-                alert("Gagal mengakses kamera. Pastikan izin kamera telah diberikan.");
->>>>>>> Stashed changes
             }
         }
 
@@ -535,7 +390,7 @@
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0);
 
-            // Convert to WebP (Already requested by user)
+            // Convert to WebP
             const dataUrl = canvas.toDataURL('image/webp', 0.8);
             processAnalysis(dataUrl);
         });
@@ -622,12 +477,10 @@
             document.getElementById('badge-step').innerText = 'Analisis Selesai';
             document.getElementById('badge-step').classList.replace('text-slate-400', 'text-emerald-500');
             document.getElementById('badge-step').classList.replace('border-slate-200', 'border-emerald-200');
-
         }
 
         btnReset.addEventListener('click', () => {
             capturedPreview.classList.add('hidden');
-<<<<<<< Updated upstream
             inputState.classList.remove('hidden');
             resultsState.classList.add('hidden');
             
@@ -683,7 +536,6 @@
                 }
             }
 
-
             try {
                 const response = await fetch("{{ route('petani.cek-kesegaran.store') }}", {
                     method: 'POST',
@@ -692,7 +544,6 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify(payload)
-
                 });
 
                 const result = await response.json();
@@ -713,6 +564,5 @@
 
         document.getElementById('btn-save').addEventListener('click', () => saveData(false));
         document.getElementById('btn-publish').addEventListener('click', () => saveData(true));
-
     </script>
 </x-petani-layout>

@@ -1,232 +1,279 @@
 <x-admin-layout>
-    <x-slot name="title">Dashboard</x-slot>
+    <x-slot name="title">Dashboard Admin</x-slot>
 
     <!-- Page Header -->
-    <div class="flex items-end justify-between mb-2">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-on-surface">Ikhtisar Sistem</h1>
-            <p class="text-base text-on-surface-variant mt-1">Pemantauan operasional dan kualitas komoditas terpusat.</p>
+            <h1 class="text-4xl font-bold text-on-surface tracking-tight">Ikhtisar <span class="gradient-text">Sistem</span></h1>
+            <p class="text-on-surface-variant mt-2 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
+                Pemantauan operasional dan kualitas komoditas terpusat.
+            </p>
         </div>
-        <div class="flex gap-3">
-            <button
-                class="h-10 px-4 flex items-center gap-2 rounded bg-surface-container-lowest border border-outline-variant text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+        <div class="flex items-center gap-3">
+            <div class="glass px-4 py-2 rounded-2xl flex items-center gap-2 text-sm font-medium text-on-surface-variant premium-shadow">
                 <span class="material-symbols-outlined text-[18px]">calendar_today</span>
-                Bulan Ini
-            </button>
-            <button
-                class="h-10 px-4 flex items-center gap-2 rounded bg-primary-container text-on-primary text-sm hover:bg-primary transition-colors">
+                {{ now()->translatedFormat('F Y') }}
+            </div>
+            <button class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-2xl text-sm font-bold flex items-center gap-2 transition-all hover:scale-105 active:scale-95 premium-shadow">
                 <span class="material-symbols-outlined text-[18px]">download</span>
-                Unduh Laporan
+                Laporan PDF
             </button>
         </div>
     </div>
 
-    <!-- Bento Grid: Key Statistics -->
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-stack-lg">
-        <!-- Stat 1 -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col gap-3">
-            <div class="flex justify-between items-start">
-                <span class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider">Total Petani</span>
-                <span class="material-symbols-outlined text-on-surface-variant opacity-50">agriculture</span>
-            </div>
-            <div>
-                <div class="text-2xl font-semibold text-on-surface">1,248</div>
-                <div class="text-[14px] text-on-tertiary-container mt-1 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
-                    +12% bulan ini
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+        <!-- Card 1: Total Petani -->
+        <div class="relative group overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl md:rounded-3xl p-4 md:p-6 text-white premium-shadow transition-all hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-16 h-16 md:w-24 md:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md">
+                    <span class="material-symbols-outlined text-[20px] md:text-[24px]">agriculture</span>
                 </div>
+                <div class="bg-white/20 px-2 py-0.5 rounded-lg text-[9px] md:text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    +{{ $growth['petani'] }}%
+                </div>
+            </div>
+            <div class="mt-6 md:mt-8 relative z-10">
+                <p class="text-white/70 text-[10px] md:text-sm font-medium">Mitra Petani</p>
+                <h3 class="text-xl md:text-3xl font-bold mt-1">{{ number_format($totalPetani) }}</h3>
             </div>
         </div>
-        <!-- Stat 2 -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col gap-3">
-            <div class="flex justify-between items-start">
-                <span class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider">Total Pembeli</span>
-                <span class="material-symbols-outlined text-on-surface-variant opacity-50">storefront</span>
-            </div>
-            <div>
-                <div class="text-2xl font-semibold text-on-surface">892</div>
-                <div class="text-[14px] text-on-tertiary-container mt-1 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
-                    +5% bulan ini
+
+        <!-- Card 2: Total Pembeli -->
+        <div class="relative group overflow-hidden bg-gradient-to-br from-mango-500 to-mango-600 rounded-2xl md:rounded-3xl p-4 md:p-6 text-white premium-shadow transition-all hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-16 h-16 md:w-24 md:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md">
+                    <span class="material-symbols-outlined text-[20px] md:text-[24px]">storefront</span>
                 </div>
+                <div class="bg-white/20 px-2 py-0.5 rounded-lg text-[9px] md:text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    +{{ $growth['pembeli'] }}%
+                </div>
+            </div>
+            <div class="mt-6 md:mt-8 relative z-10">
+                <p class="text-white/70 text-[10px] md:text-sm font-medium">Pembeli Aktif</p>
+                <h3 class="text-xl md:text-3xl font-bold mt-1">{{ number_format($totalPembeli) }}</h3>
             </div>
         </div>
-        <!-- Stat 3 -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col gap-3">
-            <div class="flex justify-between items-start">
-                <span class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider">Total Panen</span>
-                <span class="material-symbols-outlined text-on-surface-variant opacity-50">compost</span>
-            </div>
-            <div>
-                <div class="text-2xl font-semibold text-on-surface flex items-baseline gap-1">45.2 <span
-                        class="text-sm text-on-surface-variant font-normal">Ton</span></div>
-                <div class="text-[14px] text-on-tertiary-container mt-1 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
-                    +18% target tercapai
+
+        <!-- Card 3: Total Panen -->
+        <div class="relative group overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl md:rounded-3xl p-4 md:p-6 text-white premium-shadow transition-all hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-16 h-16 md:w-24 md:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md">
+                    <span class="material-symbols-outlined text-[20px] md:text-[24px]">compost</span>
                 </div>
+                <div class="bg-white/20 px-2 py-0.5 rounded-lg text-[9px] md:text-[10px] font-bold uppercase tracking-wider backdrop-blur-md uppercase">
+                    Ton
+                </div>
+            </div>
+            <div class="mt-6 md:mt-8 relative z-10">
+                <p class="text-white/70 text-[10px] md:text-sm font-medium">Total Panen</p>
+                <h3 class="text-xl md:text-3xl font-bold mt-1">{{ number_format($totalPanenTon, 1) }}</h3>
             </div>
         </div>
-        <!-- Stat 4 -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col gap-3">
-            <div class="flex justify-between items-start">
-                <span class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider">Transaksi</span>
-                <span class="material-symbols-outlined text-on-surface-variant opacity-50">receipt_long</span>
-            </div>
-            <div>
-                <div class="text-2xl font-semibold text-on-surface">Rp 3.4M</div>
-                <div class="text-[14px] text-on-surface-variant mt-1 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">horizontal_rule</span>
-                    Stabil
+
+        <!-- Card 4: Kualitas -->
+        <div class="relative group overflow-hidden bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl md:rounded-3xl p-4 md:p-6 text-white premium-shadow transition-all hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-16 h-16 md:w-24 md:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md">
+                    <span class="material-symbols-outlined text-[20px] md:text-[24px]">verified</span>
+                </div>
+                <div class="bg-white/20 px-2 py-0.5 rounded-lg text-[9px] md:text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    AI
                 </div>
             </div>
-        </div>
-        <!-- Stat 5 -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col gap-3">
-            <div class="flex justify-between items-start">
-                <span class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider">Rata-rata Kualitas</span>
-                <span class="material-symbols-outlined text-on-surface-variant opacity-50">verified</span>
-            </div>
-            <div>
-                <div class="text-2xl font-semibold text-secondary">Grade A-</div>
-                <div class="text-[14px] text-error mt-1 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">trending_down</span>
-                    Turun dari Grade A
-                </div>
+            <div class="mt-6 md:mt-8 relative z-10">
+                <p class="text-white/70 text-[10px] md:text-sm font-medium">Avg. Kualitas</p>
+                <h3 class="text-xl md:text-3xl font-bold mt-1">{{ $qualityGrade }}</h3>
             </div>
         </div>
     </div>
 
-    <!-- Bento Grid: Charts & Complex Data -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg">
-        <!-- Main Chart: Production Trend -->
-        <div
-            class="lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-lg p-6 flex flex-col">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-semibold text-on-surface">Tren Produksi &amp; Distribusi</h3>
-                <button class="text-on-surface-variant hover:text-on-surface">
-                    <span class="material-symbols-outlined">more_horiz</span>
-                </button>
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Chart -->
+        <div class="lg:col-span-8 space-y-8">
+            <div class="bg-white rounded-[2rem] p-8 border border-outline-variant premium-shadow">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-on-surface">Tren Produksi Mangga</h3>
+                        <p class="text-sm text-on-surface-variant">Data panen terverifikasi dalam 6 bulan terakhir</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="flex items-center gap-1.5 text-xs font-medium text-on-surface-variant bg-surface px-3 py-1.5 rounded-xl border border-outline-variant">
+                            <span class="w-2 h-2 rounded-full bg-primary-500"></span> Ton
+                        </span>
+                    </div>
+                </div>
+
+                <div class="h-[350px] flex items-end justify-between gap-4 relative">
+                    <!-- Grid Lines -->
+                    <div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
+                        @for($i=0; $i<6; $i++)
+                            <div class="w-full h-px bg-slate-100"></div>
+                        @endfor
+                    </div>
+
+                    @foreach($harvestData as $data)
+                        @php $height = $data > 0 ? min(($data / (max($harvestData) ?: 1)) * 100, 100) : 0; @endphp
+                        <div class="flex-1 flex flex-col items-center gap-4 z-10 group">
+                            <div class="w-full max-w-[48px] relative flex flex-col justify-end h-full">
+                                <!-- Tooltip -->
+                                <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                    {{ number_format($data, 1) }} Ton
+                                </div>
+                                <!-- Bar -->
+                                <div class="w-full rounded-t-2xl transition-all duration-700 ease-out {{ $loop->last ? 'bg-gradient-to-t from-primary-600 to-mango-400' : 'bg-gradient-to-t from-slate-200 to-slate-300 group-hover:from-primary-200 group-hover:to-primary-300' }}" 
+                                     style="height: {{ $height }}%;">
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">{{ $months[$loop->index] }}</span>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-            <!-- Chart Canvas Area (Simulated) -->
-            <div
-                class="flex-1 w-full min-h-[300px] relative border-b border-l border-surface-container-high flex items-end pt-4 pb-0 pl-0">
-                <!-- Y Axis Labels -->
-                <div
-                    class="absolute left-[-30px] h-full flex flex-col justify-between text-[10px] text-on-surface-variant py-2">
-                    <span>50t</span><span>40t</span><span>30t</span><span>20t</span><span>10t</span><span>0</span>
+
+            <!-- Recent Orders / Activity -->
+            <div class="bg-white rounded-[2rem] p-8 border border-outline-variant premium-shadow">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-on-surface">Aktivitas Pasar Terbaru</h3>
+                    <a href="#" class="text-primary-600 text-sm font-bold hover:underline">Lihat Semua</a>
                 </div>
-                <!-- Grid Lines -->
-                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                    <div class="w-full h-px bg-surface-container-high"></div>
-                    <div class="w-full h-px bg-surface-container-high"></div>
-                    <div class="w-full h-px bg-surface-container-high"></div>
-                    <div class="w-full h-px bg-surface-container-high"></div>
-                    <div class="w-full h-px bg-surface-container-high"></div>
+                <div class="space-y-4">
+                    @php
+                        $orders = \App\Models\Pesanan::with('pembeli.user')->latest()->limit(4)->get();
+                    @endphp
+                    @forelse($orders as $order)
+                    <div class="flex items-center justify-between p-4 rounded-2xl hover:bg-surface transition-colors border border-transparent hover:border-outline-variant">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-mango-100 flex items-center justify-center text-mango-700">
+                                <span class="material-symbols-outlined">shopping_basket</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-on-surface">{{ $order->pembeli->user->nama ?? 'Pembeli' }}</p>
+                                <p class="text-xs text-on-surface-variant">Pesanan #{{ $order->id }} • {{ $order->created_at->diffForHumans() }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-on-surface">Rp {{ number_format($order->total_harga) }}</p>
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-green-100 text-green-700">
+                                {{ $order->status }}
+                            </span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="py-8 text-center text-on-surface-variant italic text-sm">
+                        Belum ada transaksi terbaru.
+                    </div>
+                    @endforelse
                 </div>
-                <!-- Bars -->
-                <div class="w-full h-full flex justify-around items-end px-4 gap-2 z-10">
-                    <div class="w-full max-w-[40px] bg-secondary-container rounded-t-sm" style="height: 45%;"></div>
-                    <div class="w-full max-w-[40px] bg-secondary-container rounded-t-sm" style="height: 60%;"></div>
-                    <div class="w-full max-w-[40px] bg-secondary-container rounded-t-sm" style="height: 55%;"></div>
-                    <div class="w-full max-w-[40px] bg-primary-container rounded-t-sm" style="height: 80%;"></div>
-                    <div class="w-full max-w-[40px] bg-secondary-container rounded-t-sm" style="height: 70%;"></div>
-                    <div class="w-full max-w-[40px] bg-secondary-container rounded-t-sm" style="height: 90%;"></div>
-                </div>
-            </div>
-            <!-- X Axis Labels -->
-            <div class="w-full flex justify-around mt-3 text-[12px] text-on-surface-variant pl-4">
-                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mei</span><span>Jun</span>
             </div>
         </div>
-        <!-- Secondary Area: Alerts & Pending Actions -->
-        <div class="lg:col-span-4 flex flex-col gap-stack-lg">
-            <!-- Pending Verification -->
-            <div
-                class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 flex flex-col flex-1">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-on-surface">Verifikasi Tertunda</h3>
-                    <span class="bg-error text-on-error text-[10px] font-bold px-2 py-0.5 rounded-full">3
-                        Baru</span>
+
+        <!-- Right Column: Verification & Alerts -->
+        <div class="lg:col-span-4 space-y-8">
+            <!-- Verification Queue -->
+            <div class="bg-white rounded-[2rem] p-8 border border-outline-variant premium-shadow relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16"></div>
+                <div class="relative z-10">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-on-surface">Antrean Verifikasi</h3>
+                        <span class="bg-error text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                            {{ $pendingPetani->count() + $pendingPanen->count() }} Baru
+                        </span>
+                    </div>
+                    <div class="space-y-4">
+                        @foreach($pendingPetani as $petani)
+                        <div class="group cursor-pointer">
+                            <div class="flex items-center gap-4 p-3 rounded-2xl transition-all hover:bg-surface active:scale-95 border border-transparent hover:border-outline-variant">
+                                <div class="w-10 h-10 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">person_check</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-on-surface line-clamp-1">Verifikasi Petani</p>
+                                    <p class="text-xs text-on-surface-variant">{{ $petani->user->nama }}</p>
+                                </div>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                        </div>
+                        @endforeach
+
+                        @foreach($pendingPanen as $panen)
+                        <div class="group cursor-pointer">
+                            <div class="flex items-center gap-4 p-3 rounded-2xl transition-all hover:bg-surface active:scale-95 border border-transparent hover:border-outline-variant">
+                                <div class="w-10 h-10 rounded-xl bg-mango-100 text-mango-700 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-on-surface line-clamp-1">Laporan Panen: {{ $panen->jumlah_kg }}Kg</p>
+                                    <p class="text-xs text-on-surface-variant">{{ $panen->petani->user->nama }}</p>
+                                </div>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                        </div>
+                        @endforeach
+
+                        @if($pendingPetani->isEmpty() && $pendingPanen->isEmpty())
+                        <div class="py-10 text-center text-on-surface-variant italic text-sm">
+                            Semua verifikasi telah selesai.
+                        </div>
+                        @endif
+                    </div>
+                    <button class="w-full mt-6 py-3 rounded-2xl border-2 border-primary-600 text-primary-600 font-bold text-sm hover:bg-primary-600 hover:text-white transition-all active:scale-95">
+                        Lihat Semua Antrean
+                    </button>
                 </div>
-                <div class="flex flex-col gap-0 border-t border-outline-variant pt-2">
-                    <!-- List Item -->
-                    <div
-                        class="py-3 flex items-center justify-between border-b border-surface-container-high last:border-0 group cursor-pointer hover:bg-surface-container-low -mx-4 px-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-on-surface-variant">
-                                <span class="material-symbols-outlined text-[16px]">badge</span>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-on-surface mb-1">Registrasi Lahan A-12</div>
-                                <div class="text-[12px] text-on-surface-variant">Oleh: Bpk. Supardi</div>
-                            </div>
+            </div>
+
+            <!-- System Alert -->
+            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-[2rem] p-8 text-white premium-shadow relative overflow-hidden">
+                <span class="material-symbols-outlined absolute -right-6 -bottom-6 text-[120px] text-white/10 rotate-12 pointer-events-none">warning</span>
+                <div class="relative z-10">
+                    <h3 class="text-xl font-bold flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined">security</span>
+                        Security Audit
+                    </h3>
+                    <p class="text-white/80 text-sm leading-relaxed mb-6">
+                        Sistem mendeteksi 12 upaya akses tidak sah dari IP eksternal dalam 24 jam terakhir. Seluruh upaya telah diblokir secara otomatis oleh firewall.
+                    </p>
+                    <div class="flex gap-2">
+                        <div class="flex-1 bg-white/20 backdrop-blur-md rounded-xl p-3 text-center">
+                            <p class="text-[10px] uppercase font-bold text-white/60">Status</p>
+                            <p class="text-sm font-bold">Secure</p>
                         </div>
-                        <button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
-                    </div>
-                    <!-- List Item -->
-                    <div
-                        class="py-3 flex items-center justify-between border-b border-surface-container-high last:border-0 group cursor-pointer hover:bg-surface-container-low -mx-4 px-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-on-surface-variant">
-                                <span class="material-symbols-outlined text-[16px]">science</span>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-on-surface mb-1">Hasil Lab Batch #882</div>
-                                <div class="text-[12px] text-on-surface-variant">Menunggu approval QA</div>
-                            </div>
+                        <div class="flex-1 bg-white/20 backdrop-blur-md rounded-xl p-3 text-center">
+                            <p class="text-[10px] uppercase font-bold text-white/60">Firewall</p>
+                            <p class="text-sm font-bold">Active</p>
                         </div>
-                        <button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
-                    </div>
-                    <!-- List Item -->
-                    <div
-                        class="py-3 flex items-center justify-between border-b border-surface-container-high last:border-0 group cursor-pointer hover:bg-surface-container-low -mx-4 px-4 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-on-surface-variant">
-                                <span class="material-symbols-outlined text-[16px]">local_shipping</span>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-on-surface mb-1">Manifest Distribusi JKT</div>
-                                <div class="text-[12px] text-on-surface-variant">Truk B 9921 XX</div>
-                            </div>
-                        </div>
-                        <button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
                     </div>
                 </div>
             </div>
-            <!-- Anomaly Alerts Card -->
-            <div class="bg-error-container border border-error/20 rounded-lg p-5 relative overflow-hidden">
-                <!-- Decorative Icon Background -->
-                <span
-                    class="material-symbols-outlined absolute -right-4 -bottom-4 text-[100px] text-error/5 rotate-12 pointer-events-none">warning</span>
-                <h3 class="text-lg font-semibold text-on-error-container flex items-center gap-2 mb-3">
-                    <span class="material-symbols-outlined">error</span>
-                    Anomali Sistem
-                </h3>
-                <ul class="space-y-3">
-                    <li class="flex gap-3 items-start">
-                        <div class="w-1.5 h-1.5 rounded-full bg-error mt-1.5 shrink-0"></div>
-                        <div>
-                            <div class="text-[13px] text-on-error-container font-semibold">Penurunan Kualitas Mendadak</div>
-                            <div class="text-[12px] text-on-error-container/80 mt-0.5">Blok C-3 melaporkan 40% Grade C dalam 2 hari terakhir.</div>
-                        </div>
-                    </li>
-                    <li class="flex gap-3 items-start">
-                        <div class="w-1.5 h-1.5 rounded-full bg-error mt-1.5 shrink-0"></div>
-                        <div>
-                            <div class="text-[13px] text-on-error-container font-semibold">Sensor Cuaca Offline</div>
-                            <div class="text-[12px] text-on-error-container/80 mt-0.5">Stasiun Area Utara tidak mengirim data sejak 04:00 AM.</div>
-                        </div>
-                    </li>
-                </ul>
+
+            <!-- Quick Actions -->
+            <div class="bg-on-surface rounded-[2rem] p-8 text-white premium-shadow">
+                <h3 class="text-xl font-bold mb-6">Aksi Cepat</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+                        <span class="material-symbols-outlined text-mango-400">add_moderator</span>
+                        <span class="text-xs font-bold">Verifikasi</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+                        <span class="material-symbols-outlined text-primary-400">mail</span>
+                        <span class="text-xs font-bold">Broadcast</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+                        <span class="material-symbols-outlined text-blue-400">map</span>
+                        <span class="text-xs font-bold">GIS Map</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+                        <span class="material-symbols-outlined text-purple-400">settings</span>
+                        <span class="text-xs font-bold">Config</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

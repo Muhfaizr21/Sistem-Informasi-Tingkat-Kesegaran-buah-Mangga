@@ -39,18 +39,24 @@ class AdminController extends Controller
         elseif ($avgQuality > 0) $qualityGrade = 'Grade D';
 
         // Transaction Statistics
-        $totalTransaksi = Pesanan::where('status', 'selesai')->sum('total_harga');
+        $totalTransaksi = Pesanan::whereIn('status', ['dikonfirmasi', 'dikirim', 'selesai'])->sum('total_bayar');
         
         // Verification Queue
         $pendingPetani = Petani::where('status_verifikasi', 'pending')->with('user')->limit(5)->get();
         $pendingPanen = LaporanPanen::where('status', 'submitted')->with(['petani.user', 'lahan'])->limit(5)->get();
 
-        // Growth metrics (mock for now as we don't have historical data easily without complex queries)
+        // Real Growth metrics
+        $lastMonth = now()->subMonth();
+        
+        $newPetani = Petani::where('created_at', '>=', $lastMonth)->count();
+        $newPembeli = Pembeli::where('created_at', '>=', $lastMonth)->count();
+        $newPanen = LaporanPanen::where('created_at', '>=', $lastMonth)->count();
+        
         $growth = [
-            'petani' => 12,
-            'pembeli' => 5,
-            'panen' => 18,
-            'transaksi' => 'Stabil'
+            'petani' => $newPetani,
+            'pembeli' => $newPembeli,
+            'panen' => $newPanen,
+            'transaksi' => $totalTransaksi > 1000000 ? 'Tinggi' : 'Normal'
         ];
 
         // Production Trend (Last 6 Months)
@@ -60,7 +66,7 @@ class AdminController extends Controller
             $date = Carbon::now()->subMonths($i);
             $months[] = $date->translatedFormat('M');
             
-            $production = LaporanPanen::where('status', 'verified')
+            $production = LaporanPanen::whereIn('status', ['verified', 'approved'])
                 ->whereYear('tanggal_panen', $date->year)
                 ->whereMonth('tanggal_panen', $date->month)
                 ->sum('jumlah_kg');
@@ -170,10 +176,27 @@ class AdminController extends Controller
         return back()->with('success', 'Status anomali diperbarui.');
     }
 
-    public function pesanan()
+    public function pesanan(Request $request)
     {
-        $pesanans = Pesanan::with(['pembeli.user', 'items.listing'])->latest()->get();
-        return view('admin.pesanan.index', compact('pesanans'));
+        $status = $request->status;
+        $query = Pesanan::with(['pembeli.user', 'items.listing.petani.user']);
+
+        if ($status && $status !== 'semua') {
+            $query->where('status', $status);
+        }
+
+        $pesanans = $query->latest()->paginate(10);
+
+        // Stats for summary cards
+        $stats = [
+            'total' => Pesanan::count(),
+            'pending' => Pesanan::whereIn('status', ['menunggu_bayar', 'menunggu_verifikasi'])->count(),
+            'processed' => Pesanan::whereIn('status', ['dikonfirmasi', 'dikemas', 'dikirim'])->count(),
+            'completed' => Pesanan::where('status', 'selesai')->count(),
+            'revenue' => Pesanan::where('status', 'selesai')->sum('total_bayar')
+        ];
+
+        return view('admin.pesanan.index', compact('pesanans', 'stats', 'status'));
     }
 
     public function verifikasiPembayaran()
