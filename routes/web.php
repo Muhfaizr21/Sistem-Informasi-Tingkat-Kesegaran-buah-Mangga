@@ -38,16 +38,30 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\admin\ReportController;
+use App\Http\Controllers\admin\IntegrationController;
+use App\Http\Controllers\admin\ConfigController;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/users', [AdminController::class, 'users'])->name('users');
-    Route::get('/mapping', [AdminController::class, 'mapping'])->name('mapping');
+    Route::get('/users', [\App\Http\Controllers\admin\UserController::class, 'index'])->name('users');
+    Route::post('/users', [\App\Http\Controllers\admin\UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [\App\Http\Controllers\admin\UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [\App\Http\Controllers\admin\UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/mapping', [\App\Http\Controllers\admin\MappingController::class, 'index'])->name('mapping');
     Route::get('/quality-monitor', [AdminController::class, 'qualityMonitor'])->name('quality-monitor');
-    Route::get('/harvest-report', [AdminController::class, 'harvestReport'])->name('harvest-report');
-    Route::get('/api-integration', [AdminController::class, 'apiIntegration'])->name('api-integration');
-    Route::get('/config', [AdminController::class, 'config'])->name('config');
+    Route::post('/quality-monitor/{id}/verify', [AdminController::class, 'verifyScan'])->name('quality-monitor.verify');
+    Route::post('/quality-monitor/{id}/anomaly', [AdminController::class, 'markAnomaly'])->name('quality-monitor.anomaly');
+    Route::get('/harvest-report', [ReportController::class, 'index'])->name('harvest-report');
+    Route::post('/harvest-report/{id}/verify-harvest', [ReportController::class, 'verifyHarvest'])->name('harvest-report.verify-harvest');
+    Route::post('/harvest-report/{id}/verify-planting', [ReportController::class, 'verifyPlanting'])->name('harvest-report.verify-planting');
+    Route::get('/api-integration', [IntegrationController::class, 'index'])->name('api-integration');
+    Route::post('/api-integration/update', [IntegrationController::class, 'updateConfig'])->name('api-integration.update');
+    Route::post('/api-integration/test', [IntegrationController::class, 'testConnection'])->name('api-integration.test');
+    Route::post('/api-integration/backup', [IntegrationController::class, 'runBackup'])->name('api-integration.backup');
+    Route::get('/config', [ConfigController::class, 'index'])->name('config');
+    Route::post('/config/update', [ConfigController::class, 'update'])->name('config.update');
     
     // Pesanan & Verifikasi Pembayaran
     Route::get('/pesanan', [AdminController::class, 'pesanan'])->name('pesanan.index');
@@ -157,12 +171,13 @@ Route::prefix('petani')->name('petani.')->middleware(['auth'])->group(function (
     Route::delete('/produk/{id}', [\App\Http\Controllers\petani\ProdukController::class, 'destroy'])->name('produk.destroy');
     Route::post('/produk/{id}/toggle', [\App\Http\Controllers\petani\ProdukController::class, 'toggleStatus'])->name('produk.toggle');
 
+
     // Notifications
     Route::post('/notifikasi/{id}/read', [\App\Http\Controllers\petani\NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
     Route::delete('/notifikasi/{id}', [\App\Http\Controllers\petani\NotifikasiController::class, 'markAsRead'])->name('notifikasi.destroy');
     Route::post('/notifikasi/read-all', [\App\Http\Controllers\petani\NotifikasiController::class, 'markAllAsRead'])->name('notifikasi.read-all');
-
     // Pesanan Management
     Route::get('/pesanan', [\App\Http\Controllers\petani\OrderController::class, 'index'])->name('pesanan.index');
     Route::post('/pesanan/{id}/status', [\App\Http\Controllers\petani\OrderController::class, 'updateStatus'])->name('pesanan.status');
+
 });
