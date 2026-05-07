@@ -18,7 +18,7 @@ use App\Http\Controllers\Pembeli\NotificationController;
 
 Route::get('/dashboard', function () {
     $role = auth()->user()->role;
-    
+
     if ($role === 'admin') {
         return redirect()->route('admin.dashboard');
     } elseif ($role === 'pembeli') {
@@ -36,20 +36,22 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\admin\MappingController;
 use App\Http\Controllers\admin\ReportController;
 use App\Http\Controllers\admin\IntegrationController;
 use App\Http\Controllers\admin\ConfigController;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/users', [\App\Http\Controllers\admin\UserController::class, 'index'])->name('users');
-    Route::post('/users', [\App\Http\Controllers\admin\UserController::class, 'store'])->name('users.store');
-    Route::put('/users/{user}', [\App\Http\Controllers\admin\UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [\App\Http\Controllers\admin\UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/mapping', [\App\Http\Controllers\admin\MappingController::class, 'index'])->name('mapping');
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/mapping', [MappingController::class, 'index'])->name('mapping');
     Route::get('/quality-monitor', [AdminController::class, 'qualityMonitor'])->name('quality-monitor');
     Route::post('/quality-monitor/{id}/verify', [AdminController::class, 'verifyScan'])->name('quality-monitor.verify');
     Route::post('/quality-monitor/{id}/anomaly', [AdminController::class, 'markAnomaly'])->name('quality-monitor.anomaly');
@@ -62,7 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/api-integration/backup', [IntegrationController::class, 'runBackup'])->name('api-integration.backup');
     Route::get('/config', [ConfigController::class, 'index'])->name('config');
     Route::post('/config/update', [ConfigController::class, 'update'])->name('config.update');
-    
+
     // Pesanan & Verifikasi Pembayaran
     Route::get('/pesanan', [AdminController::class, 'pesanan'])->name('pesanan.index');
     Route::get('/verifikasi-pembayaran', [AdminController::class, 'verifikasiPembayaran'])->name('verifikasi-pembayaran');
@@ -142,12 +144,12 @@ Route::prefix('petani')->name('petani.')->middleware(['auth'])->group(function (
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/wilayah-produksi', [WilayahProduksiController::class, 'index'])->name('wilayah-produksi');
     Route::get('/rekomendasi', [RekomendasiController::class, 'index'])->name('rekomendasi');
-    
+
     // Scan Kesegaran
     Route::get('/cek-kesegaran', [ScanKesegaranController::class, 'index'])->name('cek-kesegaran');
     Route::post('/cek-kesegaran/analyze', [ScanKesegaranController::class, 'analyze'])->name('cek-kesegaran.analyze');
     Route::post('/cek-kesegaran/store', [ScanKesegaranController::class, 'store'])->name('cek-kesegaran.store');
-    
+
     // Lahan Management
     Route::get('/data-lahan', [LahanController::class, 'index'])->name('data-lahan');
     Route::post('/data-lahan', [LahanController::class, 'store'])->name('data-lahan.store');
