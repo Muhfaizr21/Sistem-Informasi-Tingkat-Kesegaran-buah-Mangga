@@ -68,6 +68,20 @@
                                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Atas Nama</p>
                                 <p class="text-xs font-bold text-slate-900">{{ $request->nama_rekening }}</p>
                             </div>
+                            <div class="col-span-2">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">No KTP (NIK)</p>
+                                <p class="text-xs font-bold text-slate-900">{{ $request->no_ktp }}</p>
+                            </div>
+                            @if($request->foto_ktp)
+                            <div class="col-span-2 mt-2">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Foto KTP</p>
+                                <div class="w-full h-32 bg-slate-200 rounded-xl overflow-hidden border border-slate-300">
+                                    <a href="{{ asset('storage/' . $request->foto_ktp) }}" target="_blank" class="block w-full h-full">
+                                        <img src="{{ asset('storage/' . $request->foto_ktp) }}" class="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer" alt="Foto KTP">
+                                    </a>
+                                </div>
+                            </div>
+                            @endif
                         </div>
 
                         <div class="flex gap-3">

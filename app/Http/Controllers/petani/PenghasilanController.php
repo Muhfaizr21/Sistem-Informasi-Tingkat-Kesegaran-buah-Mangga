@@ -72,13 +72,14 @@ class PenghasilanController extends Controller
         $request->validate([
             'nominal' => 'required|numeric|min:10000',
             'no_ktp' => 'required|string',
+            'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:5120',
             'nama_bank' => 'required|string',
             'no_rekening' => 'required|string',
             'nama_rekening' => 'required|string',
         ]);
 
         // Hitung saldo tersedia lagi untuk validasi
-        $totalPendapatan = DetailPesanan::where('petani_id', $petani->id)
+        $pendapatanKeseluruhan = DetailPesanan::where('petani_id', $petani->id)
             ->whereHas('pesanan', function($q) {
                 $q->where('status', 'selesai');
             })
@@ -88,16 +89,22 @@ class PenghasilanController extends Controller
             ->where('status', 'disetujui')
             ->sum('nominal');
 
-        $saldoTersedia = $totalPendapatan - $totalDitarik;
+        $saldoTersedia = $pendapatanKeseluruhan - $totalDitarik;
 
         if ($request->nominal > $saldoTersedia) {
             return redirect()->back()->with('error', 'Saldo tidak mencukupi untuk penarikan ini.');
+        }
+
+        $fotoKtpPath = null;
+        if ($request->hasFile('foto_ktp')) {
+            $fotoKtpPath = \App\Helpers\ImageHelper::uploadAsWebp($request->file('foto_ktp'), 'penarikan/ktp');
         }
 
         PenarikanDana::create([
             'petani_id' => $petani->id,
             'nominal' => $request->nominal,
             'no_ktp' => $request->no_ktp,
+            'foto_ktp' => $fotoKtpPath,
             'nama_bank' => $request->nama_bank,
             'no_rekening' => $request->no_rekening,
             'nama_rekening' => $request->nama_rekening,

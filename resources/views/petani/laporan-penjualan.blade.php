@@ -185,7 +185,7 @@
                 </div>
                 <button type="button" onclick="document.getElementById('tarikModal').classList.add('hidden')" class="w-full py-4 bg-slate-100 text-slate-500 hover:text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">TUTUP</button>
             @else
-                <form action="{{ route('petani.penghasilan.tarik') }}" method="POST" class="space-y-6">
+                <form action="{{ route('petani.penghasilan.tarik') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     
                     <div>
@@ -200,17 +200,21 @@
                             <input type="text" name="no_ktp" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl p-4 focus:ring-primary-500 focus:border-primary-500 font-bold text-sm placeholder-slate-300" placeholder="16 digit NIK" value="{{ old('no_ktp', $petani->nik) }}">
                         </div>
                         <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Bank Tujuan</label>
-                            <input type="text" name="nama_bank" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl p-4 focus:ring-primary-500 focus:border-primary-500 font-bold text-sm placeholder-slate-300" placeholder="BCA, BRI, Mandiri..." value="{{ old('nama_bank', $petani->nama_bank) }}">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Foto KTP</label>
+                            <input type="file" name="foto_ktp" required accept="image/*" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl p-3 focus:ring-primary-500 focus:border-primary-500 font-bold text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Bank Tujuan</label>
+                            <input type="text" name="nama_bank" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl p-4 focus:ring-primary-500 focus:border-primary-500 font-bold text-sm placeholder-slate-300" placeholder="BCA, BRI, Mandiri..." value="{{ old('nama_bank', $petani->nama_bank) }}">
+                        </div>
+                        <div>
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Nomor Rekening</label>
                             <input type="text" name="no_rekening" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl p-4 focus:ring-primary-500 focus:border-primary-500 font-bold text-sm placeholder-slate-300" placeholder="Nomor rekening" value="{{ old('no_rekening', $petani->rekening_bank) }}">
                         </div>
-                        <div>
+                        <div class="col-span-1 md:col-span-2">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Nama Pemilik Rekening</label>
                             <input type="text" name="nama_rekening" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl p-4 focus:ring-primary-500 focus:border-primary-500 font-bold text-sm placeholder-slate-300" placeholder="Sesuai buku tabungan" value="{{ old('nama_rekening', $petani->user->name) }}">
                         </div>

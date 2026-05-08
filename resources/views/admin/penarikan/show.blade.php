@@ -98,6 +98,11 @@
                                 <p class="text-xs font-bold text-slate-900 uppercase">{{ $item->nama_bank }}</p>
                                 <p class="text-[10px] text-on-surface-variant font-medium font-mono">{{ $item->no_rekening }}</p>
                                 <p class="text-[9px] text-on-surface-variant uppercase tracking-widest mt-1">A.N: {{ $item->nama_rekening }}</p>
+                                @if($item->foto_ktp)
+                                <a href="{{ asset('storage/' . $item->foto_ktp) }}" target="_blank" class="text-[9px] text-primary-500 hover:text-primary-600 font-bold mt-2 flex items-center gap-1 w-fit">
+                                    <span class="material-symbols-outlined text-[10px]">image</span> Lihat KTP
+                                </a>
+                                @endif
                             </div>
                         </td>
                         <td class="px-10 py-6">
