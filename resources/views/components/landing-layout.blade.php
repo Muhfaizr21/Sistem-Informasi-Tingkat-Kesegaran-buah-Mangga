@@ -24,5 +24,40 @@
 
             <x-footer />
         </div>
+
+        <style>
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: all 1s cubic-bezier(0.5, 0, 0, 1);
+            }
+            .reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        </style>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const reveals = document.querySelectorAll(".reveal");
+
+                const revealObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("active");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    root: null,
+                    threshold: 0.15,
+                    rootMargin: "0px"
+                });
+
+                reveals.forEach(function(reveal) {
+                    revealObserver.observe(reveal);
+                });
+            });
+        </script>
     </body>
 </html>

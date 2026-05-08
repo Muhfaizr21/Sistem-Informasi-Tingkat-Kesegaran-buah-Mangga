@@ -8,6 +8,7 @@ use App\Models\Pesanan;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class ReviewController extends Controller
 {
@@ -34,7 +35,7 @@ class ReviewController extends Controller
         $paths = [];
         if ($request->hasFile('foto_review')) {
             foreach ($request->file('foto_review') as $foto) {
-                $paths[] = $foto->store('reviews', 'public');
+                $paths[] = ImageHelper::uploadAsWebp($foto, 'reviews');
             }
         }
 
@@ -48,5 +49,63 @@ class ReviewController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Terima kasih atas ulasan Anda!');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $review = Review::findOrFail($id);
+
+        // Pastikan ulasan milik pembeli ini
+        if ($review->pembeli_id !== Auth::user()->pembeli?->id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengubah ulasan ini.');
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'komentar' => 'nullable|string|max:1000',
+            'foto_review.*' => 'nullable|image|max:2048',
+        ]);
+
+        $paths = $review->foto_review ?? [];
+        
+        // Jika ada upload foto baru, bisa pilih mau ganti semua atau tambah
+        if ($request->hasFile('foto_review')) {
+            // Kita asumsikan edit review mengganti foto yang ada atau menambah? 
+            // Mari kita buat logic: jika upload baru, kita gunakan yang baru saja (clean start) 
+            // agar tidak menumpuk sampah jika user salah pilih berkali-kali.
+            $paths = []; 
+            foreach ($request->file('foto_review') as $foto) {
+                $paths[] = ImageHelper::uploadAsWebp($foto, 'reviews');
+            }
+        }
+
+        $review->update([
+            'rating' => $request->rating,
+            'komentar' => $request->komentar,
+            'foto_review' => $paths,
+        ]);
+
+        return redirect()->back()->with('success', 'Ulasan berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $review = Review::findOrFail($id);
+
+        // Pastikan ulasan milik pembeli ini
+        if ($review->pembeli_id !== Auth::user()->pembeli?->id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk menghapus ulasan ini.');
+        }
+
+        // Hapus file fisik jika ada
+        if ($review->foto_review) {
+            foreach ($review->foto_review as $foto) {
+                Storage::disk('public')->delete($foto);
+            }
+        }
+
+        $review->delete();
+
+        return redirect()->back()->with('success', 'Ulasan berhasil dihapus.');
     }
 }

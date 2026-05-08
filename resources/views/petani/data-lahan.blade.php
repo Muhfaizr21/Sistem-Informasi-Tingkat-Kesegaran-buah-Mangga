@@ -3,7 +3,14 @@
     
     <!-- Leaflet GIS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <style>
+        .leaflet-draw-toolbar a { background-image: url('https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/images/spritesheet.png'); }
+        .leaflet-draw-toolbar-top { margin-top: 10px !important; }
+        .leaflet-container { font-family: inherit; }
+    </style>
 
     <!-- Header Section -->
     <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -11,7 +18,7 @@
             <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Manajemen Lahan 🌳</h1>
             <p class="text-slate-500 font-medium">Kelola data lahan mangga Anda untuk optimasi hasil panen.</p>
         </div>
-        <button onclick="document.getElementById('modal-add-lahan').classList.remove('hidden')" class="flex items-center gap-2 px-8 py-4 bg-primary-500 text-white font-bold rounded-2xl shadow-xl shadow-primary-500/20 hover:scale-105 transition-all active:scale-95 text-sm">
+        <button onclick="openAddModal()" class="flex items-center gap-2 px-8 py-4 bg-primary-500 text-white font-bold rounded-2xl shadow-xl shadow-primary-500/20 hover:scale-105 transition-all active:scale-95 text-sm">
             <span class="material-symbols-outlined text-lg">add_location</span>
             Tambah Lahan Baru
         </button>
@@ -178,6 +185,14 @@
                                 <input type="text" name="longitude" id="add-longitude" placeholder="108.324500" class="w-full bg-white border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold shadow-sm" required>
                             </div>
                         </div>
+                        
+                        <!-- Drawing Map -->
+                        <div class="mt-6">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Gambar Area Lahan (Polygon)</label>
+                            <div id="map-add-polygon" class="w-full h-64 rounded-3xl border border-slate-200 z-10 shadow-inner overflow-hidden"></div>
+                            <input type="hidden" name="koordinat_polygon" id="add-koordinat-polygon">
+                            <p class="mt-2 text-[10px] text-slate-400 font-medium italic">* Gunakan tool polygon di peta untuk menggambar batas lahan Anda.</p>
+                        </div>
                     </div>
 
                     <div>
@@ -202,8 +217,13 @@
                         <select name="jenis_mangga" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold appearance-none" required>
                             <option value="Harum Manis">Harum Manis</option>
                             <option value="Gedong Gincu">Gedong Gincu</option>
-                            <option value="Cengkir">Cengkir</option>
                             <option value="Manalagi">Manalagi</option>
+                            <option value="Cengkir / Indramayu">Cengkir / Indramayu</option>
+                            <option value="Golek">Golek</option>
+                            <option value="Apel">Apel</option>
+                            <option value="Kweni">Kweni</option>
+                            <option value="Madu">Madu</option>
+                            <option value="Podang">Podang</option>
                         </select>
                     </div>
 
@@ -234,10 +254,41 @@
                         </div>
                     </div>
 
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-2" x-data="{ 
+                        previews: [],
+                        handleFiles(e) {
+                            const files = Array.from(e.target.files);
+                            files.forEach(file => {
+                                const reader = new FileReader();
+                                reader.onload = (ev) => {
+                                    this.previews.push({
+                                        id: Date.now() + Math.random(),
+                                        url: ev.target.result
+                                    });
+                                };
+                                reader.readAsDataURL(file);
+                            });
+                        },
+                        removePreview(id) {
+                            this.previews = this.previews.filter(p => p.id !== id);
+                        }
+                    }">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-1">Dokumentasi Visual Lahan</label>
+                        
+                        <!-- Preview Grid -->
+                        <div x-show="previews.length > 0" class="grid grid-cols-4 md:grid-cols-5 gap-4 mb-6">
+                            <template x-for="preview in previews" :key="preview.id">
+                                <div class="relative aspect-square rounded-[1.5rem] overflow-hidden border-2 border-white shadow-md group/prev">
+                                    <img :src="preview.url" class="w-full h-full object-cover">
+                                    <button type="button" @click="removePreview(preview.id)" class="absolute top-1.5 right-1.5 w-7 h-7 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover/prev:opacity-100 transition-opacity shadow-lg">
+                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+
                         <div class="relative group">
-                            <input type="file" name="foto_lahan[]" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <input type="file" name="foto_lahan[]" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="handleFiles">
                             <div class="w-full bg-slate-50 border-dashed border-4 border-slate-200 rounded-[2.5rem] px-8 py-12 text-center group-hover:border-primary-500 group-hover:bg-primary-50/30 transition-all duration-300">
                                 <span class="material-symbols-outlined text-slate-300 text-5xl mb-4 group-hover:text-primary-500 transition-colors">cloud_upload</span>
                                 <p class="text-sm font-extrabold text-slate-600 mb-1">Unggah Foto Lahan</p>
@@ -294,6 +345,13 @@
                                 <input type="text" name="longitude" id="edit-longitude" class="w-full bg-white border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold shadow-sm" required>
                             </div>
                         </div>
+
+                        <!-- Drawing Map Edit -->
+                        <div class="mt-6">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Edit Area Lahan (Polygon)</label>
+                            <div id="map-edit-polygon" class="w-full h-64 rounded-3xl border border-slate-200 z-10 shadow-inner overflow-hidden"></div>
+                            <input type="hidden" name="koordinat_polygon" id="edit-koordinat-polygon">
+                        </div>
                     </div>
 
                     <div>
@@ -314,17 +372,61 @@
                         <input type="number" step="0.01" name="luas_hektar" id="edit-luas" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold" required>
                     </div>
 
-                    <div class="md:col-span-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-1">Status Operasional Lahan</label>
-                        <div class="grid grid-cols-3 gap-6">
-                            @foreach(['produktif', 'persiapan', 'tidak_aktif'] as $status)
-                            <label class="cursor-pointer group">
-                                <input type="radio" name="status" value="{{ $status }}" id="edit-status-{{ $status }}" class="hidden peer">
-                                <div class="px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-center text-[10px] font-black uppercase tracking-widest peer-checked:bg-primary-500 peer-checked:text-white peer-checked:shadow-lg transition-all duration-300">
-                                    {{ ucfirst($status) }}
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Utama Varietas</label>
+                        <select name="jenis_mangga" id="edit-jenis-mangga" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold appearance-none" required>
+                            <option value="Harum Manis">Harum Manis</option>
+                            <option value="Gedong Gincu">Gedong Gincu</option>
+                            <option value="Manalagi">Manalagi</option>
+                            <option value="Cengkir / Indramayu">Cengkir / Indramayu</option>
+                            <option value="Golek">Golek</option>
+                            <option value="Apel">Apel</option>
+                            <option value="Kweni">Kweni</option>
+                            <option value="Madu">Madu</option>
+                            <option value="Podang">Podang</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2" x-data="{ 
+                        previews: [],
+                        handleFiles(e) {
+                            const files = Array.from(e.target.files);
+                            files.forEach(file => {
+                                const reader = new FileReader();
+                                reader.onload = (ev) => {
+                                    this.previews.push({
+                                        id: Date.now() + Math.random(),
+                                        url: ev.target.result
+                                    });
+                                };
+                                reader.readAsDataURL(file);
+                            });
+                        },
+                        removePreview(id) {
+                            this.previews = this.previews.filter(p => p.id !== id);
+                        }
+                    }">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-1">Update Dokumentasi Visual</label>
+                        
+                        <!-- Preview Grid -->
+                        <div x-show="previews.length > 0" class="grid grid-cols-4 md:grid-cols-5 gap-4 mb-6">
+                            <template x-for="preview in previews" :key="preview.id">
+                                <div class="relative aspect-square rounded-[1.5rem] overflow-hidden border-2 border-white shadow-md group/prev">
+                                    <img :src="preview.url" class="w-full h-full object-cover">
+                                    <button type="button" @click="removePreview(preview.id)" class="absolute top-1.5 right-1.5 w-7 h-7 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover/prev:opacity-100 transition-opacity shadow-lg">
+                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                    </button>
                                 </div>
-                            </label>
-                            @endforeach
+                            </template>
+                        </div>
+
+                        <div class="relative group">
+                            <input type="file" name="foto_lahan[]" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="handleFiles">
+                            <div class="w-full bg-slate-50 border-dashed border-4 border-slate-200 rounded-[2.5rem] px-8 py-12 text-center group-hover:border-blue-500 group-hover:bg-blue-50/30 transition-all duration-300">
+                                <span class="material-symbols-outlined text-slate-300 text-5xl mb-4 group-hover:text-blue-500 transition-colors">cloud_upload</span>
+                                <p class="text-sm font-extrabold text-slate-600 mb-1">Tambah Foto Baru</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Pilih Foto (JPG/PNG)</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -339,6 +441,77 @@
     </div>
 
     <script>
+        let addMap, editMap, drawControl, drawnItems;
+
+        function initDrawMap(elementId, hiddenInputId, initialData = null) {
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            // Cleanup if already exists
+            if (elementId === 'map-add-polygon' && addMap) addMap.remove();
+            if (elementId === 'map-edit-polygon' && editMap) editMap.remove();
+
+            const map = L.map(elementId).setView([-6.3276, 108.3249], 15);
+            if (elementId === 'map-add-polygon') addMap = map;
+            else editMap = map;
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            const items = new L.FeatureGroup();
+            map.addLayer(items);
+
+            if (initialData) {
+                const polygon = L.polygon(initialData, { color: '#10B981', weight: 3, fillOpacity: 0.4 }).addTo(items);
+                map.fitBounds(polygon.getBounds());
+            }
+
+            const drawControl = new L.Control.Draw({
+                draw: {
+                    polygon: {
+                        allowIntersection: false,
+                        showArea: true,
+                        drawError: { color: '#e1e100', message: '<strong>Peringatan:</strong> Batas tidak boleh berpotongan!' },
+                        shapeOptions: { color: '#10B981' }
+                    },
+                    polyline: false, circle: false, rectangle: false, marker: false, circlemarker: false
+                },
+                edit: { featureGroup: items, remove: true }
+            });
+
+            map.addControl(drawControl);
+
+            map.on(L.Draw.Event.CREATED, function (e) {
+                items.clearLayers();
+                const layer = e.layer;
+                items.addLayer(layer);
+                updateHiddenInput(layer, hiddenInputId);
+            });
+
+            map.on(L.Draw.Event.EDITED, function (e) {
+                e.layers.eachLayer(function (layer) {
+                    updateHiddenInput(layer, hiddenInputId);
+                });
+            });
+
+            map.on(L.Draw.Event.DELETED, function (e) {
+                document.getElementById(hiddenInputId).value = '';
+            });
+
+            return map;
+        }
+
+        function updateHiddenInput(layer, inputId) {
+            const coords = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
+            document.getElementById(inputId).value = JSON.stringify(coords);
+        }
+
+        function openAddModal() {
+            document.getElementById('modal-add-lahan').classList.remove('hidden');
+            setTimeout(() => {
+                initDrawMap('map-add-polygon', 'add-koordinat-polygon');
+            }, 300);
+        }
+
         function editLahan(lahan) {
             const modal = document.getElementById('modal-edit-lahan');
             const form = document.getElementById('form-edit-lahan');
@@ -349,8 +522,16 @@
             document.getElementById('edit-kecamatan-id').value = lahan.kecamatan_id;
             document.getElementById('edit-desa').value = lahan.desa;
             document.getElementById('edit-luas').value = lahan.luas_hektar;
+            document.getElementById('edit-jenis-mangga').value = lahan.jenis_mangga;
             document.getElementById(`edit-status-${lahan.status}`).checked = true;
+            
+            // Set initial polygon data if exists
+            document.getElementById('edit-koordinat-polygon').value = lahan.koordinat_polygon ? JSON.stringify(lahan.koordinat_polygon) : '';
+
             modal.classList.remove('hidden');
+            setTimeout(() => {
+                initDrawMap('map-edit-polygon', 'edit-koordinat-polygon', lahan.koordinat_polygon);
+            }, 300);
         }
 
         function getLocation(type) {
@@ -367,6 +548,10 @@
                         document.getElementById(`${type}-latitude`).value = lat.toFixed(6);
                         document.getElementById(`${type}-longitude`).value = lon.toFixed(6);
                         
+                        // Pan map to current location
+                        if (type === 'add' && addMap) addMap.setView([lat, lon], 18);
+                        if (type === 'edit' && editMap) editMap.setView([lat, lon], 18);
+
                         fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`)
                             .then(response => response.json())
                             .then(data => {
@@ -430,10 +615,19 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
             const lahanData = @json($lahan);
-            const markers = [];
+            const bounds = [];
 
             lahanData.forEach(l => {
-                if (l.latitude && l.longitude) {
+                if (l.koordinat_polygon && l.koordinat_polygon.length > 0) {
+                    const polygon = L.polygon(l.koordinat_polygon, {
+                        color: "#10B981",
+                        fillColor: "#10B981",
+                        fillOpacity: 0.4,
+                        weight: 2
+                    }).addTo(map);
+                    polygon.bindPopup(`<b class="text-xs">${l.nama_lahan}</b><br><span class="text-[10px]">${l.luas_hektar} Ha</span>`);
+                    bounds.push(polygon.getBounds());
+                } else if (l.latitude && l.longitude) {
                     const marker = L.circleMarker([l.latitude, l.longitude], {
                         radius: 8,
                         fillColor: "#10B981",
@@ -442,14 +636,18 @@
                         opacity: 1,
                         fillOpacity: 0.8
                     }).addTo(map);
-                    
                     marker.bindPopup(`<b class="text-xs">${l.nama_lahan}</b>`);
-                    markers.push([l.latitude, l.longitude]);
+                    bounds.push(marker.getLatLng());
                 }
             });
 
-            if (markers.length > 0) {
-                map.fitBounds(L.latLngBounds(markers).pad(0.3));
+            if (bounds.length > 0) {
+                if (lahanData.some(l => l.koordinat_polygon)) {
+                     const group = new L.featureGroup(map._layers);
+                     map.fitBounds(group.getBounds().pad(0.2));
+                } else {
+                     map.setView(bounds[0], 15);
+                }
             }
         });
     </script>

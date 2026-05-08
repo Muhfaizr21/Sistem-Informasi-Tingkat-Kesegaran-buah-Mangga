@@ -25,10 +25,7 @@
             <div class="w-full max-w-[400px]">
                 <div class="flex justify-center mb-8">
                     <a href="/" class="flex flex-col items-center gap-2">
-                        <x-application-logo class="h-16 w-auto" />
-                        <div class="text-xl font-bold tracking-tight">
-                            <span class="text-[#1b1b18] dark:text-[#EDEDEC]">SI-</span><span class="text-[#FFB800]">Mangga</span>
-                        </div>
+                        <x-application-logo class="h-28 w-auto drop-shadow-md" />
                     </a>
                 </div>
 

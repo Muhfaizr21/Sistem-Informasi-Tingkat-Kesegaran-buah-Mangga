@@ -138,6 +138,99 @@
         </div>
     </div>
 
+    <!-- Reviews Section -->
+    <div class="mt-32 space-y-12 animate-in fade-in duration-1000">
+        <div class="flex items-end justify-between mb-12">
+            <div class="space-y-4">
+                <h2 class="text-3xl lg:text-4xl font-black text-[#1b1b18] tracking-tight">Ulasan Pembeli ⭐</h2>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-5xl font-black text-[#1b1b18]">{{ number_format($listing->average_rating ?? 0, 1) }}</span>
+                        <div class="flex flex-col">
+                            <div class="flex text-amber-400 gap-0.5">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <span class="material-symbols-outlined text-sm {{ $i <= round($listing->average_rating ?? 0) ? 'fill-1' : '' }}">star</span>
+                                @endfor
+                            </div>
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">{{ $listing->review_count ?? 0 }} Ulasan Total</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            @if($listing->review_count > 0)
+                <a href="{{ route('pembeli.marketplace.reviews', $listing->id) }}" class="group flex items-center gap-3 px-8 py-4 bg-white text-[#1b1b18] rounded-2xl font-black text-[11px] tracking-widest uppercase hover:bg-[#1b1b18] hover:text-white transition-all shadow-sm border border-gray-100">
+                    LIHAT SEMUA ULASAN
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </a>
+            @endif
+        </div>
+
+        @if($reviews->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                @foreach($reviews as $review)
+                    <div class="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group">
+                        <div class="flex items-start justify-between mb-8">
+                            <div class="flex items-center gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-[#FFB800] font-black text-xl overflow-hidden border border-orange-100 shadow-inner">
+                                    @if($review->pembeli->user->foto_profil)
+                                        <img src="{{ asset('storage/' . $review->pembeli->user->foto_profil) }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ substr($review->pembeli->user->nama, 0, 1) }}
+                                    @endif
+                                </div>
+                                <div>
+                                    <h4 class="font-black text-[#1b1b18] text-lg">{{ $review->pembeli->user->nama }}</h4>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $review->created_at->format('d M Y') }}</p>
+                                </div>
+                            </div>
+                            <div class="flex text-amber-400 gap-0.5 mt-1">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <span class="material-symbols-outlined text-sm {{ $i <= $review->rating ? 'fill-1' : '' }}">star</span>
+                                @endfor
+                            </div>
+                        </div>
+                        
+                        <p class="text-[#706f6c] font-medium leading-relaxed mb-8 italic text-lg">"{{ $review->komentar }}"</p>
+
+                        @if($review->foto_review && count($review->foto_review) > 0)
+                            <div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+                                @foreach($review->foto_review as $foto)
+                                    <div class="w-24 h-24 rounded-[1.5rem] overflow-hidden border-2 border-white shrink-0 shadow-lg group-hover:scale-105 transition-transform">
+                                        <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover cursor-zoom-in">
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        @if(auth()->check() && $review->pembeli_id == auth()->user()->pembeli?->id)
+                            <div class="mt-6 pt-6 border-t border-gray-50 flex justify-end gap-3">
+                                <form action="{{ route('pembeli.review.destroy', $review->id) }}" method="POST" onsubmit="return confirm('Hapus ulasan ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-500 rounded-2xl font-black text-[10px] tracking-widest uppercase hover:bg-red-100 transition-all border border-red-100 shadow-sm">
+                                        <span class="material-symbols-outlined text-sm">delete</span> HAPUS
+                                    </button>
+                                </form>
+                                <a href="{{ route('pembeli.pesanan.show', $review->pesanan_id) }}" class="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-2xl font-black text-[10px] tracking-widest uppercase hover:bg-emerald-100 transition-all border border-emerald-100 shadow-sm">
+                                    <span class="material-symbols-outlined text-sm">edit</span> EDIT
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="text-center py-24 bg-gray-50/50 rounded-[4rem] border-2 border-dashed border-gray-200">
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
+                    <span class="material-symbols-outlined text-gray-300 text-5xl">rate_review</span>
+                </div>
+                <h4 class="text-xl font-black text-gray-400 uppercase tracking-[0.2em]">Belum ada ulasan</h4>
+                <p class="text-sm text-gray-400 font-bold uppercase tracking-widest opacity-60">Jadilah yang pertama memberikan ulasan untuk produk ini!</p>
+            </div>
+        @endif
+    </div>
+
     <!-- Farmer Card -->
     <div class="mt-32 space-y-10 animate-in fade-in duration-1000">
         <h2 class="text-3xl font-black text-[#1b1b18] tracking-tight text-center">Tentang Petani</h2>

@@ -1,13 +1,13 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50">
+<nav x-data="{ open: false, scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)" :class="scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-gray-200/50 dark:border-gray-700/50 shadow-sm' : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800'" class="border-b sticky top-0 z-50 transition-all duration-300">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-20">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('landing') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="block h-9 w-auto object-contain" alt="SI-Mangga Logo" />
-                        <span class="font-bold text-xl tracking-tight text-[#1b1b18] dark:text-white">SI-<span class="text-[#FFB800]">Mangga</span></span>
+                    <a href="{{ route('landing') }}" class="flex items-center gap-2 sm:gap-3">
+                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="block h-10 sm:h-12 w-auto object-contain" alt="SI-Mangga Logo" />
+                        <span class="font-bold text-xl sm:text-2xl tracking-tight text-[#1b1b18] dark:text-white mt-1">SI-<span class="text-[#FFB800]">Mangga</span></span>
                     </a>
                 </div>
 

@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "start": "concurrently -c \"blue,green,magenta\" -n \"LARAVEL,VITE,AI_API\" \"php artisan serve\" \"npm run dev\" \"cd storage/app/ml_scripts && py -m uvicorn main:app --port 8001 --reload\""
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

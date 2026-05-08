@@ -77,10 +77,14 @@
                     @endif
                 </div>
 
-                <!-- Favorite Toggle (Mock) -->
-                <button class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-red-500 transition-all z-10">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                </button>
+                <!-- Rating Badge -->
+                <div class="absolute top-5 right-5 px-3 py-1.5 bg-white/90 backdrop-blur rounded-full shadow-sm border border-white flex items-center gap-1.5 text-amber-500 font-black text-[11px] z-10">
+                    <span class="material-symbols-outlined text-sm fill-1">star</span>
+                    <span class="text-[#1b1b18]">{{ number_format($listing->average_rating ?? 0, 1) }}</span>
+                    @if($listing->review_count > 0)
+                        <span class="text-gray-300 font-medium ml-0.5">({{ $listing->review_count }})</span>
+                    @endif
+                </div>
 
                 <!-- Overlay Actions -->
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
@@ -143,13 +147,43 @@
     </div>
 
     <!-- Pagination -->
-    @if($listings->hasPages())
     <div class="mt-16 flex justify-center">
-        <div class="glass-panel p-2 rounded-2xl inline-flex items-center gap-2">
-            {{ $listings->links('vendor.pagination.simple-tailwind') }}
-        </div>
+        @if($listings->hasPages())
+            <nav class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
+                @if ($listings->onFirstPage())
+                    <span class="w-10 h-10 flex items-center justify-center text-gray-300 cursor-not-allowed">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </span>
+                @else
+                    <a href="{{ $listings->previousPageUrl() }}" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-xl transition-all">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </a>
+                @endif
+
+                @foreach ($listings->getUrlRange(1, $listings->lastPage()) as $page => $url)
+                    @if ($page == $listings->currentPage())
+                        <span class="w-10 h-10 flex items-center justify-center bg-[#FFB800] text-white font-black text-[10px] rounded-xl shadow-lg shadow-orange-900/20">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <a href="{{ $url }}" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 font-bold text-[10px] rounded-xl transition-all">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                @if ($listings->hasMorePages())
+                    <a href="{{ $listings->nextPageUrl() }}" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-xl transition-all">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </a>
+                @else
+                    <span class="w-10 h-10 flex items-center justify-center text-gray-300 cursor-not-allowed">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </span>
+                @endif
+            </nav>
+        @endif
     </div>
-    @endif
 </div>
 
 <!-- Elite Filter Modal -->

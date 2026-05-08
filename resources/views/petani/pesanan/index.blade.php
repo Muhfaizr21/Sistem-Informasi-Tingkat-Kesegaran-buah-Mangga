@@ -23,6 +23,47 @@
     </div>
     @endif
 
+    <!-- Filters -->
+    <div class="mb-12 space-y-6 animate-in fade-in slide-in-from-top duration-700">
+        <div class="flex flex-wrap gap-3">
+            @php
+                $statusFilters = [
+                    '' => 'Semua Status',
+                    'dikonfirmasi' => 'Siap Kemas',
+                    'dikemas' => 'Dikemas',
+                    'dikirim' => 'Dikirim',
+                    'selesai' => 'Selesai',
+                    'dibatalkan' => 'Dibatalkan',
+                ];
+                $currentStatus = request('status', '');
+            @endphp
+            @foreach($statusFilters as $value => $label)
+                <a href="{{ route('petani.pesanan.index', ['status' => $value, 'pengiriman' => request('pengiriman')]) }}" 
+                   class="px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ $currentStatus == $value ? 'bg-[#FFB800] text-white shadow-lg shadow-orange-900/20' : 'bg-white text-gray-500 border border-gray-100 hover:border-orange-200' }}">
+                    {{ $label }}
+                </a>
+            @endforeach
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+            @php
+                $shippingFilters = [
+                    '' => 'Semua Paket',
+                    'same_day' => 'Same Day',
+                    'next_day' => 'Next Day',
+                    'reguler' => 'Reguler',
+                ];
+                $currentShipping = request('pengiriman', '');
+            @endphp
+            @foreach($shippingFilters as $value => $label)
+                <a href="{{ route('petani.pesanan.index', ['pengiriman' => $value, 'status' => request('status')]) }}" 
+                   class="px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ $currentShipping == $value ? 'bg-[#1b1b18] text-white shadow-lg shadow-black/20' : 'bg-white text-gray-400 border border-gray-100 hover:border-gray-300' }}">
+                    {{ $label }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
     <!-- Status Summary Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         @php
@@ -57,7 +98,9 @@
                 <!-- Left: Order Info -->
                 <div class="flex-1">
                     <div class="flex flex-wrap items-center gap-3 mb-6">
-                        <span class="px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $pesanan->created_at->format('d M Y, H:i') }}</span>
+                        <span class="px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                            {{ $pesanan->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }} WIB
+                        </span>
                         <span class="text-[10px] font-black text-gray-300">|</span>
                         <span class="text-[10px] font-black text-[#FFB800] tracking-widest">{{ $pesanan->kode_pesanan }}</span>
                         @php
@@ -76,24 +119,41 @@
                         </span>
                     </div>
 
-                    <div class="space-y-3">
-                        @foreach($pesanan->items as $item)
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 shrink-0">
-                                @if($item->listing && is_array($item->listing->foto_batch) && count($item->listing->foto_batch) > 0)
-                                    <img src="{{ asset('storage/' . $item->listing->foto_batch[0]) }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Produk Pesanan</h4>
+                            <div class="space-y-3">
+                                @foreach($pesanan->items as $item)
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 shrink-0">
+                                        @if($item->listing && is_array($item->listing->foto_batch) && count($item->listing->foto_batch) > 0)
+                                            <img src="{{ asset('storage/' . $item->listing->foto_batch[0]) }}" class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            </div>
+                                        @endif
                                     </div>
-                                @endif
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-[#1b1b18] text-sm">{{ $item->listing->jenis_mangga ?? 'Mangga' }}</h4>
-                                <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">{{ number_format($item->jumlah_kg, 1) }} KG × Rp{{ number_format($item->harga_satuan ?? 0, 0, ',', '.') }}</p>
+                                    <div>
+                                        <h4 class="font-bold text-[#1b1b18] text-sm">{{ $item->listing->jenis_mangga ?? 'Mangga' }}</h4>
+                                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">{{ number_format($item->jumlah_kg, 1) }} KG × Rp{{ number_format($item->harga_satuan ?? 0, 0, ',', '.') }}</p>
+                                    </div>
+                                </div>
+                                @endforeach
                             </div>
                         </div>
-                        @endforeach
+
+                        <div class="space-y-4">
+                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Alamat Pengiriman</h4>
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="text-xs font-black text-[#1b1b18] mb-1">{{ $pesanan->alamat->nama_penerima ?? 'No Name' }}</p>
+                                <p class="text-[10px] font-bold text-gray-400 mb-2">{{ $pesanan->alamat->no_telepon ?? '-' }}</p>
+                                <p class="text-[10px] font-medium text-[#706f6c] leading-relaxed">
+                                    {{ $pesanan->alamat->alamat_lengkap ?? '-' }},
+                                    {{ $pesanan->alamat->kecamatan->nama ?? '-' }}, {{ $pesanan->alamat->kota ?? '-' }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -101,8 +161,41 @@
                 <div class="flex flex-col justify-between items-start md:items-end gap-6 pt-6 md:pt-0 border-t md:border-t-0 border-gray-100">
                     <div class="text-left md:text-right">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Pembeli</p>
-                        <p class="font-bold text-[#1b1b18]">{{ $pesanan->pembeli->user->name ?? 'Pembeli' }}</p>
-                        <p class="text-2xl font-black text-[#1b1b18] mt-2">Rp{{ number_format($pesanan->total_bayar, 0, ',', '.') }}</p>
+                        <p class="font-bold text-[#1b1b18]">{{ $pesanan->pembeli->user->nama ?? 'Pembeli' }}</p>
+                    </div>
+
+                    <!-- Breakdown Detail -->
+                    <div class="w-full md:w-64 bg-gray-50 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between text-[10px] font-bold text-gray-400 uppercase">
+                            <span>Produk (Net)</span>
+                            <span class="text-[#1b1b18]">Rp{{ number_format($pesanan->total_harga - $pesanan->diskon, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-bold text-gray-400 uppercase">
+                            <span>Layanan Admin</span>
+                            <span class="text-blue-600">Rp{{ number_format($pesanan->biaya_layanan, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-bold text-gray-400 uppercase pb-2 border-b border-gray-200">
+                            @php
+                                $baseDate = $pesanan->created_at;
+                                if ($pesanan->metode_pengiriman === 'same_day') {
+                                    $eta = 'Hari Ini (' . $baseDate->translatedFormat('d M') . ')';
+                                } elseif ($pesanan->metode_pengiriman === 'next_day') {
+                                    $eta = 'Besok (' . $baseDate->copy()->addDay()->translatedFormat('d M') . ')';
+                                } else {
+                                    $eta = $baseDate->copy()->addDays(2)->translatedFormat('d M') . '-' . $baseDate->copy()->addDays(3)->translatedFormat('d M');
+                                }
+                            @endphp
+                            <span>Ongkir ({{ strtoupper($pesanan->metode_pengiriman) }})</span>
+                            <span class="text-orange-600">Rp{{ number_format($pesanan->biaya_pengiriman, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-[9px] font-black text-gray-400 uppercase">
+                            <span>Estimasi Tiba</span>
+                            <span class="text-emerald-600">{{ $eta }}</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-black text-[#1b1b18] pt-1">
+                            <span>TOTAL BAYAR</span>
+                            <span class="text-[#FFB800]">Rp{{ number_format($pesanan->total_bayar, 0, ',', '.') }}</span>
+                        </div>
                     </div>
 
                     <div class="flex flex-wrap gap-3 w-full md:w-auto justify-end">

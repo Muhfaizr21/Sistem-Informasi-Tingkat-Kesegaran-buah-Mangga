@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ListingMangga;
 use App\Models\Kecamatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MarketplaceController extends Controller
 {
@@ -34,7 +35,21 @@ class MarketplaceController extends Controller
             $query->where('harga_per_kg', '<=', $request->max_harga);
         }
 
-        $listings = $query->latest()->paginate(12);
+        $listings = $query->select('listing_mangga.*')
+            ->addSelect([
+                'average_rating' => DB::table('review')
+                    ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
+                    ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
+                    ->whereColumn('detail_pesanan.listing_id', 'listing_mangga.id')
+                    ->selectRaw('AVG(rating)'),
+                'review_count' => DB::table('review')
+                    ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
+                    ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
+                    ->whereColumn('detail_pesanan.listing_id', 'listing_mangga.id')
+                    ->selectRaw('COUNT(review.id)')
+            ])
+            ->latest('listing_mangga.created_at')
+            ->paginate(10);
         $kecamatans = Kecamatan::orderBy('nama')->get();
 
         return view('pembeli.marketplace.katalog', compact('listings', 'kecamatans'));
@@ -42,9 +57,44 @@ class MarketplaceController extends Controller
 
     public function show($id)
     {
-        $listing = ListingMangga::with(['petani.user', 'lahan.kecamatan', 'petani.review.pembeli.user'])
+        $listing = ListingMangga::with(['petani.user', 'lahan.kecamatan'])
+            ->addSelect([
+                'average_rating' => DB::table('review')
+                    ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
+                    ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
+                    ->whereColumn('detail_pesanan.listing_id', 'listing_mangga.id')
+                    ->selectRaw('AVG(rating)'),
+                'review_count' => DB::table('review')
+                    ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
+                    ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
+                    ->whereColumn('detail_pesanan.listing_id', 'listing_mangga.id')
+                    ->selectRaw('COUNT(review.id)')
+            ])
             ->findOrFail($id);
+
+        $reviews = \App\Models\Review::with('pembeli.user')
+            ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
+            ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
+            ->where('detail_pesanan.listing_id', $id)
+            ->select('review.*')
+            ->latest()
+            ->get();
             
-        return view('pembeli.marketplace.detail', compact('listing'));
+        return view('pembeli.marketplace.detail', compact('listing', 'reviews'));
+    }
+
+    public function reviews($id)
+    {
+        $listing = ListingMangga::with(['petani.user'])->findOrFail($id);
+        
+        $reviews = \App\Models\Review::with('pembeli.user')
+            ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
+            ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
+            ->where('detail_pesanan.listing_id', $id)
+            ->select('review.*')
+            ->latest()
+            ->paginate(20);
+
+        return view('pembeli.marketplace.reviews', compact('listing', 'reviews'));
     }
 }

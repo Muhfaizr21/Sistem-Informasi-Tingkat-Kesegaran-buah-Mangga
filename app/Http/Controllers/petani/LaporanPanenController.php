@@ -9,6 +9,7 @@ use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Helpers\ImageHelper;
 
 class LaporanPanenController extends Controller
 {
@@ -52,7 +53,7 @@ class LaporanPanenController extends Controller
         $fotos = [];
         if ($request->hasFile('foto_panen')) {
             foreach ($request->file('foto_panen') as $file) {
-                $path = $file->store('panen', 'public');
+                $path = ImageHelper::uploadAsWebp($file, 'panen');
                 $fotos[] = $path;
             }
         }
@@ -87,7 +88,7 @@ class LaporanPanenController extends Controller
         $fotos = $laporan->foto_panen ?? [];
         if ($request->hasFile('foto_panen')) {
             foreach ($request->file('foto_panen') as $file) {
-                $path = $file->store('panen', 'public');
+                $path = ImageHelper::uploadAsWebp($file, 'panen');
                 $fotos[] = $path;
             }
         }

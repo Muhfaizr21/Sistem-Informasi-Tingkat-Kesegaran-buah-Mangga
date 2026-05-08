@@ -86,6 +86,7 @@
 
             <x-nav-item route="petani.data-lahan" icon="map" label="Data Lahan" />
             <x-nav-item route="petani.laporan-panen" icon="analytics" label="Laporan Panen" />
+            <x-nav-item route="petani.laporan-penjualan" icon="receipt_long" label="Laporan Penjualan" />
             
             <div class="pt-6 pb-2 px-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Akun Saya</p>
@@ -152,6 +153,7 @@
 
                     <x-nav-item route="petani.data-lahan" icon="map" label="Data Lahan" />
                     <x-nav-item route="petani.laporan-panen" icon="analytics" label="Laporan Panen" />
+                    <x-nav-item route="petani.laporan-penjualan" icon="receipt_long" label="Laporan Penjualan" />
                     <x-nav-item route="petani.profil" icon="person" label="Profil Saya" />
                 </nav>
             </div>

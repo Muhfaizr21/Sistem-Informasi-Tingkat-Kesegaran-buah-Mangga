@@ -25,10 +25,12 @@ class Lahan extends Model
         'tahun_tanam',
         'status',
         'foto_lahan',
+        'koordinat_polygon',
     ];
 
     protected $casts = [
         'foto_lahan' => 'json',
+        'koordinat_polygon' => 'array',
         'luas_hektar' => 'decimal:2',
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',

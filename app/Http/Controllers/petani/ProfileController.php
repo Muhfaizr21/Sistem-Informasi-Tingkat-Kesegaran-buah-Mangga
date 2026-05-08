@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
+use App\Helpers\ImageHelper;
 
 class ProfileController extends Controller
 {
@@ -44,7 +45,7 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('foto_profil')) {
-            $path = $request->file('foto_profil')->store('avatars', 'public');
+            $path = ImageHelper::uploadAsWebp($request->file('foto_profil'), 'avatars');
             $user->update(['foto_profil' => $path]);
         }
 

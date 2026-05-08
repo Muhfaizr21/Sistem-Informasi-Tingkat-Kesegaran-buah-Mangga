@@ -30,6 +30,18 @@ class DashboardController extends Controller
             ->limit(2)
             ->get();
 
-        return view('pembeli.dashboard', compact('user', 'stats', 'recent_listings'));
+        // Ambil petani favorit
+        $favorite_petani = [];
+        if ($pembeli) {
+            $favorite_petani = \App\Models\Favorit::with(['petani.user', 'petani.listings' => function($q) {
+                $q->where('aktif', true);
+            }])
+                ->where('pembeli_id', $pembeli->id)
+                ->latest()
+                ->limit(3)
+                ->get();
+        }
+
+        return view('pembeli.dashboard', compact('user', 'stats', 'recent_listings', 'favorite_petani'));
     }
 }

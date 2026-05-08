@@ -238,31 +238,113 @@
                     }
                 }).addTo(map);
 
-                const group = new L.featureGroup(lahanData.map(l => L.marker([l.latitude, l.longitude])));
-                map.fitBounds(group.getBounds().pad(0.2));
+                const boundsGroup = [];
+                lahanData.forEach(l => {
+                    let coords = l.koordinat_polygon;
+                    
+                    // Jika tidak ada polygon, buat kotak (square) berdasarkan luas_hektar
+                    if (!coords || coords.length === 0) {
+                        if (l.latitude && l.longitude && l.luas_hektar > 0) {
+                            const lat = parseFloat(l.latitude);
+                            const lng = parseFloat(l.longitude);
+                            const areaM2 = l.luas_hektar * 10000;
+                            const sideM = Math.sqrt(areaM2);
+                            
+                            // Konversi meter ke derajat (pendekatan)
+                            const deltaLat = (sideM / 111320) / 2;
+                            const deltaLng = (sideM / (111320 * Math.cos(lat * Math.PI / 180))) / 2;
+                            
+                            coords = [
+                                [lat + deltaLat, lng - deltaLng],
+                                [lat + deltaLat, lng + deltaLng],
+                                [lat - deltaLat, lng + deltaLng],
+                                [lat - deltaLat, lng - deltaLng]
+                            ];
+                        }
+                    }
+
+                    if (coords && coords.length > 0) {
+                        const poly = L.polygon(coords, {
+                            color: '#ff0000', // Red border like the example
+                            fillColor: '#6366f1', // Indigo/Purple fill
+                            fillOpacity: 0.3,
+                            weight: 3,
+                            dashArray: '5, 5' 
+                        }).addTo(map);
+
+                        // Permanent label showing Name and Hectares
+                        poly.bindTooltip(`<div class="text-center"><b class="text-xs">${l.nama_lahan}</b><br><span class="text-[10px] font-black">${l.luas_hektar} HA</span></div>`, {
+                            permanent: true,
+                            direction: 'center',
+                            className: 'polygon-label'
+                        }).openTooltip();
+
+                        poly.bindPopup(`
+                            <div class="p-4 font-sans w-56">
+                                <p class="font-extrabold text-slate-900 mb-1">${l.nama_lahan}</p>
+                                <div class="flex justify-between items-center text-xs font-black">
+                                    <span class="text-slate-400">YIELD:</span>
+                                    <span class="${l.productivity > 1000 ? 'text-primary-500' : (l.productivity > 500 ? 'text-secondary' : 'text-red-500')}">
+                                        ${numberFormat(l.productivity)} Kg
+                                    </span>
+                                </div>
+                            </div>
+                        `);
+                        boundsGroup.push(poly.getBounds());
+                    } else if (l.latitude && l.longitude) {
+                        boundsGroup.push([l.latitude, l.longitude]);
+                    }
+                });
+
+                if (boundsGroup.length > 0) {
+                    map.fitBounds(L.latLngBounds(boundsGroup).pad(0.3));
+                }
+            }
+
+            function numberFormat(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }
         });
     </script>
-t>
 
     <style>
+        .polygon-label {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            padding: 4px 8px;
+            color: #1b1b18;
+            font-weight: 900;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .polygon-label::before {
+            display: none;
+        }
         .custom-popup .leaflet-popup-content-wrapper {
-            @apply rounded-[2.5rem] shadow-2xl border border-slate-100 p-0 overflow-hidden backdrop-blur-xl bg-white/90;
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            border: 1px solid #f1f5f9;
+            padding: 0;
+            overflow: hidden;
+            backdrop-filter: blur(24px);
+            background-color: rgba(255, 255, 255, 0.9);
         }
         .custom-popup .leaflet-popup-content {
-            @apply m-0;
+            margin: 0;
         }
         .custom-popup .leaflet-popup-tip {
-            @apply shadow-none bg-white/90;
+            box-shadow: none;
+            background-color: rgba(255, 255, 255, 0.9);
         }
         .custom-scrollbar::-webkit-scrollbar {
             width: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            @apply bg-transparent;
+            background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            @apply bg-slate-200 rounded-full;
+            background: #e2e8f0;
+            border-radius: 9999px;
         }
     </style>
 </x-petani-layout>

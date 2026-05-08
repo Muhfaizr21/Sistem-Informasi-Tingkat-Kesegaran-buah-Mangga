@@ -51,7 +51,7 @@
                             <p class="text-lg font-black {{ $reached ? 'text-[#1b1b18]' : 'text-gray-400' }} tracking-tight mb-1">{{ $data['label'] }}</p>
                             
                             @if($status === 'selesai' && $pesanan->selesai_pada)
-                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{{ $pesanan->selesai_pada->format('d M Y, H:i') }} WIB</p>
+                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{{ \Carbon\Carbon::parse($pesanan->selesai_pada)->timezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') }} WIB</p>
                                 <p class="text-sm font-medium text-[#706f6c]">{{ $data['desc'] }}</p>
                             @elseif($status === $pesanan->status)
                                 <span class="inline-block mt-2 px-3 py-1 bg-green-50 text-green-600 text-[9px] font-black uppercase tracking-widest rounded-lg border border-green-100 animate-pulse">Status Saat Ini</span>
@@ -107,12 +107,13 @@
                     @csrf
                     <div>
                         <label class="block text-[10px] font-black text-orange-800/50 uppercase tracking-[0.2em] mb-4 text-center">Rating Kualitas</label>
-                        <div class="flex gap-4 justify-center">
+                        <div class="flex gap-4 justify-center" x-data="{ rating: 0 }">
                             @for($i = 1; $i <= 5; $i++)
                             <label class="cursor-pointer group">
-                                <input type="radio" name="rating" value="{{ $i }}" class="hidden peer" required>
-                                <div class="w-14 h-14 rounded-2xl bg-white border-2 border-transparent flex items-center justify-center peer-checked:bg-[#FFB800] peer-checked:border-[#FFB800] peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-orange-900/20 text-[#1b1b18] transition-all transform group-hover:scale-110 shadow-sm">
-                                    <span class="text-xl font-black">{{ $i }}</span>
+                                <input type="radio" name="rating" value="{{ $i }}" class="hidden peer" required @click="rating = {{ $i }}">
+                                <div class="w-14 h-14 rounded-2xl bg-white border-2 border-transparent flex items-center justify-center peer-checked:bg-amber-500 peer-checked:border-amber-500 peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-orange-900/20 transition-all transform group-hover:scale-110 shadow-sm"
+                                     :class="rating >= {{ $i }} ? 'text-amber-500' : 'text-gray-200'">
+                                    <span class="material-symbols-outlined text-3xl" :class="rating >= {{ $i }} ? 'fill-1' : ''">star</span>
                                 </div>
                             </label>
                             @endfor
@@ -124,12 +125,59 @@
                         <textarea name="komentar" rows="4" class="w-full px-6 py-5 bg-white border border-transparent rounded-[1.5rem] focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 outline-none transition-all shadow-sm font-medium text-[#1b1b18] resize-none" placeholder="Bagaimana rasa mangganya? Pengirimannya aman?"></textarea>
                     </div>
 
-                    <div>
-                        <label class="block text-[10px] font-black text-orange-800/50 uppercase tracking-[0.2em] mb-3 ml-2">Upload Foto (Opsional)</label>
-                        <div class="relative w-full bg-white border-2 border-dashed border-orange-200 rounded-[1.5rem] p-8 text-center hover:bg-orange-50 transition-colors">
-                            <input type="file" name="foto_review[]" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <svg class="w-8 h-8 text-orange-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <span class="text-xs font-bold text-orange-800">Klik atau Drag foto ke sini</span>
+                    <div x-data="{ 
+                        previews: [],
+                        files: new DataTransfer(),
+                        handleFiles(e) {
+                            const newFiles = Array.from(e.target.files);
+                            if ((this.previews.length + newFiles.length) > 5) {
+                                alert('Maksimal 5 foto saja bos!');
+                                return;
+                            }
+
+                            newFiles.forEach(file => {
+                                this.files.items.add(file);
+                                const reader = new FileReader();
+                                reader.onload = (ev) => {
+                                    this.previews.push({
+                                        id: Date.now() + Math.random(),
+                                        url: ev.target.result,
+                                        fileName: file.name
+                                    });
+                                };
+                                reader.readAsDataURL(file);
+                            });
+                            
+                            this.$refs.initFileInput.files = this.files.files;
+                        },
+                        removePreview(id, fileName) {
+                            this.previews = this.previews.filter(p => p.id !== id);
+                            const newDt = new DataTransfer();
+                            Array.from(this.files.files)
+                                .filter(file => file.name !== fileName)
+                                .forEach(file => newDt.items.add(file));
+                            this.files = newDt;
+                            this.$refs.initFileInput.files = this.files.files;
+                        }
+                    }">
+                        <label class="block text-[10px] font-black text-orange-800/50 uppercase tracking-[0.2em] mb-3 ml-2">Upload Foto (Maks 5)</label>
+                        
+                        <!-- Preview Grid -->
+                        <div x-show="previews.length > 0" class="grid grid-cols-4 md:grid-cols-6 gap-4 mb-4">
+                            <template x-for="preview in previews" :key="preview.id">
+                                <div class="relative aspect-square rounded-2xl overflow-hidden border-2 border-white shadow-sm group/prev">
+                                    <img :src="preview.url" class="w-full h-full object-cover">
+                                    <button type="button" @click="removePreview(preview.id, preview.fileName)" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover/prev:opacity-100 transition-opacity">
+                                        <span class="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="relative w-full bg-white border-2 border-dashed border-orange-200 rounded-[1.5rem] p-8 text-center hover:bg-orange-50 transition-colors group">
+                            <input type="file" x-ref="initFileInput" name="foto_review[]" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="handleFiles">
+                            <svg class="w-8 h-8 text-orange-300 mx-auto mb-3 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-xs font-bold text-orange-800" x-text="previews.length > 0 ? previews.length + ' Foto dipilih' : 'Klik untuk upload foto (Bisa satu-satu)'"></span>
                         </div>
                     </div>
 
@@ -139,28 +187,147 @@
                 </form>
             </div>
             @elseif($pesanan->review)
-            <div class="bg-emerald-50 border border-emerald-100 rounded-[3.5rem] p-10 lg:p-14 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-8 opacity-10">
-                    <svg class="w-32 h-32 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                </div>
-                
-                <h2 class="text-2xl font-black text-emerald-900 tracking-tight mb-6">Ulasan Anda</h2>
-                <div class="flex items-center gap-2 mb-6 bg-white w-fit px-4 py-2 rounded-2xl shadow-sm">
-                    @for($i=1; $i<=5; $i++)
-                        <svg class="w-6 h-6 {{ $i <= $pesanan->review->rating ? 'text-amber-400' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    @endfor
-                </div>
-                <p class="text-emerald-800/80 font-medium leading-relaxed mb-6 bg-white/50 p-6 rounded-2xl border border-white">"{{ $pesanan->review->komentar }}"</p>
-                
-                @if($pesanan->review->foto_review)
-                <div class="flex gap-4">
-                    @foreach($pesanan->review->foto_review as $foto)
-                    <div class="w-24 h-24 rounded-2xl overflow-hidden shadow-sm border border-white">
-                        <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover">
+            <div x-data="{ 
+                isEditing: false,
+                rating: {{ $pesanan->review->rating ?? 5 }},
+                previews: [],
+                files: new DataTransfer(),
+                handleFiles(e) {
+                    const newFiles = Array.from(e.target.files);
+                    if ((this.previews.length + newFiles.length) > 5) {
+                        alert('Maksimal 5 foto saja bos!');
+                        return;
+                    }
+
+                    newFiles.forEach(file => {
+                        this.files.items.add(file);
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            this.previews.push({
+                                id: Date.now() + Math.random(),
+                                url: ev.target.result,
+                                fileName: file.name
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    this.$refs.fileInput.files = this.files.files;
+                },
+                removePreview(id, fileName) {
+                    this.previews = this.previews.filter(p => p.id !== id);
+                    const newDt = new DataTransfer();
+                    Array.from(this.files.files)
+                        .filter(file => file.name !== fileName)
+                        .forEach(file => newDt.items.add(file));
+                    this.files = newDt;
+                    this.$refs.fileInput.files = this.files.files;
+                }
+            }">
+                <!-- View Mode -->
+                <div x-show="!isEditing" class="bg-emerald-50 border border-emerald-100 rounded-[3.5rem] p-10 lg:p-14 relative overflow-hidden animate-in fade-in duration-500">
+                    <div class="absolute top-0 right-0 p-8 opacity-10">
+                        <svg class="w-32 h-32 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
                     </div>
-                    @endforeach
+                    
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <h2 class="text-2xl font-black text-emerald-900 tracking-tight mb-2">Ulasan Anda</h2>
+                            <p class="text-xs font-bold text-emerald-700/60 uppercase tracking-widest">Terima kasih telah berbagi pengalaman!</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button @click="isEditing = true" class="px-6 py-3 bg-white text-emerald-600 rounded-2xl font-black text-[10px] tracking-widest uppercase shadow-sm border border-emerald-100 hover:bg-emerald-100 transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">edit</span> EDIT
+                            </button>
+                            <form action="{{ route('pembeli.review.destroy', $pesanan->review->id) }}" method="POST" onsubmit="return confirm('Hapus ulasan ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-6 py-3 bg-red-50 text-red-500 rounded-2xl font-black text-[10px] tracking-widest uppercase border border-red-100 hover:bg-red-100 transition-all flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">delete</span> HAPUS
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-8 bg-white w-fit px-5 py-3 rounded-2xl shadow-sm border border-emerald-100/50">
+                        @for($i=1; $i<=5; $i++)
+                            <svg class="w-6 h-6 {{ $i <= $pesanan->review->rating ? 'text-amber-400' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        @endfor
+                    </div>
+
+                    <p class="text-emerald-800/80 font-medium leading-relaxed mb-8 bg-white/50 p-8 rounded-[2rem] border border-white shadow-inner italic text-lg">"{{ $pesanan->review->komentar }}"</p>
+                    
+                    @if($pesanan->review->foto_review)
+                    <div class="flex flex-wrap gap-4">
+                        @foreach($pesanan->review->foto_review as $foto)
+                        <div class="w-28 h-28 rounded-3xl overflow-hidden shadow-md border-4 border-white group/img relative">
+                            <img src="{{ asset('storage/' . $foto) }}" class="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500">
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
                 </div>
-                @endif
+
+                <!-- Edit Mode -->
+                <div x-show="isEditing" x-cloak class="bg-white border-2 border-[#FFB800]/20 rounded-[3.5rem] p-10 lg:p-14 shadow-2xl shadow-orange-900/5 animate-in zoom-in-95 duration-300">
+                    <form action="{{ route('pembeli.review.update', $pesanan->review->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+                        @csrf
+                        <div>
+                            <h2 class="text-2xl font-black text-[#1b1b18] tracking-tight mb-2">Edit Ulasan Anda</h2>
+                            <p class="text-sm text-gray-400 font-medium">Perbarui penilaian dan komentar Anda untuk pesanan ini.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Rating Produk</label>
+                            <div class="flex items-center gap-3 bg-gray-50 w-fit px-6 py-4 rounded-[1.5rem] border border-gray-100">
+                                <template x-for="i in 5">
+                                    <button type="button" @click="rating = i" class="focus:outline-none transition-transform active:scale-90">
+                                        <svg class="w-8 h-8" :class="i <= rating ? 'text-[#FFB800]' : 'text-gray-200'" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                        </svg>
+                                    </button>
+                                </template>
+                                <input type="hidden" name="rating" x-model="rating">
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Komentar</label>
+                            <textarea name="komentar" rows="4" class="w-full bg-gray-50 border-none rounded-[2rem] px-8 py-6 focus:ring-4 focus:ring-[#FFB800]/10 outline-none font-bold shadow-inner resize-none" placeholder="Tuliskan ulasan Anda...">{{ $pesanan->review->komentar }}</textarea>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Foto Review (Maks 5, Ganti Semua)</label>
+                            
+                            <!-- Preview Grid -->
+                            <div x-show="previews.length > 0" class="grid grid-cols-4 md:grid-cols-6 gap-4 mb-4">
+                                <template x-for="preview in previews" :key="preview.id">
+                                    <div class="relative aspect-square rounded-2xl overflow-hidden border-2 border-white shadow-sm group/prev">
+                                        <img :src="preview.url" class="w-full h-full object-cover">
+                                        <button type="button" @click="removePreview(preview.id, preview.fileName)" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover/prev:opacity-100 transition-opacity">
+                                            <span class="material-symbols-outlined text-sm">close</span>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="relative w-full bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] p-10 text-center hover:bg-[#FFB800]/5 hover:border-[#FFB800]/30 transition-all group">
+                                <input type="file" x-ref="fileInput" name="foto_review[]" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="handleFiles">
+                                <svg class="w-10 h-10 text-gray-300 mx-auto mb-4 group-hover:text-[#FFB800] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span class="text-xs font-black text-gray-400 group-hover:text-[#FFB800] tracking-widest uppercase" x-text="previews.length > 0 ? previews.length + ' Foto dipilih' : 'Klik untuk upload foto (Bisa satu-satu)'"></span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 pt-6">
+                            <button type="button" @click="isEditing = false; previews = []; files = new DataTransfer()" class="flex-1 py-5 bg-gray-50 text-gray-400 rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-gray-100 transition-all">
+                                Batal
+                            </button>
+                            <button type="submit" class="flex-[2] py-5 bg-[#1b1b18] text-white rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-black transition-all shadow-xl shadow-black/10 active:scale-95">
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
             @endif
         </div>

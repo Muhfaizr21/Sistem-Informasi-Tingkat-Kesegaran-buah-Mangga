@@ -8,6 +8,7 @@ use App\Models\Kecamatan;
 use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class LahanController extends Controller
 {
@@ -64,7 +65,7 @@ class LahanController extends Controller
         $fotos = [];
         if ($request->hasFile('foto_lahan')) {
             foreach ($request->file('foto_lahan') as $file) {
-                $path = $file->store('lahan', 'public');
+                $path = ImageHelper::uploadAsWebp($file, 'lahan');
                 $fotos[] = $path;
             }
         }
@@ -74,6 +75,7 @@ class LahanController extends Controller
             'nama_lahan' => $request->nama_lahan,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'koordinat_polygon' => $request->koordinat_polygon ? json_decode($request->koordinat_polygon) : null,
             'kecamatan_id' => $request->kecamatan_id,
             'desa' => $request->desa,
             'luas_hektar' => $request->luas_hektar,
@@ -110,6 +112,7 @@ class LahanController extends Controller
             'nama_lahan' => $request->nama_lahan,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'koordinat_polygon' => $request->koordinat_polygon ? json_decode($request->koordinat_polygon) : $lahan->koordinat_polygon,
             'kecamatan_id' => $request->kecamatan_id,
             'luas_hektar' => $request->luas_hektar,
             'status' => $request->status,

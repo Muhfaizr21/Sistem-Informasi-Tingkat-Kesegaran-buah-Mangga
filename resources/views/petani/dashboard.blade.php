@@ -1,5 +1,9 @@
 <x-petani-layout>
     <x-slot name="title">Dashboard Petani</x-slot>
+    
+    <!-- Leaflet GIS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- Header & Quick Actions -->
     <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
@@ -76,16 +80,22 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <!-- Mini Map Card -->
-                    <a href="{{ route('petani.wilayah-produksi') }}" class="group relative aspect-video bg-slate-100 rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-inner">
-                        <div class="absolute inset-0 opacity-60 scale-110 group-hover:scale-100 transition-transform duration-1000" style="background-image: url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/108.3249,-6.3276,13,0/600x400?access_token=YOUR_TOKEN'); background-size: cover;"></div>
-                        <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-8 bg-white/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <div class="w-16 h-16 bg-primary-500 rounded-3xl flex items-center justify-center text-white shadow-2xl mb-4">
-                                <span class="material-symbols-outlined text-4xl">map</span>
+                    <div class="xl:col-span-1">
+                        <div class="bg-white p-2 rounded-[3.5rem] border border-slate-100 shadow-sm group">
+                            <div class="aspect-video bg-slate-50 rounded-[2.5rem] overflow-hidden relative border border-slate-50 shadow-inner group-hover:shadow-lg transition-all duration-500">
+                                <div id="dashboard-mini-map" class="absolute inset-0 z-10"></div>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-8 bg-white/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 pointer-events-none">
+                                    <div class="w-16 h-16 bg-primary-500 rounded-3xl flex items-center justify-center text-white shadow-2xl mb-4">
+                                        <span class="material-symbols-outlined text-4xl">map</span>
+                                    </div>
+                                    <p class="text-sm font-extrabold text-slate-900">Peta Wilayah Produksi</p>
+                                </div>
                             </div>
-                            <p class="text-sm font-extrabold text-slate-900">Buka Peta Wilayah Produksi</p>
-                            <p class="text-xs text-slate-600 font-medium mt-1">Lihat distribusi lahan secara real-time</p>
+                            <a href="{{ route('petani.wilayah-produksi') }}" class="w-full mt-4 py-4 flex items-center justify-center gap-2 bg-slate-900 text-white font-black rounded-3xl hover:bg-black transition-all active:scale-95 text-[11px] uppercase tracking-widest">
+                                Buka Peta Interaktif
+                            </a>
                         </div>
-                    </a>
+                    </div>
 
                     <!-- Lahan Details List -->
                     <div class="space-y-8 py-2">
@@ -366,6 +376,44 @@
                             cityTitle.innerText = `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
                         });
                 });
+            }
+
+            // Initialize Dashboard Mini Map
+            const dashMap = L.map('dashboard-mini-map', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([-6.3276, 108.3249], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(dashMap);
+
+            const lahanData = @json($lahan);
+            const bounds = [];
+
+            lahanData.forEach(l => {
+                if (l.koordinat_polygon && l.koordinat_polygon.length > 0) {
+                    const polygon = L.polygon(l.koordinat_polygon, {
+                        color: "#10B981",
+                        fillColor: "#10B981",
+                        fillOpacity: 0.4,
+                        weight: 2
+                    }).addTo(dashMap);
+                    bounds.push(polygon.getBounds());
+                } else if (l.latitude && l.longitude) {
+                    const marker = L.circleMarker([l.latitude, l.longitude], {
+                        radius: 5,
+                        fillColor: "#10B981",
+                        color: "#fff",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(dashMap);
+                    bounds.push(marker.getLatLng());
+                }
+            });
+
+            if (bounds.length > 0) {
+                const group = new L.featureGroup(dashMap._layers);
+                dashMap.fitBounds(group.getBounds().pad(0.3));
             }
         });
     </script>

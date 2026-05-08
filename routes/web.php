@@ -10,6 +10,14 @@ Route::get('/', function () {
     return view('landing');
 })->name('landing');
 
+Route::get('/privasi', function () {
+    return view('pages.privasi');
+})->name('privasi');
+
+Route::get('/syarat-dan-ketentuan', function () {
+    return view('pages.syarat');
+})->name('syarat');
+
 use App\Http\Controllers\Pembeli\DashboardController as PembeliDashboard;
 use App\Http\Controllers\Pembeli\ReviewController;
 use App\Http\Controllers\Pembeli\BuyerController;
@@ -79,6 +87,7 @@ use App\Http\Controllers\Pembeli\CheckoutController;
 use App\Http\Controllers\Pembeli\PetaniController as PembeliPetani;
 use App\Http\Controllers\Pembeli\AddressController;
 use App\Http\Controllers\Pembeli\OrderController as PembeliOrder;
+use App\Http\Controllers\Pembeli\BantuanController;
 
 Route::prefix('pembeli')->name('pembeli.')->middleware(['auth', 'pembeli'])->group(function () {
     Route::get('/dashboard', [PembeliDashboard::class, 'index'])->name('dashboard');
@@ -90,7 +99,9 @@ Route::prefix('pembeli')->name('pembeli.')->middleware(['auth', 'pembeli'])->gro
     // Marketplace
     Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.katalog');
     Route::get('/marketplace/mangga/{id}', [MarketplaceController::class, 'show'])->name('marketplace.detail');
+    Route::get('/marketplace/mangga/{id}/ulasan', [MarketplaceController::class, 'reviews'])->name('marketplace.reviews');
     Route::get('/marketplace/petani/{id}', [PembeliPetani::class, 'show'])->name('marketplace.petani');
+    Route::get('/favorit', [FavoritController::class, 'index'])->name('favorit.index');
 
     // Cart
     Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
@@ -129,6 +140,14 @@ Route::prefix('pembeli')->name('pembeli.')->middleware(['auth', 'pembeli'])->gro
     Route::post('/pesanan/{id}/update-payment-method', [PembeliOrder::class, 'updatePaymentMethod'])->name('pesanan.update-payment-method');
     Route::post('/pesanan/{id}/selesai', [PembeliOrder::class, 'konfirmasiSelesai'])->name('pesanan.selesai');
     Route::post('/pesanan/{id}/review', [ReviewController::class, 'store'])->name('pesanan.review');
+    Route::post('/review/{id}/update', [ReviewController::class, 'update'])->name('review.update');
+    Route::delete('/review/{id}', [ReviewController::class, 'destroy'])->name('review.destroy');
+
+    // Bantuan
+    Route::get('/bantuan/cara-pemesanan', [BantuanController::class, 'caraPemesanan'])->name('bantuan.cara-pemesanan');
+    Route::get('/bantuan/tentang', [BantuanController::class, 'tentang'])->name('bantuan.tentang');
+    Route::get('/bantuan/hubungi-kami', [BantuanController::class, 'hubungiKami'])->name('bantuan.hubungi-kami');
+    Route::get('/bantuan/kebijakan-privasi', [BantuanController::class, 'kebijakanPrivasi'])->name('bantuan.kebijakan-privasi');
 });
 
 use App\Http\Controllers\petani\PetaniController;
@@ -136,6 +155,7 @@ use App\Http\Controllers\petani\DashboardController;
 use App\Http\Controllers\petani\LahanController;
 use App\Http\Controllers\petani\ScanKesegaranController;
 use App\Http\Controllers\petani\LaporanPanenController;
+use App\Http\Controllers\petani\LaporanPenjualanController;
 use App\Http\Controllers\petani\WilayahProduksiController;
 use App\Http\Controllers\petani\ProfileController as PetaniProfileController;
 use App\Http\Controllers\petani\RekomendasiController;
@@ -161,6 +181,9 @@ Route::prefix('petani')->name('petani.')->middleware(['auth'])->group(function (
     Route::get('/laporan-panen', [LaporanPanenController::class, 'index'])->name('laporan-panen');
     Route::post('/laporan-panen', [LaporanPanenController::class, 'store'])->name('laporan-panen.store');
     Route::put('/laporan-panen/{laporan}', [LaporanPanenController::class, 'update'])->name('laporan-panen.update');
+
+    // Laporan Penjualan
+    Route::get('/laporan-penjualan', [LaporanPenjualanController::class, 'index'])->name('laporan-penjualan');
 
     // Profile Management
     Route::get('/profil', [PetaniProfileController::class, 'index'])->name('profil');

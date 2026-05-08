@@ -6,7 +6,7 @@
             </svg>
 
             <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                <div class="sm:text-center lg:text-left">
+                <div class="text-center lg:text-left">
                     <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
                         <span class="block xl:inline tracking-tighter">Sistem Informasi</span>
                         <span class="block text-yellow-500 xl:inline">Kesegaran Mangga</span>
@@ -14,7 +14,7 @@
                     <p class="mt-3 text-base text-gray-500 dark:text-gray-400 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                         Optimalkan hasil panen mangga Indramayu Anda dengan teknologi Computer Vision dan Big Data. Penilaian kualitas otomatis dalam genggaman tangan.
                     </p>
-                    <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                    <div class="mt-8 sm:flex sm:justify-center lg:justify-start">
                         <div class="rounded-md shadow">
                             <a href="{{ route('register') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-bold rounded-md text-white bg-yellow-500 hover:bg-yellow-600 md:py-4 md:text-lg md:px-10 shadow-lg shadow-yellow-500/30 transition-all transform hover:-translate-y-1">
                                 Mulai Sekarang
@@ -28,7 +28,7 @@
                     </div>
                     
                     <!-- Stats / Social Proof -->
-                    <div class="mt-10 flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-gray-500 dark:text-gray-400 font-medium">
                         <div class="flex items-center gap-2">
                             <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
                             Computer Vision AI
@@ -43,6 +43,6 @@
         </div>
     </div>
     <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-        <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full grayscale hover:grayscale-0 transition-all duration-1000" src="https://images.unsplash.com/photo-1553279768-865429fa0078?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Mangga Indramayu">
+        <img class="h-64 w-full object-cover sm:h-80 md:h-96 lg:w-full lg:h-full grayscale-0 lg:grayscale hover:grayscale-0 transition-all duration-1000" src="{{ asset('images/many_mangoes.png') }}" alt="Mangga Indramayu">
     </div>
 </div>

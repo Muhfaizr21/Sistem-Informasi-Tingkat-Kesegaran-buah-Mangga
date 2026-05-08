@@ -14,13 +14,13 @@ class DashboardController extends Controller
     {
         $userId = auth()->id();
         $petani = DB::table('petani')->where('pengguna_id', $userId)->first();
-        
+
         // Ringkasan Lahan
         $lahan = collect();
         if ($petani) {
             $lahan = DB::table('lahan')->where('petani_id', $petani->id)->get();
         }
-        
+
         $totalHektar = $lahan->sum('luas_hektar');
         $varietas = $lahan->pluck('jenis_mangga')->unique()->values()->all();
         $statusLahan = $lahan->groupBy('status')->map->count();
@@ -33,9 +33,9 @@ class DashboardController extends Controller
                 ->where('created_at', '>=', $thisMonth)
                 ->get();
         }
-        
+
         $totalPanenBulanIni = $reports->sum('jumlah_kg');
-        
+
         // Calculate real quality average from scans
         $rataRataKualitas = 0;
         if ($petani) {
@@ -44,36 +44,42 @@ class DashboardController extends Controller
                 ->avg('skor_kesegaran') ?? 0;
         }
 
-        // Status Penjualan
+        // Status Penjualan (Real-Time from Orders)
+        $manggaTerjual = 0;
+        $pendapatanBulanIni = 0;
+
+        if ($petani) {
+            // Mangga Terjual: Total KG dari pesanan yang sudah bayar (siap_dikemas, dikemas, dikirim, selesai)
+            $soldItems = DB::table('detail_pesanan')
+                ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
+                ->join('listing_mangga', 'detail_pesanan.listing_id', '=', 'listing_mangga.id')
+                ->where('listing_mangga.petani_id', $petani->id)
+                ->whereIn('pesanan.status', ['siap_dikemas', 'dikemas', 'dikirim', 'selesai'])
+                ->select(
+                    DB::raw('SUM(detail_pesanan.jumlah_kg) as total_kg'),
+                    DB::raw('SUM(detail_pesanan.subtotal) as total_revenue')
+                )
+                ->first();
+
+            $manggaTerjual = $soldItems->total_kg ?? 0;
+            $pendapatanBulanIni = $soldItems->total_revenue ?? 0;
+        }
+
         $listing = collect();
         $manggaTerjual = 0;
         $pendapatanBulanIni = 0;
 
         if ($petani) {
             $listing = DB::table('listing_mangga')->where('petani_id', $petani->id)->get();
-            $manggaTersedia = $listing->sum('stok_tersedia_kg');
-            
-            // Calculate sold items and revenue from orders
-            $salesData = DB::table('detail_pesanan')
-                ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
-                ->where('detail_pesanan.petani_id', $petani->id)
-                ->whereIn('pesanan.status', ['dikonfirmasi', 'dikirim', 'selesai'])
-                ->select(
-                    DB::raw('SUM(detail_pesanan.jumlah_kg) as total_kg'),
-                    DB::raw('SUM(detail_pesanan.subtotal) as total_revenue')
-                )
-                ->first();
-            
-            $manggaTerjual = $salesData->total_kg ?? 0;
-            $pendapatanBulanIni = $salesData->total_revenue ?? 0;
-        } else {
-            $manggaTersedia = 0;
         }
+        $manggaTersedia = $listing->sum('stok_tersedia_kg');
+        $manggaTerjual = 0;
+        $pendapatanBulanIni = 0;
 
         // Live Weather based on Primary Land
         $lahanUtama = $lahan->first();
         $cuaca = $weatherService->getCurrentWeather(
-            $lahanUtama->latitude ?? -6.3276, 
+            $lahanUtama->latitude ?? -6.3276,
             $lahanUtama->longitude ?? 108.3249
         );
 
@@ -84,10 +90,17 @@ class DashboardController extends Controller
         ];
 
         return view('petani.dashboard', compact(
-            'totalHektar', 'varietas', 'statusLahan', 'lahan',
-            'totalPanenBulanIni', 'rataRataKualitas',
-            'manggaTersedia', 'manggaTerjual', 'pendapatanBulanIni',
-            'cuaca', 'agroData'
+            'totalHektar',
+            'varietas',
+            'statusLahan',
+            'lahan',
+            'totalPanenBulanIni',
+            'rataRataKualitas',
+            'manggaTersedia',
+            'manggaTerjual',
+            'pendapatanBulanIni',
+            'cuaca',
+            'agroData'
         ));
     }
 }

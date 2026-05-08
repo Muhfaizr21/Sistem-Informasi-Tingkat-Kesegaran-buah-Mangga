@@ -35,4 +35,17 @@ class FavoritController extends Controller
             return response()->json(['status' => 'added', 'message' => 'Ditambahkan ke favorit.']);
         }
     }
+
+    public function index()
+    {
+        $pembeliId = Auth::user()->pembeli?->id;
+        $favorites = Favorit::with(['petani.user', 'petani.listings' => function($q) {
+            $q->where('aktif', true);
+        }])
+        ->where('pembeli_id', $pembeliId)
+        ->latest()
+        ->paginate(12);
+
+        return view('pembeli.favorit.index', compact('favorites'));
+    }
 }

@@ -42,19 +42,19 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl">
                 <div class="p-4 bg-white/50 rounded-2xl border border-white/20">
                     <p class="text-[10px] uppercase font-bold text-[#706f6c] mb-1">Pengalaman</p>
-                    <p class="text-lg font-bold">{{ $petani->pengalaman_tahun }} Thn</p>
+                    <p class="text-lg font-bold">{{ $petani->pengalaman_tahun ?? 0 }} Thn</p>
                 </div>
                 <div class="p-4 bg-white/50 rounded-2xl border border-white/20">
                     <p class="text-[10px] uppercase font-bold text-[#706f6c] mb-1">Total Lahan</p>
-                    <p class="text-lg font-bold">{{ $petani->lahan->count() }} Lokasi</p>
+                    <p class="text-lg font-bold">{{ $petani->lahan_count }} Lokasi</p>
                 </div>
                 <div class="p-4 bg-white/50 rounded-2xl border border-white/20">
                     <p class="text-[10px] uppercase font-bold text-[#706f6c] mb-1">Rating</p>
-                    <p class="text-lg font-bold text-amber-500">★ {{ number_format($petani->review->avg('rating') ?? 5.0, 1) }}</p>
+                    <p class="text-lg font-bold text-amber-500">★ {{ number_format($petani->review_avg_rating ?? 5.0, 1) }}</p>
                 </div>
                 <div class="p-4 bg-white/50 rounded-2xl border border-white/20">
                     <p class="text-[10px] uppercase font-bold text-[#706f6c] mb-1">Varietas</p>
-                    <p class="text-lg font-bold">{{ count(array_unique($petani->lahan->pluck('jenis_mangga')->toArray())) }} Jenis</p>
+                    <p class="text-lg font-bold">{{ $varietasCount }} Jenis</p>
                 </div>
             </div>
         </div>
@@ -87,7 +87,9 @@
                     </div>
                 </a>
                 @empty
-                <div class="col-span-2 py-12 text-center text-gray-400 italic">Belum ada batch panen yang dijual.</div>
+                <div class="col-span-2 py-12 text-center text-gray-400 italic bg-white rounded-3xl border border-dashed border-gray-200">
+                    Belum ada batch panen yang dijual.
+                </div>
                 @endforelse
             </div>
         </section>
@@ -95,17 +97,27 @@
         <section>
             <h2 class="text-2xl font-bold mb-6">Histori Panen Terakhir</h2>
             <div class="space-y-4">
-                {{-- Data histori panen bisa diambil dari LaporanPanen --}}
-                <div class="p-6 bg-white border border-[#19140010] rounded-2xl flex justify-between items-center">
-                    <div>
-                        <p class="font-bold">Panen Harum Manis</p>
-                        <p class="text-xs text-[#706f6c]">Mei 2026 • Lahan Jatibarang</p>
+                @forelse($latestHarvests as $harvest)
+                <div class="p-6 bg-white border border-[#19140010] rounded-2xl flex justify-between items-center hover:border-[#FFB800]/30 transition-all group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-[#FFB800] group-hover:bg-[#FFB800] group-hover:text-white transition-all">
+                            <span class="material-symbols-outlined">agriculture</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-[#1b1b18]">Panen {{ $harvest->jenis_mangga }}</p>
+                            <p class="text-xs text-[#706f6c]">{{ $harvest->tanggal_panen->translatedFormat('F Y') }} • Lahan {{ $harvest->lahan->nama_lahan }}</p>
+                        </div>
                     </div>
                     <div class="text-right">
-                        <p class="font-bold text-emerald-600">+500 kg</p>
-                        <p class="text-[10px] text-[#706f6c]">Terverifikasi</p>
+                        <p class="font-black text-emerald-600">+{{ number_format($harvest->jumlah_kg, 0, ',', '.') }} kg</p>
+                        <p class="text-[10px] font-black text-emerald-600/50 uppercase tracking-widest">Terverifikasi</p>
                     </div>
                 </div>
+                @empty
+                <div class="py-12 text-center text-gray-400 italic bg-white rounded-3xl border border-dashed border-gray-100">
+                    Belum ada histori panen yang tercatat.
+                </div>
+                @endforelse
             </div>
         </section>
     </div>

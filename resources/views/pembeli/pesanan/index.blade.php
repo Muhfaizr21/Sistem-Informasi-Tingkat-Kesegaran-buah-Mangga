@@ -69,7 +69,9 @@
                 <!-- Kiri: Info Produk -->
                 <div class="flex-1">
                     <div class="flex flex-wrap items-center gap-3 mb-6">
-                        <span class="px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $pesanan->created_at->format('d M Y, H:i') }}</span>
+                        <span class="px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                            {{ \Carbon\Carbon::parse($pesanan->created_at)->timezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') }} WIB
+                        </span>
                         <span class="text-[10px] font-black text-gray-300">|</span>
                         <span class="text-[10px] font-black text-[#FFB800] tracking-widest">{{ $pesanan->kode_pesanan }}</span>
                         
@@ -133,6 +135,13 @@
                         </form>
                         @endif
 
+                        @if($pesanan->status === 'selesai' && !$pesanan->review)
+                        <a href="{{ route('pembeli.pesanan.show', $pesanan->id) }}#review-section" class="flex-1 md:flex-none px-6 py-3 bg-amber-500 text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/30 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">star</span>
+                            BERI ULASAN
+                        </a>
+                        @endif
+
                         @if($pesanan->status === 'menunggu_bayar')
                             @if($pesanan->metode_pembayaran === 'midtrans' && $pesanan->snap_token)
                             <button type="button" onclick="triggerSnap('{{ $pesanan->snap_token }}')" class="flex-1 md:flex-none px-6 py-3 bg-[#FFB800] text-white rounded-[1.2rem] text-[10px] font-black text-center uppercase tracking-widest hover:bg-amber-500 transition-colors shadow-lg shadow-orange-900/20 flex items-center gap-2">
@@ -175,9 +184,45 @@
         </div>
         @endforelse
 
-        <div class="mt-12">
-            {{ $pesanans->appends(request()->query())->links() }}
+        <div class="mt-12 flex justify-center">
+            @if($pesanans->hasPages())
+                <nav class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
+                    @if ($pesanans->onFirstPage())
+                        <span class="w-10 h-10 flex items-center justify-center text-gray-300 cursor-not-allowed">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </span>
+                    @else
+                        <a href="{{ $pesanans->previousPageUrl() }}" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-xl transition-all">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </a>
+                    @endif
+
+                    @foreach ($pesanans->getUrlRange(1, $pesanans->lastPage()) as $page => $url)
+                        @if ($page == $pesanans->currentPage())
+                            <span class="w-10 h-10 flex items-center justify-center bg-[#FFB800] text-white font-black text-[10px] rounded-xl shadow-lg shadow-orange-900/20">
+                                {{ $page }}
+                            </span>
+                        @else
+                            <a href="{{ $url }}" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 font-bold text-[10px] rounded-xl transition-all">
+                                {{ $page }}
+                            </a>
+                        @endif
+                    @endforeach
+
+                    @if ($pesanans->hasMorePages())
+                        <a href="{{ $pesanans->nextPageUrl() }}" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-xl transition-all">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </a>
+                    @else
+                        <span class="w-10 h-10 flex items-center justify-center text-gray-300 cursor-not-allowed">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </span>
+                    @endif
+                </nav>
+            @endif
         </div>
+    </div>
+</div>
     </div>
 </div>
 @endsection

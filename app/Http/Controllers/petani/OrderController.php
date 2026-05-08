@@ -10,18 +10,30 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $petani = Petani::firstOrCreate(['pengguna_id' => auth()->id()]);
 
         // Ambil pesanan yang berisi produk dari petani ini
-        $pesanans = Pesanan::whereHas('items.listing', function ($query) use ($petani) {
+        $query = Pesanan::whereHas('items.listing', function ($query) use ($petani) {
             $query->where('petani_id', $petani->id);
-        })->with(['pembeli.user', 'items' => function($query) use ($petani) {
+        })->with(['pembeli.user', 'alamat.kecamatan', 'items' => function($query) use ($petani) {
             $query->whereHas('listing', function($q) use ($petani) {
                 $q->where('petani_id', $petani->id);
             })->with('listing');
-        }])->latest()->get();
+        }]);
+
+        // Filter by Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by Shipping Package
+        if ($request->filled('pengiriman')) {
+            $query->where('metode_pengiriman', $request->pengiriman);
+        }
+
+        $pesanans = $query->latest()->get();
 
         return view('petani.pesanan.index', compact('pesanans'));
     }

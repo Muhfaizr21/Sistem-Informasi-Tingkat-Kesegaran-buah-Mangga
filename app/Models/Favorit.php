@@ -12,4 +12,14 @@ class Favorit extends Model
         'pembeli_id',
         'petani_id',
     ];
+
+    public function pembeli()
+    {
+        return $this->belongsTo(Pembeli::class);
+    }
+
+    public function petani()
+    {
+        return $this->belongsTo(Petani::class);
+    }
 }

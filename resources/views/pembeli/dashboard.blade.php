@@ -8,7 +8,7 @@
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 animate-in fade-in slide-in-from-left duration-700">
         <div>
             <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-2">
-                Halo, <span class="text-[#FFB800]">{{ explode(' ', $user->nama)[0] }}</span>! 👋
+                Halo, <span class="text-[#FFB800]">{{ explode(' ', $user->nama)[0] }}</span>👋
             </h1>
             <p class="text-lg text-[#706f6c] font-medium">Temukan mangga terbaik dari tanah Indramayu hari ini.</p>
         </div>
@@ -71,6 +71,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     @forelse($recent_listings ?? [] as $listing)
+                    @php /** @var \App\Models\ListingMangga $listing */ @endphp
                     <div class="bg-white rounded-[2.5rem] border border-gray-100 p-4 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] transition-all group">
                         <div class="relative h-48 rounded-[2rem] overflow-hidden group/img">
                             @php $foto = is_array($listing->foto_batch) ? ($listing->foto_batch[0] ?? null) : $listing->foto_batch; @endphp
@@ -146,6 +147,16 @@
                         </div>
                     </a>
 
+                    <a href="{{ route('pembeli.favorit.index') }}" class="flex items-center p-4 rounded-3xl border border-transparent hover:border-gray-100 hover:bg-gray-50 transition-all group">
+                        <div class="w-14 h-14 bg-orange-50 text-[#FFB800] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined fill-1">favorite</span>
+                        </div>
+                        <div class="ml-5">
+                            <p class="text-sm font-black text-[#1b1b18] uppercase tracking-widest">Petani Favorit</p>
+                            <p class="text-[10px] text-gray-400 font-bold mt-1">Daftar petani langganan</p>
+                        </div>
+                    </a>
+
                     <a href="{{ route('profile.edit') }}" class="flex items-center p-4 rounded-3xl border border-transparent hover:border-gray-100 hover:bg-gray-50 transition-all group">
                         <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -165,6 +176,41 @@
                             <p class="text-[10px] text-gray-400 font-bold mt-1">Cek info stok terbaru</p>
                         </div>
                     </a>
+                </div>
+            </div>
+
+            <!-- Favorite Petani Card -->
+            <div class="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.05)] overflow-hidden relative">
+                <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                    <span class="material-symbols-outlined text-8xl text-[#FFB800]">favorite</span>
+                </div>
+                <div class="flex items-center justify-between mb-8 relative z-10">
+                    <h3 class="text-xl font-black text-[#1b1b18] tracking-tight">Petani Favorit</h3>
+                    <a href="{{ route('pembeli.favorit.index') }}" class="text-[10px] font-black text-[#FFB800] uppercase tracking-widest">Lihat Semua</a>
+                </div>
+
+                <div class="space-y-6">
+                    @forelse($favorite_petani as $fav)
+                    @php /** @var \App\Models\Favorit $fav */ @endphp
+                    <a href="{{ route('pembeli.marketplace.petani', $fav->petani->id) }}" class="flex items-center gap-4 group/fav">
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 overflow-hidden border border-orange-100 shadow-inner group-hover/fav:scale-110 transition-transform flex items-center justify-center text-[#FFB800] font-black">
+                            @if($fav->petani->user->foto_profil)
+                                <img src="{{ asset('storage/' . $fav->petani->user->foto_profil) }}" class="w-full h-full object-cover">
+                            @else
+                                {{ substr($fav->petani->user->nama, 0, 1) }}
+                            @endif
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-[#1b1b18] group-hover/fav:text-[#FFB800] transition-colors truncate">{{ $fav->petani->user->nama }}</p>
+                            <p class="text-[10px] text-gray-400 font-medium uppercase tracking-widest">{{ $fav->petani->listings->count() }} Produk Aktif</p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-300 text-sm group-hover/fav:translate-x-1 transition-transform">arrow_forward</span>
+                    </a>
+                    @empty
+                    <div class="text-center py-6">
+                        <p class="text-xs text-gray-400 font-medium italic">Belum ada petani favorit.</p>
+                    </div>
+                    @endforelse
                 </div>
             </div>
 

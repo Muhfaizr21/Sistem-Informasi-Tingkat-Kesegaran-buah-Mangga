@@ -7,6 +7,8 @@ use App\Models\Pesanan;
 use App\Models\Pembeli;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Helpers\ImageHelper;
 
 class OrderController extends Controller
 {
@@ -70,7 +72,7 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Pesanan belum dalam pengiriman.');
         }
 
-        $path = $request->file('foto_selesai')->store('pesanan/selesai', 'public');
+        $path = ImageHelper::uploadAsWebp($request->file('foto_selesai'), 'pesanan/selesai');
 
         $pesanan->update([
             'status' => 'selesai',
@@ -120,7 +122,7 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Pesanan tidak bisa dibayar pada status ini.');
         }
 
-        $path = $request->file('bukti_pembayaran')->store('pesanan/bukti_bayar', 'public');
+        $path = ImageHelper::uploadAsWebp($request->file('bukti_pembayaran'), 'pesanan/bukti_bayar');
 
         $pesanan->update([
             'status' => 'menunggu_verifikasi',
