@@ -160,7 +160,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('assets/vendor/jquery/jquery-3.7.1.min.js') }}"></script>
 <script>
 $(document).ready(function() {
     $('#btn-favorit').click(function() {

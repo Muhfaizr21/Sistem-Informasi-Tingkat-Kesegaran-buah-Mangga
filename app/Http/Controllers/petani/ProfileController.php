@@ -86,12 +86,12 @@ class ProfileController extends Controller
         $petani = Petani::where('pengguna_id', auth()->id())->first();
 
         if ($request->hasFile('dokumen_ktp')) {
-            $path = $request->file('dokumen_ktp')->store('dokumen', 'public');
+            $path = ImageHelper::uploadAsWebp($request->file('dokumen_ktp'), 'dokumen');
             $petani->update(['dokumen_ktp' => $path]);
         }
 
         if ($request->hasFile('dokumen_lahan')) {
-            $path = $request->file('dokumen_lahan')->store('dokumen', 'public');
+            $path = ImageHelper::uploadAsWebp($request->file('dokumen_lahan'), 'dokumen');
             $petani->update(['dokumen_lahan' => $path]);
         }
 

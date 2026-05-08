@@ -7,30 +7,12 @@
 
     <title>{{ $title ?? 'Buyer' }} - {{ config('app.name', 'SI-Mangga') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Localized Fonts & Icons -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/inter.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/material-symbols.css') }}">
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#FBBF24", // Mango Yellow
-                        secondary: "#10B981", // Fresh Green
-                        accent: "#3B82F6", // Ocean Blue
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 font-inter antialiased min-h-screen flex flex-col">
     <!-- Buyer Navigation -->

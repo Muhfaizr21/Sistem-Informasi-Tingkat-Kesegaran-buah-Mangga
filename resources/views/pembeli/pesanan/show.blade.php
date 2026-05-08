@@ -26,12 +26,13 @@
                 <div class="relative z-10 space-y-10">
                     @php
                         $steps = [
-                            'menunggu_bayar' => ['label' => 'Menunggu Pembayaran', 'desc' => 'Selesaikan pembayaran untuk memproses pesanan.', 'icon' => 'payments'],
-                            'menunggu_verifikasi' => ['label' => 'Verifikasi', 'desc' => 'Admin sedang memverifikasi pembayaran Anda.', 'icon' => 'verified'],
+                            'menunggu_bayar' => ['label' => 'Pembayaran', 'desc' => 'Selesaikan pembayaran pesanan.', 'icon' => 'payments'],
+                            'menunggu_verifikasi' => ['label' => 'Verifikasi', 'desc' => 'Admin sedang memverifikasi pembayaran.', 'icon' => 'verified'],
                             'dikonfirmasi' => ['label' => 'Dikonfirmasi', 'desc' => 'Pesanan Anda telah dikonfirmasi.', 'icon' => 'check_circle'],
-                            'dikemas' => ['label' => 'Dikemas', 'desc' => 'Petani sedang menyiapkan mangga terbaik Anda.', 'icon' => 'inventory_2'],
-                            'dikirim' => ['label' => 'Dikirim', 'desc' => 'Pesanan dalam perjalanan ke lokasi Anda.', 'icon' => 'local_shipping'],
-                            'selesai' => ['label' => 'Selesai', 'desc' => 'Pesanan telah diterima dengan baik.', 'icon' => 'task_alt'],
+                            'dikemas' => ['label' => 'Dikemas', 'desc' => 'Petani sedang menyiapkan mangga Anda.', 'icon' => 'inventory_2'],
+                            'dikirim' => ['label' => 'Dikirim', 'desc' => 'Pesanan dalam perjalanan ke lokasi.', 'icon' => 'local_shipping'],
+                            'menunggu_verifikasi_selesai' => ['label' => 'Diterima', 'desc' => 'Pesanan sampai. Menunggu verifikasi admin.', 'icon' => 'assignment_turned_in'],
+                            'selesai' => ['label' => 'Selesai', 'desc' => 'Pesanan telah selesai dengan baik.', 'icon' => 'task_alt'],
                         ];
                         $currentStatusIdx = array_search($pesanan->status, array_keys($steps));
                         if($currentStatusIdx === false) $currentStatusIdx = -1;
@@ -251,6 +252,46 @@
                     BAYAR SEKARANG
                 </button>
                 @endif
+
+                @if($pesanan->status === 'dikirim')
+                <div class="bg-white rounded-[3rem] p-10 border shadow-sm" style="border-color: var(--gold-pale);">
+                    <h3 class="text-[0.65rem] font-black uppercase tracking-[0.2em] mb-6" style="color: var(--text-light);">Konfirmasi Penerimaan</h3>
+                    <form action="{{ route('pembeli.pesanan.konfirmasi-selesai', $pesanan->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        @csrf
+                        <div class="space-y-3">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Upload Bukti Terima</label>
+                            <div class="relative w-full bg-var(--cream) border-2 border-dashed rounded-2xl p-6 text-center hover:bg-var(--gold-pale)/20 transition-all group" style="border-color: var(--gold-pale);">
+                                <input type="file" name="foto_selesai" required accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewSelesai(this)">
+                                <div id="preview-container" class="hidden mb-3">
+                                    <img id="image-preview" src="" class="w-20 h-20 object-cover rounded-xl mx-auto border-2 border-white shadow-sm">
+                                </div>
+                                <span class="material-symbols-outlined text-3xl mb-1 opacity-20" style="color: var(--gold);">add_a_photo</span>
+                                <p class="text-[8px] font-bold uppercase tracking-widest" style="color: var(--text-light);" id="upload-text">Klik untuk Foto Bukti</p>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-emerald-500 text-white rounded-2xl font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-lg shadow-emerald-500/20">
+                            PESANAN DITERIMA
+                        </button>
+                    </form>
+                </div>
+                @endif
+
+                @if($pesanan->status === 'menunggu_verifikasi_selesai')
+                <div class="bg-white rounded-[3rem] p-10 border shadow-sm text-center space-y-6" style="border-color: var(--gold-pale);">
+                    <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-500">
+                        <span class="material-symbols-outlined text-4xl">hourglass_top</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-on-surface tracking-tight">Menunggu Verifikasi</h3>
+                        <p class="text-[10px] font-medium text-on-surface-variant mt-1 leading-relaxed">Admin sedang mengecek bukti penerimaan Anda sebelum mencairkan dana ke petani.</p>
+                    </div>
+                    @if($pesanan->foto_selesai)
+                    <div class="aspect-video rounded-2xl overflow-hidden border-2 border-white shadow-md bg-surface-container-low">
+                        <img src="{{ asset('storage/' . $pesanan->foto_selesai) }}" class="w-full h-full object-cover">
+                    </div>
+                    @endif
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -269,6 +310,17 @@
                 onError: function(result) { alert("Pembayaran gagal!"); }
             });
         });
+    }
+    function previewSelesai(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview').src = e.target.result;
+                document.getElementById('preview-container').classList.remove('hidden');
+                document.getElementById('upload-text').innerText = 'Foto dipilih: ' + input.files[0].name;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 </script>
 @endpush

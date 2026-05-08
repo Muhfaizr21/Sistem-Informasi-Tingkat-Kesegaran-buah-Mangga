@@ -190,7 +190,7 @@ class AdminController extends Controller
         // Stats for summary cards
         $stats = [
             'total' => Pesanan::count(),
-            'pending' => Pesanan::whereIn('status', ['menunggu_bayar', 'menunggu_verifikasi'])->count(),
+            'pending' => Pesanan::whereIn('status', ['menunggu_bayar', 'menunggu_verifikasi', 'menunggu_verifikasi_selesai'])->count(),
             'processed' => Pesanan::whereIn('status', ['dikonfirmasi', 'dikemas', 'dikirim'])->count(),
             'completed' => Pesanan::where('status', 'selesai')->count(),
             'revenue' => Pesanan::where('status', 'selesai')->sum('total_bayar')
@@ -199,13 +199,20 @@ class AdminController extends Controller
         return view('admin.pesanan.index', compact('pesanans', 'stats', 'status'));
     }
 
-    public function verifikasiPembayaran()
+    public function verifikasiPembayaran(Request $request)
     {
-        $pesanans = Pesanan::with(['pembeli.user', 'items.listing'])
-            ->where('status', 'menunggu_verifikasi')
-            ->latest()
-            ->get();
-        return view('admin.pesanan.verifikasi', compact('pesanans'));
+        $type = $request->get('type', 'pembayaran');
+        
+        $query = Pesanan::with(['pembeli.user', 'items.listing']);
+        
+        if ($type === 'penerimaan') {
+            $query->where('status', 'menunggu_verifikasi_selesai');
+        } else {
+            $query->where('status', 'menunggu_verifikasi');
+        }
+
+        $pesanans = $query->latest()->get();
+        return view('admin.pesanan.verifikasi', compact('pesanans', 'type'));
     }
 
     public function konfirmasiPembayaran(Request $request, $id)
@@ -256,6 +263,68 @@ class AdminController extends Controller
             $pesanan->id
         );
 
-        return redirect()->back()->with('success', 'Pembayaran ditolak.');
+    }
+
+    public function konfirmasiSelesai(Request $request, $id)
+    {
+        $pesanan = Pesanan::with('pembeli')->findOrFail($id);
+        
+        if ($pesanan->status !== 'menunggu_verifikasi_selesai') {
+            return redirect()->back()->with('error', 'Pesanan tidak dalam status menunggu verifikasi penyelesaian.');
+        }
+
+        $pesanan->update([
+            'status' => 'selesai',
+            'selesai_pada' => now(),
+            'catatan_admin' => $request->catatan
+        ]);
+
+        // Update Loyalty Poin
+        $this->updateLoyalty($pesanan);
+
+        // Notifikasi ke Pembeli
+        \App\Models\Notifikasi::send(
+            $pesanan->pembeli->pengguna_id,
+            'pesanan_selesai_admin',
+            'Pesanan Selesai! 🏁',
+            "Pesanan {$pesanan->kode_pesanan} telah diverifikasi admin dan dinyatakan selesai. Terima kasih!",
+            'pesanan',
+            $pesanan->id
+        );
+
+        // Notifikasi ke Petani (Dana diteruskan)
+        $firstItem = $pesanan->items()->first();
+        if ($firstItem && $firstItem->listing && $firstItem->listing->petani) {
+            \App\Models\Notifikasi::send(
+                $firstItem->listing->petani->pengguna_id,
+                'dana_diteruskan',
+                'Dana Diteruskan! 💸',
+                "Pesanan {$pesanan->kode_pesanan} telah selesai diverifikasi admin. Dana hasil penjualan telah diteruskan ke saldo/rekening Anda.",
+                'pesanan',
+                $pesanan->id
+            );
+        }
+
+        return redirect()->back()->with('success', 'Pesanan berhasil diselesaikan dan dana telah diteruskan ke petani.');
+    }
+
+    private function updateLoyalty($pesanan)
+    {
+        $pembeli = Pembeli::find($pesanan->pembeli_id);
+        if (!$pembeli) return;
+        
+        // 1 poin per Rp 10.000 belanja
+        $poinBaru = floor($pesanan->total_harga / 10000);
+        $pembeli->poin_loyalitas += $poinBaru;
+        
+        if ($pembeli->poin_loyalitas > 2000) {
+            $pembeli->tier_member = 'platinum';
+        } elseif ($pembeli->poin_loyalitas > 500) {
+            $pembeli->tier_member = 'gold';
+        } else {
+            $pembeli->tier_member = 'silver';
+        }
+
+        $pembeli->save();
     }
 }

@@ -17,6 +17,7 @@ class ListingMangga extends Model
         'scan_id',
         'batch_id',
         'jenis_mangga',
+        'slug',
         'skor_kesegaran',
         'foto_batch',
         'stok_tersedia_kg',
@@ -25,6 +26,19 @@ class ListingMangga extends Model
         'deskripsi',
         'aktif',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($listing) {
+            $listing->slug = \Illuminate\Support\Str::slug($listing->jenis_mangga . '-' . \Illuminate\Support\Str::random(6));
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     protected $casts = [
         'foto_batch' => 'json',

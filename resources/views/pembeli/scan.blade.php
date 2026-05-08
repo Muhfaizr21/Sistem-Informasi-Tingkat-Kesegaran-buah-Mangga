@@ -212,16 +212,33 @@
     let currentTempPath = null;
 
     async function initCamera() {
+        const constraints = {
+            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+        };
+
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: 'environment', width: 800, height: 800 }, 
-                audio: false 
-            });
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             video.srcObject = stream;
             statusText.innerText = 'Camera Connected';
+            statusDot.style.backgroundColor = '#10b981';
         } catch (err) {
-            statusText.innerText = 'Camera Error';
-            statusDot.style.backgroundColor = '#ef4444';
+            console.error("Camera Error (Environment):", err);
+            // Fallback to any available camera
+            try {
+                const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = fallbackStream;
+                statusText.innerText = 'Camera Connected (Fallback)';
+                statusDot.style.backgroundColor = '#10b981';
+            } catch (fallbackErr) {
+                console.error("Camera Error (Fallback):", fallbackErr);
+                statusText.innerText = 'Camera Error: ' + fallbackErr.name;
+                statusDot.style.backgroundColor = '#ef4444';
+                
+                if (fallbackErr.name === 'NotAllowedError') {
+                    Swal.fire({ title: 'Izin Ditolak', text: 'Mohon izinkan akses kamera untuk menggunakan fitur scan AI.', icon: 'error', confirmButtonColor: '#d4a017' });
+                }
+            }
         }
     }
 

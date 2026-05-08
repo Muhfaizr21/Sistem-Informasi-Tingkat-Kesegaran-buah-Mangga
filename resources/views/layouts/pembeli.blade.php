@@ -3,20 +3,28 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="SI-Mangga: Platform Marketplace & Monitoring Kesegaran Mangga Indramayu Terpercaya. Beli mangga segar langsung dari petani.">
+    <meta name="keywords" content="mangga indramayu, harum manis, gedong gincu, cengkir, petani mangga, marketplace buah">
+    <meta name="author" content="SI-Mangga Team">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="SI-Mangga - Marketplace Mangga Indramayu">
+    <meta property="og:description" content="Platform Marketplace & Monitoring Kesegaran Mangga Indramayu Terpercaya.">
+    <meta property="og:image" content="{{ asset('storage/logo/logo.png') }}">
 
     <title>@yield('title', 'SI-Mangga') - Pembeli</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Localized Fonts & Icons -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fonts.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/material-symbols.css') }}">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/vendor/jquery/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
     <style>
         :root {
@@ -66,7 +74,7 @@
                 <div class="flex items-center">
                     <a href="{{ route('pembeli.dashboard') }}" class="flex items-center gap-3 no-underline">
                         <div class="w-11 h-11 bg-[#4A7C3F] rounded-full flex items-center justify-center shadow-[0_3px_10px_rgba(74,124,63,0.3)] overflow-hidden">
-                            <img src="/storage/logo/logo.png" class="h-8 w-8 object-contain" alt="Logo" />
+                            <img src="{{ asset('storage/logo/logo.png') }}" class="h-8 w-8 object-contain" alt="Logo" />
                         </div>
                         <span style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--leaf-dark); font-weight: 900;">SI-<span style="color: var(--gold);">Mangga</span></span>
                     </a>
@@ -109,7 +117,7 @@
                             @php
                                 $cartItems = session('cart', []);
                                 $cartCount = 0;
-                                foreach($cartItems as $item) {
+                                foreach ($cartItems as $item) {
                                     $cartCount += $item['jumlah'];
                                 }
                             @endphp
@@ -123,7 +131,7 @@
                             <button @click.stop="open = !open" class="p-2 transition-colors relative" style="color: var(--text-light);">
                                 <span class="material-symbols-outlined text-[22px] group-hover:text-var(--gold) transition-colors">notifications</span>
                                 @php 
-                                    $unreadNotifications = Auth::user()->notifications()->where('sudah_dibaca', false)->latest()->take(5)->get();
+                                                                        $unreadNotifications = Auth::user()->notifications()->where('sudah_dibaca', false)->latest()->take(5)->get();
                                     $unreadCount = Auth::user()->notifications()->where('sudah_dibaca', false)->count(); 
                                 @endphp
                                 @if($unreadCount > 0)
@@ -143,24 +151,24 @@
                                 <div class="p-5 border-b flex justify-between items-center" style="background: var(--cream); border-color: var(--gold-pale);">
                                     <h4 class="text-xs font-black uppercase tracking-widest" style="color: var(--leaf-dark);">Notifications</h4>
                                     @if($unreadCount > 0)
-                                    <form action="{{ route('pembeli.notifications.readAll') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="text-[9px] font-black uppercase tracking-tighter text-var(--gold) hover:underline">Mark all read</button>
-                                    </form>
+                                        <form action="{{ route('pembeli.notifications.readAll') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="text-[9px] font-black uppercase tracking-tighter text-var(--gold) hover:underline">Mark all read</button>
+                                        </form>
                                     @endif
                                 </div>
                                 <div class="max-h-80 overflow-y-auto">
                                     @forelse($unreadNotifications as $notif)
-                                    <div class="p-5 border-b hover:bg-var(--gold-pale)/10 transition-colors" style="border-color: var(--gold-pale);">
-                                        <p class="text-[0.7rem] font-bold mb-1" style="color: var(--text-dark);">{{ $notif->judul }}</p>
-                                        <p class="text-[0.65rem] leading-relaxed mb-2" style="color: var(--text-light);">{{ $notif->pesan }}</p>
-                                        <p class="text-[0.55rem] font-black uppercase tracking-tighter opacity-40">{{ $notif->created_at->diffForHumans() }}</p>
-                                    </div>
+                                        <div class="p-5 border-b hover:bg-var(--gold-pale)/10 transition-colors" style="border-color: var(--gold-pale);">
+                                            <p class="text-[0.7rem] font-bold mb-1" style="color: var(--text-dark);">{{ $notif->judul }}</p>
+                                            <p class="text-[0.65rem] leading-relaxed mb-2" style="color: var(--text-light);">{{ $notif->pesan }}</p>
+                                            <p class="text-[0.55rem] font-black uppercase tracking-tighter opacity-40">{{ $notif->created_at->diffForHumans() }}</p>
+                                        </div>
                                     @empty
-                                    <div class="p-10 text-center">
-                                        <span class="material-symbols-outlined text-4xl opacity-10 mb-2">notifications_off</span>
-                                        <p class="text-[0.65rem] font-bold uppercase tracking-widest opacity-30">No new alerts</p>
-                                    </div>
+                                        <div class="p-10 text-center">
+                                            <span class="material-symbols-outlined text-4xl opacity-10 mb-2">notifications_off</span>
+                                            <p class="text-[0.65rem] font-bold uppercase tracking-widest opacity-30">No new alerts</p>
+                                        </div>
                                     @endforelse
                                 </div>
                                 <a href="{{ route('pembeli.notifications.index') }}" class="block p-4 text-center text-[0.65rem] font-black uppercase tracking-widest hover:bg-var(--gold-pale) transition-colors border-t" style="color: var(--gold); border-color: var(--gold-pale);">View All History</a>

@@ -93,7 +93,7 @@
 
     <!-- Leaflet CSS & JS -->
     @push('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/leaflet/leaflet.css') }}" />
     <style>
         #map { background: #f8fafc; border-radius: 2.5rem; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -105,7 +105,7 @@
     @endpush
 
     @push('scripts')
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="{{ asset('assets/vendor/leaflet/leaflet.js') }}"></script>
     <script>
         var map = L.map('map').setView([-6.33, 108.32], 11); // Default focus on Indramayu area
 

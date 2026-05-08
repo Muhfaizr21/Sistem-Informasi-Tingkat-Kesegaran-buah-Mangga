@@ -3,13 +3,13 @@
     class="fixed left-0 top-0 h-full w-64 border-r border-slate-800 bg-[#001F3F] dark:bg-slate-950 font-inter text-sm antialiased border-r border-slate-800 z-50">
     <div class="flex flex-col h-full py-6">
         <!-- Brand Logo Area -->
-        <div class="px-6 mb-8 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
-                <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="w-full h-full object-contain" alt="Logo" />
+        <div class="px-6 mb-8 flex items-center gap-3 overflow-hidden">
+            <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
+                <img src="{{ asset('storage/logo/logo.png') }}" class="w-full h-full object-contain p-1" alt="Logo" />
             </div>
-            <div>
-                <div class="text-xl font-bold tracking-tight text-white leading-tight">SI-Mangga</div>
-                <div class="text-slate-400 text-xs font-medium tracking-wide uppercase">Admin Pusat</div>
+            <div class="truncate">
+                <div class="text-base font-black tracking-tighter text-white leading-none">SI-Mangga</div>
+                <div class="text-slate-400 text-[9px] font-bold tracking-widest uppercase mt-1">Admin</div>
             </div>
         </div>
         <!-- Primary Navigation -->
@@ -69,8 +69,21 @@
             <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.verifikasi-pembayaran') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"
                 href="{{ route('admin.verifikasi-pembayaran') }}">
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('admin.verifikasi-pembayaran') ? '1' : '0' }};">verified</span>
-                Verifikasi Bayar
+                Verifikasi Bukti
             </a>
+
+            <!-- Penarikan Dana -->
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.penarikan.*') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"
+                href="{{ route('admin.penarikan.index') }}">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('admin.penarikan.*') ? '1' : '0' }};">account_balance_wallet</span>
+                Penarikan Dana
+            </a>
+
+
+            <!-- Menu Analitik & Laporan -->
+            <div class="pt-6 pb-2">
+                <p class="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Analitik & Laporan</p>
+            </div>
 
             <!-- Konfigurasi -->
             <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.config') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"

@@ -1,9 +1,9 @@
 <x-petani-layout>
     <x-slot name="title">Dashboard Petani</x-slot>
     
-    <!-- Leaflet GIS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet GIS Local -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/leaflet/leaflet.css') }}" />
+    <script src="{{ asset('assets/vendor/leaflet/leaflet.js') }}"></script>
 
     <!-- Header & Quick Actions -->
     <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">

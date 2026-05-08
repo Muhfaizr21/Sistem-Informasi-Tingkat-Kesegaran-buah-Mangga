@@ -103,7 +103,7 @@ class LahanController extends Controller
         $fotos = $lahan->foto_lahan ?? [];
         if ($request->hasFile('foto_lahan')) {
             foreach ($request->file('foto_lahan') as $file) {
-                $path = $file->store('lahan', 'public');
+                $path = ImageHelper::uploadAndConvert($file, 'lahan');
                 $fotos[] = $path;
             }
         }

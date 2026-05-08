@@ -27,6 +27,7 @@
                     'dikonfirmasi' => 'Dikonfirmasi',
                     'dikemas' => 'Dikemas',
                     'dikirim' => 'Dikirim',
+                    'menunggu_verifikasi_selesai' => 'Diterima',
                     'selesai' => 'Selesai',
                     'dibatalkan' => 'Batal',
                 ];
@@ -89,6 +90,7 @@
                                 'dikonfirmasi' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-700', 'label' => 'Dikonfirmasi'],
                                 'dikemas' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-700', 'label' => 'Dikemas'],
                                 'dikirim' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-700', 'label' => 'Dikirim'],
+                                'menunggu_verifikasi_selesai' => ['bg' => 'bg-cyan-100', 'text' => 'text-cyan-700', 'label' => 'Diterima'],
                                 'selesai' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-700', 'label' => 'Selesai'],
                                 'dibatalkan' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'label' => 'Batal'],
                             ];
@@ -139,14 +141,21 @@
                         </a>
                         
                         @if($pesanan->status === 'dikirim')
-                        <form action="{{ route('pembeli.pesanan.selesai', $pesanan->id) }}" method="POST" enctype="multipart/form-data" class="flex-1 md:flex-none flex items-center gap-2">
+                        <form action="{{ route('pembeli.pesanan.konfirmasi-selesai', $pesanan->id) }}" method="POST" enctype="multipart/form-data" class="flex-1 md:flex-none flex items-center gap-2">
                             @csrf
                             <input type="file" name="foto_selesai" id="foto_selesai_{{ $pesanan->id }}" class="hidden" onchange="this.form.submit()" accept="image/*">
                             <button type="button" onclick="document.getElementById('foto_selesai_{{ $pesanan->id }}').click()" class="w-full px-6 py-3 bg-emerald-500 text-white rounded-xl text-[10px] font-black text-center uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/30 flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                                SELESAI
+                                TERIMA BARANG
                             </button>
                         </form>
+                        @endif
+
+                        @if($pesanan->status === 'menunggu_verifikasi_selesai')
+                        <div class="flex-1 md:flex-none px-6 py-3 bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-xl text-[9px] font-black text-center uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">hourglass_top</span>
+                            VERIFIKASI ADMIN
+                        </div>
                         @endif
 
                         @if($pesanan->status === 'selesai' && !$pesanan->review)

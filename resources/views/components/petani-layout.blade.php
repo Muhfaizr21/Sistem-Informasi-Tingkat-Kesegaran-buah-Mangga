@@ -14,17 +14,18 @@
 
     <title>{{ $title ?? 'Petani' }} - {{ config('app.name', 'SI-Mangga') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-
-    <!-- Scripts & Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Localized Fonts & Icons -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fonts.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/material-symbols.css') }}">
     
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Leaflet GIS Local -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/leaflet/leaflet.css') }}" />
+    <script src="{{ asset('assets/vendor/leaflet/leaflet.js') }}"></script>
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="{{ asset('assets/vendor/jquery/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     
     <script>
         tailwind.config = {
@@ -67,7 +68,7 @@
     <aside class="hidden lg:flex flex-col w-72 bg-white/80 backdrop-blur-xl h-screen fixed left-0 top-0 rounded-r-[3.5rem] border-r border-slate-100 shadow-2xl z-50">
         <div class="p-8">
             <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
+                <img src="{{ asset('storage/logo/logo.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
                 <div>
                     <h1 class="font-extrabold text-xl tracking-tight text-[#1b1b18] leading-none">SI-<span class="text-[#FFB800]">Mangga</span></h1>
 
@@ -137,7 +138,7 @@
                 <!-- Mobile Sidebar Content (Same as desktop but adapted) -->
                 <div class="flex justify-between items-center mb-10">
                     <div class="flex items-center gap-3">
-                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
+                        <img src="{{ asset('storage/logo/logo.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
                         <h1 class="font-extrabold text-xl text-slate-900">SI-<span class="text-primary-500">Mangga</span></h1>
 
                     </div>

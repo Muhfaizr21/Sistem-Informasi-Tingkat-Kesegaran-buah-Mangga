@@ -55,9 +55,10 @@ class MarketplaceController extends Controller
         return view('pembeli.marketplace.katalog', compact('listings', 'kecamatans'));
     }
 
-    public function show($id)
+    public function show($slug)
     {
         $listing = ListingMangga::with(['petani.user', 'lahan.kecamatan'])
+            ->where('slug', $slug)
             ->addSelect([
                 'average_rating' => DB::table('review')
                     ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
@@ -70,12 +71,12 @@ class MarketplaceController extends Controller
                     ->whereColumn('detail_pesanan.listing_id', 'listing_mangga.id')
                     ->selectRaw('COUNT(review.id)')
             ])
-            ->findOrFail($id);
+            ->firstOrFail();
 
         $reviews = \App\Models\Review::with('pembeli.user')
             ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
             ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
-            ->where('detail_pesanan.listing_id', $id)
+            ->where('detail_pesanan.listing_id', $listing->id)
             ->select('review.*')
             ->latest()
             ->take(4)
@@ -84,17 +85,17 @@ class MarketplaceController extends Controller
         return view('pembeli.marketplace.detail', compact('listing', 'reviews'));
     }
 
-    public function reviews($id)
+    public function reviews($slug)
     {
-        $listing = ListingMangga::with(['petani.user'])->findOrFail($id);
+        $listing = ListingMangga::with(['petani.user'])->where('slug', $slug)->firstOrFail();
         
         $reviews = \App\Models\Review::with('pembeli.user')
             ->join('pesanan', 'review.pesanan_id', '=', 'pesanan.id')
             ->join('detail_pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
-            ->where('detail_pesanan.listing_id', $id)
+            ->where('detail_pesanan.listing_id', $listing->id)
             ->select('review.*')
             ->latest()
-            ->paginate(20);
+            ->paginate(12);
 
         return view('pembeli.marketplace.reviews', compact('listing', 'reviews'));
     }

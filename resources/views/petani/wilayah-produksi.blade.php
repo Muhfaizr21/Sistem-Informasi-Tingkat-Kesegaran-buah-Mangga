@@ -1,10 +1,10 @@
 <x-petani-layout>
     <x-slot name="title">Wilayah Produksi & Geo-Analytics</x-slot>
 
-    <!-- Leaflet & Heatmap JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <!-- Leaflet & Heatmap Local -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/leaflet/leaflet.css') }}" />
+    <script src="{{ asset('assets/vendor/leaflet/leaflet.js') }}"></script>
+    <script src="{{ asset('assets/vendor/leaflet/leaflet-heat.js') }}"></script>
 
     <!-- Header Section -->
     <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">

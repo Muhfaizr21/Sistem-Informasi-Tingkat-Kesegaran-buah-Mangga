@@ -3,14 +3,21 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="description" content="Sistem Informasi Tingkat Kesegaran Buah Mangga Indramayu (SI-Mangga). Monitor kualitas dan beli mangga Indramayu terbaik langsung dari kebun.">
+    <meta name="keywords" content="mangga indramayu, kesegaran buah, ai scanner mangga, petani mangga, indramayu">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="SI-Mangga - Sistem Informasi Kesegaran Mangga Indramayu">
+    <meta property="og:description" content="Monitor kualitas dan beli mangga Indramayu terbaik langsung dari kebun.">
+    <meta property="og:image" content="{{ asset('storage/logo/logo si-mangga.png') }}">
 
         <title>{{ config('app.name', 'SI-Mangga') }} — Sistem Informasi Kesegaran Mangga Indramayu</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Localized Fonts -->
+        <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fonts.css') }}">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

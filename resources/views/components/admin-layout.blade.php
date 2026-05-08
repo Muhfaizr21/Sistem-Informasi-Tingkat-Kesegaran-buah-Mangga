@@ -7,79 +7,12 @@
 
     <title>{{ $title ?? 'Admin' }} - {{ config('app.name', 'Mangga Indramayu') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Localized Fonts & Icons -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/inter.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/material-symbols.css') }}">
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!-- Custom Tailwind Config for the provided UI -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary": {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            200: '#a7f3d0',
-                            300: '#6ee7b7',
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
-                        },
-                        "mango": {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            300: '#fcd34d',
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        },
-                        "primary-container": "#001f3f",
-                        "surface": "#ffffff",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#43474e",
-                        "outline-variant": "#c4c6cf",
-                        "background": "#f7f9fb",
-                        "on-background": "#191c1e",
-                        "surface-container-low": "#f2f4f6",
-                        "surface-container-high": "#e6e8ea",
-                        "surface-container-highest": "#e0e3e5",
-                        "error": "#ba1a1a",
-                        "secondary": "#2f6482"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "gutter": "24px",
-                        "stack-md": "16px",
-                        "container-padding": "32px",
-                        "stack-lg": "24px",
-                        "unit": "4px",
-                        "stack-sm": "8px",
-                        "sidebar-width": "260px"
-                    }
-                }
-            }
-        }
-    </script>
     @stack('styles')
 </head>
 <body class="bg-background text-on-background font-inter antialiased min-h-screen" x-data="{ sidebarOpen: false }">
@@ -120,8 +53,6 @@
         {{ $slot }}
     </main>
 
-    <!-- Alpine.js (for mobile toggle) -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('scripts')
 </body>
 </html>

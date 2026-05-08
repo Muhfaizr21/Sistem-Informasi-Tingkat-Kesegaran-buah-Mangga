@@ -75,20 +75,19 @@ class OrderController extends Controller
         $path = ImageHelper::uploadAsWebp($request->file('foto_selesai'), 'pesanan/selesai');
 
         $pesanan->update([
-            'status' => 'selesai',
-            'selesai_pada' => now(),
+            'status' => 'menunggu_verifikasi_selesai',
             'foto_selesai' => $path
         ]);
 
-        // Trigger Loyalty Update
-        $this->updateLoyalty($pesanan);
+        // Trigger Loyalty Update (Keep it here or move to admin? Let's move to admin for finality)
+        // $this->updateLoyalty($pesanan);
 
         // Notifikasi ke Pembeli
         \App\Models\Notifikasi::send(
             Auth::id(),
-            'pesanan_selesai',
-            'Pesanan Selesai! 🎉',
-            "Pesanan {$pesanan->kode_pesanan} telah Anda terima. Silakan berikan ulasan.",
+            'pesanan_terima_pembeli',
+            'Konfirmasi Penerimaan Terkirim! 📦',
+            "Bukti penerimaan untuk pesanan {$pesanan->kode_pesanan} telah terkirim. Mohon tunggu verifikasi admin untuk penyelesaian pesanan.",
             'pesanan',
             $pesanan->id
         );

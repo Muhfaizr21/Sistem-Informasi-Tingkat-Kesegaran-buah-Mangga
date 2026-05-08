@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
 require __DIR__ . '/auth.php';
 
 use App\Http\Controllers\admin\AdminController;
@@ -115,7 +116,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/verifikasi-pembayaran', [AdminController::class, 'verifikasiPembayaran'])->name('verifikasi-pembayaran');
     Route::post('/pesanan/{id}/konfirmasi', [AdminController::class, 'konfirmasiPembayaran'])->name('pesanan.konfirmasi');
     Route::post('/pesanan/{id}/tolak', [AdminController::class, 'tolakPembayaran'])->name('pesanan.tolak');
+    Route::post('/pesanan/{id}/konfirmasi-selesai', [AdminController::class, 'konfirmasiSelesai'])->name('pesanan.konfirmasi-selesai');
+
+    // Penarikan Dana (Withdrawal)
+    Route::get('/penarikan', [\App\Http\Controllers\Admin\PenarikanController::class, 'index'])->name('penarikan.index');
+    Route::get('/penarikan/{petani_id}', [\App\Http\Controllers\Admin\PenarikanController::class, 'show'])->name('penarikan.show');
+    Route::post('/penarikan/{id}/{action}', [\App\Http\Controllers\Admin\PenarikanController::class, 'action'])->name('penarikan.action');
 });
+
 
 use App\Http\Controllers\Pembeli\ScanController as PembeliScan;
 use App\Http\Controllers\Pembeli\MarketplaceController;
@@ -175,7 +183,7 @@ Route::prefix('pembeli')->name('pembeli.')->middleware(['auth', 'pembeli'])->gro
     Route::post('/pesanan/{id}/bayar', [PembeliOrder::class, 'pay'])->name('pesanan.bayar');
     Route::post('/pesanan/{id}/batal', [PembeliOrder::class, 'cancel'])->name('pesanan.batal');
     Route::post('/pesanan/{id}/update-payment-method', [PembeliOrder::class, 'updatePaymentMethod'])->name('pesanan.update-payment-method');
-    Route::post('/pesanan/{id}/selesai', [PembeliOrder::class, 'konfirmasiSelesai'])->name('pesanan.selesai');
+    Route::post('/pesanan/{id}/konfirmasi-selesai', [PembeliOrder::class, 'konfirmasiSelesai'])->name('pesanan.konfirmasi-selesai');
     Route::post('/pesanan/{id}/review', [ReviewController::class, 'store'])->name('pesanan.review');
     Route::post('/review/{id}/update', [ReviewController::class, 'update'])->name('review.update');
     Route::delete('/review/{id}', [ReviewController::class, 'destroy'])->name('review.destroy');
@@ -219,8 +227,9 @@ Route::prefix('petani')->name('petani.')->middleware(['auth'])->group(function (
     Route::post('/laporan-panen', [LaporanPanenController::class, 'store'])->name('laporan-panen.store');
     Route::put('/laporan-panen/{laporan}', [LaporanPanenController::class, 'update'])->name('laporan-panen.update');
 
-    // Laporan Penjualan
-    Route::get('/laporan-penjualan', [LaporanPenjualanController::class, 'index'])->name('laporan-penjualan');
+    // Laporan Penjualan & Penarikan Dana
+    Route::get('/laporan-penjualan', [\App\Http\Controllers\petani\PenghasilanController::class, 'index'])->name('laporan-penjualan');
+    Route::post('/laporan-penjualan/ajukan', [\App\Http\Controllers\petani\PenghasilanController::class, 'ajukan'])->name('penghasilan.tarik');
 
     // Profile Management
     Route::get('/profil', [PetaniProfileController::class, 'index'])->name('profil');

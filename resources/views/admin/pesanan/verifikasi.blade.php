@@ -34,14 +34,30 @@
         </div>
         @endif
 
+        <!-- Filter Tabs -->
+        <div class="flex items-center gap-2 bg-white p-3 rounded-[2rem] border border-outline-variant w-fit mx-auto shadow-sm">
+            <a href="{{ route('admin.verifikasi-pembayaran', ['type' => 'pembayaran']) }}" 
+               class="px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ $type === 'pembayaran' ? 'bg-on-surface text-white shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-low' }}">
+                Verifikasi Pembayaran
+            </a>
+            <a href="{{ route('admin.verifikasi-pembayaran', ['type' => 'penerimaan']) }}" 
+               class="px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ $type === 'penerimaan' ? 'bg-on-surface text-white shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-low' }}">
+                Konfirmasi Penerimaan
+            </a>
+        </div>
+
         <!-- Verification Cards Grid -->
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
             @forelse($pesanans as $pesanan)
             <div class="bg-white rounded-[2.5rem] border border-outline-variant shadow-sm overflow-hidden flex flex-col md:flex-row group transition-all hover:shadow-xl hover:border-primary-200">
-                <!-- Payment Proof Preview -->
-                <div class="w-full md:w-2/5 aspect-square md:aspect-auto bg-surface-container-low relative overflow-hidden cursor-pointer" onclick="window.open('{{ asset('storage/' . $pesanan->bukti_pembayaran) }}', '_blank')">
-                    @if($pesanan->bukti_pembayaran)
-                        <img src="{{ asset('storage/' . $pesanan->bukti_pembayaran) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                <!-- Proof Preview -->
+                @php
+                    $proofPath = ($type === 'penerimaan') ? $pesanan->foto_selesai : $pesanan->bukti_pembayaran;
+                    $isArrival = ($type === 'penerimaan');
+                @endphp
+                <div class="w-full md:w-2/5 aspect-square md:aspect-auto bg-surface-container-low relative overflow-hidden cursor-pointer" onclick="window.open('{{ asset('storage/' . $proofPath) }}', '_blank')">
+                    @if($proofPath)
+                        <img src="{{ asset('storage/' . $proofPath) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/20">Perbesar Bukti</span>
                         </div>
@@ -51,6 +67,11 @@
                             <span class="text-xs font-black uppercase tracking-widest">Tanpa Bukti</span>
                         </div>
                     @endif
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1.5 bg-on-surface/80 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest rounded-lg border border-white/10">
+                            {{ $isArrival ? 'Bukti Penerimaan' : 'Bukti Pembayaran' }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Details & Actions -->
@@ -62,50 +83,60 @@
                                 <h3 class="text-xl font-black text-on-surface leading-tight">{{ $pesanan->pembeli->user->name ?? 'Pembeli' }}</h3>
                             </div>
                             <div class="text-right">
-                                <p class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1">Nominal</p>
+                                <p class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1">Total</p>
                                 <p class="text-xl font-black text-primary-600">Rp{{ number_format($pesanan->total_bayar, 0, ',', '.') }}</p>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4">
+                        <div class="grid grid-cols-1 gap-3">
                             <div class="flex items-center gap-3 p-3 rounded-2xl bg-surface-container-low border border-outline-variant">
                                 <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-primary-600 shadow-sm">
                                     <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <span class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest leading-none">Waktu Unggah</span>
-                                    <span class="text-xs font-bold text-on-surface mt-0.5">{{ $pesanan->dibayar_pada ? $pesanan->dibayar_pada->translatedFormat('d M Y, H:i') : '-' }}</span>
+                                    <span class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest leading-none">Waktu Transaksi</span>
+                                    <span class="text-xs font-bold text-on-surface mt-0.5">{{ $pesanan->created_at->translatedFormat('d M Y, H:i') }}</span>
                                 </div>
                             </div>
 
                             <div class="flex items-center gap-3 p-3 rounded-2xl bg-surface-container-low border border-outline-variant">
                                 <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-mango-600 shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+                                    <span class="material-symbols-outlined text-[18px]">inventory_2</span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <span class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest leading-none">Metode Pembayaran</span>
-                                    <span class="text-xs font-bold text-on-surface mt-0.5 uppercase tracking-tighter">{{ str_replace('_', ' ', $pesanan->metode_pembayaran ?? 'Transfer') }}</span>
+                                    <span class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest leading-none">Produk</span>
+                                    <span class="text-xs font-bold text-on-surface mt-0.5">{{ $pesanan->items->count() }} Varietas • {{ $pesanan->items->sum('kuantitas_kg') }} Kg</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-3">
-                        <form action="{{ route('admin.pesanan.konfirmasi', $pesanan->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="w-full py-4 bg-on-surface text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-primary-600 transition-all shadow-xl active:scale-95">
-                                Konfirmasi Berhasil
+                        @if($isArrival)
+                            <form action="{{ route('admin.pesanan.konfirmasi-selesai', $pesanan->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-700 transition-all shadow-xl active:scale-95 shadow-emerald-600/10">
+                                    Konfirmasi Selesai
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('admin.pesanan.konfirmasi', $pesanan->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full py-4 bg-on-surface text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary-600 transition-all shadow-xl active:scale-95">
+                                    Konfirmasi Pembayaran
+                                </button>
+                            </form>
+                            
+                            <button onclick="document.getElementById('reject_modal_{{ $pesanan->id }}').classList.remove('hidden')" class="w-full py-4 bg-surface-container-high text-on-surface-variant rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all active:scale-95">
+                                Tolak Bukti
                             </button>
-                        </form>
-                        
-                        <button onclick="document.getElementById('reject_modal_{{ $pesanan->id }}').classList.remove('hidden')" class="w-full py-4 bg-surface-container-high text-on-surface-variant rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all active:scale-95">
-                            Tolak Bukti
-                        </button>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            <!-- Rejection Modal -->
+            <!-- Rejection Modal (Hanya untuk pembayaran) -->
+            @if(!$isArrival)
             <div id="reject_modal_{{ $pesanan->id }}" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-on-surface/80 backdrop-blur-md p-4">
                 <div class="bg-white rounded-[3rem] p-10 max-w-md w-full shadow-2xl border border-outline-variant animate-in zoom-in duration-300">
                     <div class="w-16 h-16 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-6">
@@ -128,13 +159,14 @@
                     </form>
                 </div>
             </div>
+            @endif
             @empty
             <div class="col-span-full py-32 text-center bg-white rounded-[3rem] border border-dashed border-outline-variant">
                 <div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center mx-auto mb-6">
                     <span class="material-symbols-outlined text-5xl text-on-surface-variant opacity-20">verified_user</span>
                 </div>
                 <h3 class="text-xl font-black text-on-surface tracking-tight uppercase">Antrean Kosong</h3>
-                <p class="text-on-surface-variant text-sm mt-1">Seluruh bukti pembayaran telah diverifikasi dengan sukses.</p>
+                <p class="text-on-surface-variant text-sm mt-1">Seluruh verifikasi {{ $type === 'penerimaan' ? 'penerimaan' : 'pembayaran' }} telah diselesaikan.</p>
             </div>
             @endforelse
         </div>

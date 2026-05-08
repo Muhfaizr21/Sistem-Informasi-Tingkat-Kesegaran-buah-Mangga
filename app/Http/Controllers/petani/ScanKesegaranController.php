@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ScanKesegaran;
 use App\Models\Lahan;
 use App\Models\Petani;
+use App\Helpers\ImageHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -29,14 +30,8 @@ class ScanKesegaranController extends Controller
                 'jenis_mangga' => 'required|string',
             ]);
 
-            // Save temporary image
-            $img = $request->image;
-            $img = preg_replace('/^data:image\/\w+;base64,/', '', $img);
-            $img = str_replace(' ', '+', $img);
-            $data = base64_decode($img);
-            $tempName = 'scan/temp/' . Str::random(10) . '_' . time() . '.webp';
-            Storage::disk('public')->put($tempName, $data);
-
+            // Save temporary image using helper
+            $tempName = ImageHelper::base64ToWebp($request->image, 'scan/temp');
             $imageAbsolutePath = storage_path('app/public/' . $tempName);
             
             // Call FastAPI AI Server
