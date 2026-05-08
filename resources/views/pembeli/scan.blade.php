@@ -1,369 +1,339 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AI Scanner Mangga - SI-Mangga</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { font-family: 'Instrument Sans', sans-serif; background-color: #0c0c0b; color: white; }
-        .scanner-view { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; border-radius: 40px; overflow: hidden; background: #000; border: 4px solid #FFB800; }
-        .scanner-overlay { position: absolute; inset: 0; border: 2px solid rgba(255, 184, 0, 0.3); border-radius: 36px; pointer-events: none; }
-        .scanner-line { position: absolute; left: 0; right: 0; height: 2px; background: #FFB800; box-shadow: 0 0 20px #FFB800; animation: scan 3s infinite linear; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        
-        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        
-        .animate-stagger-1 { animation: fadeIn 0.5s ease-out both; }
-        .animate-stagger-2 { animation: fadeIn 0.5s ease-out 0.1s both; }
-        .animate-stagger-3 { animation: fadeIn 0.5s ease-out 0.2s both; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .progress-ring__circle { transition: stroke-dashoffset 0.8s ease-in-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    </style>
-</head>
-<body class="antialiased selection:bg-[#FFB800]/30 min-h-screen">
-    <!-- Header -->
-    <div class="fixed top-0 left-0 right-0 p-6 flex items-center justify-between z-[110] bg-gradient-to-b from-[#0c0c0b] via-[#0c0c0b]/80 to-transparent">
-        <a href="{{ route('pembeli.dashboard') }}" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group backdrop-blur-md">
-            <svg class="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-        </a>
-        <div class="flex flex-col items-center">
-            <h1 class="text-sm font-bold tracking-widest uppercase opacity-50">AI Diagnostic</h1>
-            <div id="scan-status" class="flex items-center gap-2 mt-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-500">Siap Menganalisis</span>
-            </div>
+@extends('layouts.pembeli')
+
+@section('title', 'AI Scanner Mangga Premium')
+
+@section('content')
+<div class="relative min-h-[calc(100vh-200px)] flex flex-col items-center justify-center animate-in fade-in duration-700">
+    <!-- Header Info -->
+    <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--mango-green);">
+            <span class="w-8 h-[2px]" style="background: var(--gold);"></span>
+            AI Diagnostic Core
         </div>
-        <div class="w-12"></div>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--leaf-dark);" class="mb-4">
+            Deteksi <span style="color: var(--gold);">Kesegaran</span>
+        </h1>
+        <p class="text-sm max-w-md mx-auto" style="color: var(--text-light);">
+            Gunakan kamera Anda untuk menganalisis tingkat kematangan dan kualitas mangga secara real-time.
+        </p>
     </div>
 
     <!-- Scanner View -->
-    <div class="flex flex-col items-center justify-center min-h-screen px-6 pt-24 pb-12">
-        <div class="scanner-view mb-12 shadow-[0_0_50px_-12px_rgba(255,184,0,0.5)] border-white/5">
-            <video id="video" class="w-full h-full object-cover scale-x-[-1]" autoplay playsinline></video>
-            <div class="scanner-overlay"></div>
-            <div id="scan-line" class="scanner-line hidden"></div>
-            <canvas id="canvas" class="hidden"></canvas>
-        </div>
+    <div class="relative w-full max-w-[450px] aspect-square rounded-[3rem] overflow-hidden border-4 shadow-2xl group mb-12" style="border-color: var(--gold); box-shadow: 0 20px 50px rgba(212,160,23,0.2);">
+        <video id="video" class="w-full h-full object-cover scale-x-[-1]" autoplay playsinline></video>
+        
+        <!-- Scanning Overlays -->
+        <div class="absolute inset-0 border-[20px] border-black/10 pointer-events-none"></div>
+        <div class="absolute inset-0 border-2 border-white/20 rounded-[2.5rem] pointer-events-none m-4"></div>
+        
+        <!-- Animated Scan Line -->
+        <div id="scan-line" class="absolute left-0 right-0 h-[2px] z-20 hidden" style="background: var(--gold); box-shadow: 0 0 20px var(--gold); animation: scanLineMove 3s infinite linear;"></div>
+        
+        <canvas id="canvas" class="hidden"></canvas>
+        
+        <!-- Preview Image for Upload -->
+        <img id="preview-overlay" class="w-full h-full object-cover hidden absolute inset-0 z-10">
 
-        <div id="controls" class="w-full max-w-md space-y-10">
-            <div class="space-y-4">
-                <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Pilih Varietas</label>
+        <!-- Status Indicator -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/10 flex items-center gap-2">
+            <div id="status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span id="status-text" class="text-[9px] font-bold uppercase tracking-[0.2em] text-white">System Ready</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="w-full max-w-md space-y-8 pb-10">
+        <div class="grid grid-cols-1 gap-6">
+            <div class="space-y-3">
+                <label class="text-[0.65rem] uppercase tracking-[0.15em] font-bold ml-1" style="color: var(--text-light);">Varietas Target</label>
                 <div class="relative">
-                    <select id="jenis_mangga" class="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-white appearance-none focus:border-[#FFB800]/50 outline-none transition-all cursor-pointer">
-                        <option value="Harum Manis" class="bg-[#0c0c0b]">Harum Manis (Default)</option>
-                        <option value="Gedong Gincu" class="bg-[#0c0c0b]">Gedong Gincu</option>
-                        <option value="Manalagi" class="bg-[#0c0c0b]">Manalagi</option>
-                        <option value="Cengkir" class="bg-[#0c0c0b]">Cengkir / Indramayu</option>
-                        <option value="Golek" class="bg-[#0c0c0b]">Golek</option>
-                        <option value="Apel" class="bg-[#0c0c0b]">Apel</option>
-                        <option value="Kweni" class="bg-[#0c0c0b]">Kweni</option>
-                        <option value="Madu" class="bg-[#0c0c0b]">Madu</option>
-                        <option value="Podang" class="bg-[#0c0c0b]">Podang</option>
+                    <select id="jenis_mangga" class="w-full px-6 py-4 bg-white border rounded-2xl focus:ring-4 focus:ring-var(--gold)/10 focus:border-var(--gold) outline-none transition-all font-bold appearance-none" style="border-color: var(--gold-pale); color: var(--text-dark);">
+                        <option value="Harum Manis">Harum Manis (Default)</option>
+                        <option value="Gedong Gincu">Gedong Gincu</option>
+                        <option value="Manalagi">Manalagi</option>
+                        <option value="Cengkir">Cengkir / Indramayu</option>
+                        <option value="Golek">Golek</option>
+                        <option value="Kweni">Kweni</option>
                     </select>
-                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">keyboard_arrow_down</span>
                 </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <button id="capture-btn" class="w-full py-5 rounded-2xl font-black text-[0.75rem] uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3"
+                        style="background: var(--gold); color: white; box-shadow: 0 10px 25px rgba(212,160,23,0.3);">
+                    <span class="material-symbols-outlined text-[24px]">photo_camera</span>
+                    Mulai Scan AI
+                </button>
                 
-                <div class="flex flex-col gap-3">
-                    <button id="capture-btn" class="w-full py-6 bg-[#FFB800] hover:bg-[#10B981] rounded-[2rem] font-black text-lg shadow-2xl shadow-orange-900/40 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        SCAN KAMERA
-                    </button>
-                    <button id="upload-btn" type="button" class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-[2rem] font-bold text-sm tracking-wider transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 text-gray-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                        UPLOAD DARI GALERI
+                <div class="flex gap-4">
+                    <button id="upload-btn" class="flex-1 py-4 bg-white border rounded-2xl font-bold text-[0.7rem] uppercase tracking-widest transition-all hover:bg-var(--gold-pale) flex items-center justify-center gap-2"
+                            style="border-color: var(--gold-pale); color: var(--text-mid);">
+                        <span class="material-symbols-outlined text-[18px]">upload_file</span>
+                        Upload Gambar
                     </button>
                     <input type="file" id="file-upload" accept="image/*" class="hidden">
                 </div>
             </div>
-            <p class="text-center text-gray-600 text-[10px] uppercase tracking-widest font-bold">Posisikan mangga di tengah area scan, atau upload gambar</p>
         </div>
+    </div>
+</div>
 
-        <!-- Results Panel -->
-        <div id="results-panel" class="fixed inset-0 bg-[#0c0c0b] z-[150] hidden overflow-y-auto">
-            <div class="max-w-5xl mx-auto min-h-screen p-6 md:p-12 flex flex-col justify-center">
-                <div class="flex justify-between items-center mb-10 animate-stagger-1">
-                    <div>
-                        <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-2">HASIL ANALISIS</h2>
-                        <div class="flex items-center gap-2 text-gray-500">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-[10px] uppercase tracking-widest font-bold">Deep Neural Network Complete</span>
+<!-- Results Modal (Elite Design) -->
+<div id="results-panel" class="fixed inset-0 z-[200] hidden overflow-y-auto">
+    <div class="min-h-screen flex items-center justify-center p-4 md:p-8">
+        <div class="fixed inset-0 backdrop-blur-2xl animate-in fade-in duration-500" style="background: rgba(30, 58, 26, 0.9);"></div>
+        
+        <div class="relative bg-white rounded-[2.5rem] md:rounded-[3.5rem] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-500 border border-white/20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 w-full">
+                <!-- Result Image Column -->
+                <div class="relative aspect-square lg:aspect-auto bg-black">
+                    <img id="result-img" src="" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-10 left-10">
+                        <div class="px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full border border-white/20 mb-3 inline-block">
+                            <p id="result-varietas" class="text-[0.65rem] font-bold text-white uppercase tracking-[0.2em]">Varietas</p>
                         </div>
+                        <h2 id="result-cat" style="font-family: 'Playfair Display', serif; font-size: 3rem; color: white; line-height: 1;" class="capitalize">Kategori</h2>
                     </div>
-                    <button id="close-results" class="w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all border border-white/5">
-                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <div class="lg:col-span-5 animate-stagger-2">
-                        <div class="relative group">
-                            <div class="absolute -inset-1 bg-gradient-to-r from-[#FFB800] to-orange-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
-                            <div class="relative rounded-[2.5rem] overflow-hidden border border-white/10 aspect-square bg-black">
-                                <img id="result-img" src="" class="w-full h-full object-cover">
-                                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                                    <p id="result-varietas" class="text-xs font-bold tracking-widest uppercase text-white/60">Harum Manis</p>
+                <!-- Result Data Column -->
+                <div class="p-8 md:p-10 lg:p-12 flex flex-col">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <p class="text-[0.6rem] font-black uppercase tracking-[0.2em]" style="color: var(--mango-green);">Analysis Report</p>
+                            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--leaf-dark);">Quality Index</h3>
+                        </div>
+                        <button id="close-results" class="w-10 h-10 rounded-full bg-var(--gold-pale) flex items-center justify-center transition-colors hover:bg-var(--gold)/20" style="color: var(--gold);">
+                            <span class="material-symbols-outlined text-[20px]">close</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                        <!-- Score Circle -->
+                        <div class="flex flex-col items-center justify-center p-6 rounded-[2rem] border border-var(--gold-pale)" style="background: rgba(212,160,23,0.03);">
+                            <div class="relative w-24 h-24 mb-4">
+                                <svg class="w-full h-full" viewBox="0 0 100 100">
+                                    <circle class="text-var(--gold-pale)" stroke-width="8" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50"/>
+                                    <circle id="progress-circle" class="progress-ring__circle" stroke-width="8" stroke-dasharray="263.89" stroke-dashoffset="263.89" stroke-linecap="round" style="color: var(--gold);" fill="transparent" r="42" cx="50" cy="50"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span id="result-score" class="text-2xl font-black" style="color: var(--leaf-dark);">0%</span>
+                                </div>
+                            </div>
+                            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-var(--text-light)">Freshness Score</p>
+                        </div>
+
+                        <!-- Stats List -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-var(--gold-pale)/20">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: var(--mango-green);">verified</span>
+                                </div>
+                                <div>
+                                    <p class="text-[0.6rem] font-bold uppercase tracking-widest text-var(--text-light)">Akurasi AI</p>
+                                    <p id="result-acc" class="text-sm font-black" style="color: var(--text-dark);">-</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-var(--gold-pale)/20">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: var(--mango-orange);">straighten</span>
+                                </div>
+                                <div>
+                                    <p class="text-[0.6rem] font-bold uppercase tracking-widest text-var(--text-light)">Ukuran</p>
+                                    <p id="result-size" class="text-sm font-black" style="color: var(--text-dark);">-</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-var(--gold-pale)/20">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: var(--mango-green);">weight</span>
+                                </div>
+                                <div>
+                                    <p class="text-[0.6rem] font-bold uppercase tracking-widest text-var(--text-light)">Estimasi Berat</p>
+                                    <p id="result-weight" class="text-sm font-black" style="color: var(--text-dark);">-</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="lg:col-span-7 space-y-6 animate-stagger-3">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="glass-panel p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                                <div class="absolute top-0 right-0 p-4">
-                                    <div id="result-badge" class="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-full text-[8px] font-black uppercase tracking-tighter border border-emerald-500/20">PREMIUM</div>
-                                </div>
-                                <div class="relative w-32 h-32 mb-4">
-                                    <svg class="w-full h-full" viewBox="0 0 100 100">
-                                        <circle class="text-white/5" stroke-width="8" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50"/>
-                                        <circle id="progress-circle" class="text-[#FFB800] progress-ring__circle" stroke-width="8" stroke-dasharray="263.89" stroke-dashoffset="263.89" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="50" cy="50"/>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center flex-col">
-                                        <span id="result-score" class="text-4xl font-black text-white">0%</span>
-                                    </div>
-                                </div>
-                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Tingkat Kesegaran</p>
-                            </div>
 
-                            <div class="space-y-4">
-                                <div class="glass-panel p-6 rounded-[2rem] flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-500 uppercase font-black">Status Kematangan</p>
-                                        <p id="result-cat" class="text-xl font-bold capitalize">-</p>
-                                    </div>
-                                </div>
-                                <div class="glass-panel p-6 rounded-[2rem] flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04L12 21.35s-8-4.55-8-11.35V6.3a11.955 11.955 0 018-3.05 11.955 11.955 0 018 3.05v3.7c0 6.8-8 11.35-8 11.35z"></path></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-500 uppercase font-black">Akurasi Prediksi</p>
-                                        <p id="result-acc" class="text-xl font-bold">-</p>
-                                    </div>
-                                </div>
+                    <div class="p-6 rounded-3xl mb-8 border border-var(--gold-pale)" style="background: rgba(212,160,23,0.03);">
+                        <div class="flex items-start gap-4">
+                            <span class="material-symbols-outlined text-var(--gold)" style="font-size: 24px;">lightbulb</span>
+                            <div>
+                                <h4 class="font-bold text-sm mb-1" style="color: var(--text-dark);">Rekomendasi Cerdas</h4>
+                                <p id="result-advice" class="text-xs leading-relaxed" style="color: var(--text-mid);">-</p>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Tambahan Metrik Detail (Warna, Tekstur, Ukuran) -->
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Warna</p>
-                                <p id="result-warna" class="text-lg font-bold text-[#FFB800]">-</p>
-                            </div>
-                            <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Tekstur</p>
-                                <p id="result-tekstur" class="text-lg font-bold text-orange-400">-</p>
-                            </div>
-                            <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Ukuran</p>
-                                <p id="result-bentuk" class="text-lg font-bold text-emerald-400">-</p>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-8 rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-transparent">
-                            <div class="flex items-start gap-4">
-                                <div class="text-2xl mt-1">💡</div>
-                                <div>
-                                    <h4 class="font-bold text-lg mb-2">Rekomendasi Cerdas</h4>
-                                    <p id="result-advice" class="text-sm text-gray-400 leading-relaxed font-medium">-</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                            <button id="simpan-btn" class="flex-1 py-5 bg-white text-black hover:bg-gray-200 rounded-[1.5rem] font-black text-sm tracking-widest uppercase transition-all shadow-[0_20px_40px_-12px_rgba(255,255,255,0.2)]">
-                                SIMPAN KE RIWAYAT
-                            </button>
-                            <button id="scan-ulang-btn" class="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-[1.5rem] font-bold text-sm tracking-widest uppercase transition-all border border-white/5">
-                                SCAN ULANG
-                            </button>
-                        </div>
+                    <div class="flex gap-4 mt-auto pt-6">
+                        <button id="simpan-btn" class="flex-[2] py-5 text-white rounded-2xl font-black text-[0.7rem] uppercase tracking-widest transition-all shadow-xl shadow-orange-900/20 active:scale-95"
+                                style="background: var(--gold);">
+                            Simpan ke Riwayat
+                        </button>
+                        <button id="scan-ulang-btn" class="flex-1 py-5 border rounded-2xl font-bold text-[0.7rem] uppercase tracking-widest transition-all hover:bg-gray-50"
+                                style="border-color: var(--gold-pale); color: var(--text-light);">
+                            Scan Ulang
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const captureBtn = document.getElementById('capture-btn');
-        const uploadBtn = document.getElementById('upload-btn');
-        const fileUpload = document.getElementById('file-upload');
-        const scanLine = document.getElementById('scan-line');
-        const scanStatus = $('#scan-status');
+<style>
+    @keyframes scanLineMove {
+        0% { top: 10%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { top: 90%; opacity: 0; }
+    }
+    .progress-ring__circle {
+        transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+    }
+</style>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('capture-btn');
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileUpload = document.getElementById('file-upload');
+    const scanLine = document.getElementById('scan-line');
+    const previewImg = document.getElementById('preview-overlay');
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-dot');
+    
+    let currentAnalysis = null;
+    let currentTempPath = null;
+
+    async function initCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment', width: 800, height: 800 }, 
+                audio: false 
+            });
+            video.srcObject = stream;
+            statusText.innerText = 'Camera Connected';
+        } catch (err) {
+            statusText.innerText = 'Camera Error';
+            statusDot.style.backgroundColor = '#ef4444';
+        }
+    }
+
+    uploadBtn.addEventListener('click', () => fileUpload.click());
+
+    fileUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                previewImg.src = imageData;
+                previewImg.classList.remove('hidden');
+                
+                $(uploadBtn).prop('disabled', true).text('PROCESSING...');
+                $(captureBtn).prop('disabled', true);
+                scanImage(imageData);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    captureBtn.addEventListener('click', async () => {
+        if (video.readyState < 2) {
+            Swal.fire({ title: 'Gagal', text: 'Kamera belum siap. Mohon tunggu sebentar.', icon: 'warning', confirmButtonColor: '#d4a017' });
+            return;
+        }
+
+        $(captureBtn).prop('disabled', true).text('ANALYZING...');
+        $(uploadBtn).prop('disabled', true);
         
-        let currentAnalysis = null;
-        let currentTempPath = null;
+        const context = canvas.getContext('2d');
+        // Ensure size is at least something if video is not reporting correctly
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 640;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        // Preview Image Element for Upload
-        const previewImg = document.createElement('img');
-        previewImg.id = 'preview-overlay';
-        previewImg.className = 'w-full h-full object-cover hidden absolute inset-0 z-10 rounded-[36px]';
-        document.querySelector('.scanner-view').appendChild(previewImg);
+        const imageData = canvas.toDataURL('image/webp', 0.8);
+        scanImage(imageData);
+    });
 
-        uploadBtn.addEventListener('click', () => {
-            fileUpload.click();
-        });
+    function scanImage(imageData) {
+        const jenis = $('#jenis_mangga').val();
+        scanLine.classList.remove('hidden');
+        statusText.innerText = 'AI ANALYZING...';
 
-        fileUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-                    previewImg.src = imageData;
-                    previewImg.classList.remove('hidden');
-                    
-                    $(uploadBtn).prop('disabled', true).text('PROSES AI...');
-                    $(captureBtn).prop('disabled', true);
-                    scanImage(imageData);
-                };
-                reader.readAsDataURL(file);
+        $.ajax({
+            url: "{{ route('pembeli.scan.proses') }}",
+            method: "POST",
+            data: { _token: "{{ csrf_token() }}", image: imageData, jenis_mangga: jenis },
+            success: function(response) {
+                scanLine.classList.add('hidden');
+                statusText.innerText = 'COMPLETED';
+                currentAnalysis = response.analysis;
+                currentTempPath = response.temp_path;
+                setTimeout(() => { showResults(response.analysis, response.image_url, jenis); }, 500);
+            },
+            error: function(xhr) {
+                scanLine.classList.add('hidden');
+                statusText.innerText = 'SYSTEM READY';
+                $(captureBtn).prop('disabled', false).html('<span class="material-symbols-outlined text-[24px]">photo_camera</span> Mulai Scan AI');
+                $(uploadBtn).prop('disabled', false).html('<span class="material-symbols-outlined text-[18px]">upload_file</span> Upload Gambar');
+                previewImg.classList.add('hidden');
+                
+                const msg = xhr.responseJSON ? xhr.responseJSON.message : 'AI Server Error';
+                Swal.fire({ title: 'Gagal', text: msg, icon: 'warning', confirmButtonColor: '#d4a017' });
             }
         });
+    }
 
-        async function initCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment', width: 800, height: 800 }, 
-                    audio: false 
+    function showResults(data, imageUrl, varietas) {
+        $('#result-img').attr('src', imageUrl);
+        $('#result-varietas').text(varietas);
+        $('#result-score').text(data.skor_kesegaran + '%');
+        
+        let displayCat = data.kategori.replace('_', ' ');
+        let advice = "";
+        if (data.kategori.includes('busuk')) advice = "Terdeteksi pembusukan! Segera pisahkan agar tidak menular.";
+        else if (data.kategori == 'mentah') advice = "Mangga masih mentah. Simpan di suhu ruangan selama 3-5 hari.";
+        else if (data.kategori == 'setengah_matang') advice = "Kondisi hampir optimal. Nikmati dalam 1-2 hari.";
+        else advice = "Kondisi optimal! Sangat segar dan siap dikonsumsi.";
+        
+        $('#result-cat').text(displayCat);
+        $('#result-advice').text(advice);
+        $('#result-acc').text(data.skor_kepercayaan + '% Match');
+        $('#result-warna').text(data.persentase_warna + '% Color Index');
+        $('#result-size').text(data.panjang_cm + ' cm');
+        $('#result-weight').text(data.berat_gr + ' gram');
+        
+        const circle = document.getElementById('progress-circle');
+        const circumference = 42 * 2 * Math.PI;
+        circle.style.strokeDashoffset = circumference - (data.skor_kesegaran / 100 * circumference);
+        
+        $('#results-panel').removeClass('hidden').addClass('animate-in fade-in duration-500');
+    }
+
+    $('#simpan-btn').click(function() {
+        $(this).prop('disabled', true).text('SAVING...');
+        $.ajax({
+            url: "{{ route('pembeli.scan.simpan') }}",
+            method: "POST",
+            data: { _token: "{{ csrf_token() }}", temp_path: currentTempPath, jenis_mangga: $('#jenis_mangga').val(), ...currentAnalysis },
+            success: function() {
+                Swal.fire({ icon: 'success', title: 'Data Tersimpan', confirmButtonColor: '#d4a017' }).then(() => {
+                    window.location.href = "{{ route('pembeli.scan.history') }}";
                 });
-                video.srcObject = stream;
-            } catch (err) {
-                Swal.fire({ title: 'Akses Kamera Gagal', text: 'Berikan izin kamera.', icon: 'error', confirmButtonColor: '#FFB800' });
             }
-        }
-
-        async function performScan() {
-            const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const imageData = canvas.toDataURL('image/webp', 0.6);
-            return scanImage(imageData);
-        }
-
-        function scanImage(imageData) {
-            const jenis = $('#jenis_mangga').val();
-
-            scanLine.classList.remove('hidden');
-            scanStatus.find('span:last').text('MENGANALISIS...').addClass('animate-pulse');
-
-            return $.ajax({
-                url: "{{ route('pembeli.scan.proses') }}",
-                method: "POST",
-                data: { _token: "{{ csrf_token() }}", image: imageData, jenis_mangga: jenis },
-                success: function(response) {
-                    scanLine.classList.add('hidden');
-                    scanStatus.find('span:last').text('ANALISIS BERHASIL').removeClass('animate-pulse');
-                    currentAnalysis = response.analysis;
-                    currentTempPath = response.temp_path;
-                    setTimeout(() => { showResults(response.analysis, response.image_url, jenis); }, 500);
-                },
-                error: function(xhr) {
-                    scanLine.classList.add('hidden');
-                    scanStatus.find('span:last').text('SIAP MENGANALISIS').removeClass('animate-pulse');
-                    if (xhr.status === 422) {
-                        Swal.fire({
-                            title: 'Objek Tidak Valid',
-                            text: xhr.responseJSON.message,
-                            icon: 'warning',
-                            confirmButtonColor: '#FFB800'
-                        });
-                    } else {
-                        Swal.fire({ title: 'Error', text: 'Gagal menghubungi AI Server.', icon: 'error', confirmButtonColor: '#FFB800' });
-                    }
-                    
-                    // Reset UI Buttons
-                    $(captureBtn).prop('disabled', false).html('<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> SCAN KAMERA');
-                    $(uploadBtn).prop('disabled', false).html('<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> UPLOAD DARI GALERI');
-                    
-                    // Reset preview
-                    previewImg.classList.add('hidden');
-                    fileUpload.value = '';
-                }
-            });
-        }
-
-        captureBtn.addEventListener('click', async () => {
-            $(captureBtn).prop('disabled', true).text('PROSES AI...');
-            $(uploadBtn).prop('disabled', true);
-            await performScan();
         });
+    });
 
-        function showResults(data, imageUrl, varietas) {
-            $('#result-img').attr('src', imageUrl);
-            $('#result-varietas').text(varietas);
-            $('#result-score').text(data.skor_kesegaran + '%');
-            let displayCat = data.kategori.replace('_', ' ');
-            let advice = "";
-            
-            if (data.kategori == 'busuk' || data.kategori == 'busuk_awal') {
-                advice = "Terdeteksi pembusukan! Buang atau jadikan kompos.";
-            } else if (data.kategori == 'mentah') {
-                advice = "Mangga masih mentah. Simpan di suhu ruangan bersama apel/pisang.";
-            } else if (data.kategori == 'setengah_matang') {
-                advice = "Perlu penyimpanan 1-2 hari di suhu ruangan.";
-            } else if (data.kategori == 'sangat_matang') {
-                advice = "Sangat matang. Segera konsumsi atau simpan di kulkas.";
-            } else {
-                advice = "Kondisi optimal. Nikmati segera atau siap jual!";
-            }
-            
-            $('#result-cat').text(displayCat);
-            $('#result-advice').text(advice);
-            $('#result-acc').text(data.skor_kepercayaan + '%');
-            $('#result-warna').text(data.persentase_warna + '%');
-            $('#result-tekstur').text(data.skor_tekstur + '/100');
-            $('#result-bentuk').text(data.estimasi_ukuran);
-            
-            const circle = document.getElementById('progress-circle');
-            const circumference = 42 * 2 * Math.PI;
-            circle.style.strokeDashoffset = circumference - (data.skor_kesegaran / 100 * circumference);
-            
-            $('#results-panel').removeClass('hidden').addClass('animate-in fade-in duration-500');
-        }
+    $('#scan-ulang-btn, #close-results').click(() => window.location.reload());
 
-        $('#simpan-btn').click(function() {
-            $.ajax({
-                url: "{{ route('pembeli.scan.simpan') }}",
-                method: "POST",
-                data: { _token: "{{ csrf_token() }}", temp_path: currentTempPath, jenis_mangga: $('#jenis_mangga').val(), ...currentAnalysis },
-                success: function() {
-                    Swal.fire({ icon: 'success', title: 'Tersimpan!', confirmButtonColor: '#FFB800' }).then(() => {
-                        window.location.href = "{{ route('pembeli.scan.history') }}";
-                    });
-                }
-            });
-        });
-
-        function batalScan() {
-            if (currentTempPath) {
-                $.ajax({ url: "{{ route('pembeli.scan.batal') }}", method: "POST", data: { _token: "{{ csrf_token() }}", temp_path: currentTempPath } });
-            }
-            window.location.reload();
-        }
-
-        $('#scan-ulang-btn, #close-results').click(batalScan);
-        initCamera();
-    </script>
-</body>
-</html>
+    initCamera();
+</script>
+@endsection

@@ -3,15 +3,17 @@
 @section('title', 'Petani Favorit Saya')
 
 @section('content')
-<div class="min-h-screen pb-24">
+<div class="relative animate-in fade-in duration-700">
     <!-- Header Section -->
     <div class="mb-12 animate-in fade-in slide-in-from-left duration-700">
-        <h1 class="text-4xl md:text-5xl font-black text-[#1b1b18] tracking-tight mb-4">
-            Petani <span class="text-[#FFB800]">Favorit</span> Saya
+        <div class="inline-flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--mango-green);">
+            <span class="w-8 h-[2px]" style="background: var(--gold);"></span>
+            Trusted Partners
+        </div>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3rem); line-height: 1.1; color: var(--leaf-dark);">
+            Petani <span style="color: var(--gold);">Favorit</span> Saya
         </h1>
-        <p class="text-lg text-[#706f6c] font-medium leading-relaxed max-w-2xl">
-            Kumpulan petani terpercaya yang selalu memberikan kualitas terbaik untuk Anda.
-        </p>
+        <p class="text-sm mt-2" style="color: var(--text-light);">Kumpulan petani terpercaya yang selalu memberikan kualitas terbaik untuk Anda.</p>
     </div>
 
     <!-- Favorites Grid -->
@@ -19,10 +21,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($favorites as $fav)
                 @php $petani = $fav->petani; @endphp
-                <div class="bg-white rounded-[3rem] overflow-hidden border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] transition-all group animate-in zoom-in-95 duration-500">
-                    <div class="p-10">
+                <div class="bg-white rounded-[2.5rem] overflow-hidden border shadow-sm hover:shadow-md transition-all group animate-in zoom-in-95 duration-500" style="border-color: var(--gold-pale);">
+                    <div class="p-8">
                         <div class="flex items-center gap-6 mb-8">
-                            <div class="w-20 h-20 rounded-3xl bg-orange-50 overflow-hidden border-2 border-white shadow-inner flex items-center justify-center text-[#FFB800] font-black text-2xl">
+                            <div class="w-20 h-20 rounded-2xl flex items-center justify-center font-black text-2xl overflow-hidden border-2 shadow-sm" style="background: var(--gold-pale); border-color: white; color: var(--gold);">
                                 @if($petani->user->foto_profil)
                                     <img src="{{ asset('storage/' . $petani->user->foto_profil) }}" class="w-full h-full object-cover">
                                 @else
@@ -30,32 +32,32 @@
                                 @endif
                             </div>
                             <div>
-                                <h3 class="text-xl font-black text-[#1b1b18] group-hover:text-[#FFB800] transition-colors line-clamp-1">{{ $petani->user->nama }}</h3>
+                                <h3 style="font-family: 'Lora', serif; font-size: 1.25rem; font-weight: 600; color: var(--leaf-dark);" class="group-hover:text-var(--gold) transition-colors line-clamp-1">{{ $petani->user->nama }}</h3>
                                 <div class="flex items-center gap-2 mt-1">
-                                    <div class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-[8px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-1">
+                                    <div class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border flex items-center gap-1" style="background: rgba(16, 185, 129, 0.05); color: #10B981; border-color: rgba(16, 185, 129, 0.1);">
                                         <span class="material-symbols-outlined text-[10px] fill-1">verified</span>
-                                        Terverifikasi
+                                        VERIFIED
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="space-y-4 mb-8">
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="font-bold text-gray-400 uppercase tracking-widest">Kelompok Tani</span>
-                                <span class="font-black text-[#1b1b18]">{{ $petani->kelompok_tani ?? 'Mandiri' }}</span>
+                            <div class="flex justify-between items-center text-[0.65rem] font-bold uppercase tracking-widest">
+                                <span style="color: var(--text-light);">Kelompok Tani</span>
+                                <span style="color: var(--text-dark);">{{ $petani->kelompok_tani ?? 'Mandiri' }}</span>
                             </div>
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="font-bold text-gray-400 uppercase tracking-widest">Produk Aktif</span>
-                                <span class="font-black text-[#FFB800]">{{ $petani->listings->count() }} Varietas</span>
+                            <div class="flex justify-between items-center text-[0.65rem] font-bold uppercase tracking-widest">
+                                <span style="color: var(--text-light);">Produk Aktif</span>
+                                <span style="color: var(--gold);">{{ $petani->listings->count() }} Varietas</span>
                             </div>
                         </div>
 
                         <div class="flex gap-3">
-                            <a href="{{ route('pembeli.marketplace.petani', $petani->id) }}" class="flex-1 py-4 bg-gray-50 text-[#1b1b18] rounded-2xl text-[10px] font-black text-center uppercase tracking-widest hover:bg-gray-100 transition-all">
+                            <a href="{{ route('pembeli.marketplace.petani', $petani->id) }}" class="flex-1 py-4 rounded-xl text-[10px] font-black text-center uppercase tracking-widest transition-all no-underline" style="background: var(--cream); border: 1px solid var(--gold-pale); color: var(--text-dark);">
                                 PROFIL
                             </a>
-                            <button onclick="toggleFavorit({{ $petani->id }}, this)" class="w-14 py-4 bg-orange-100 text-[#FFB800] rounded-2xl flex items-center justify-center hover:bg-orange-200 transition-all active:scale-90">
+                            <button onclick="toggleFavorit({{ $petani->id }}, this)" class="w-14 py-4 rounded-xl flex items-center justify-center transition-all active:scale-90" style="background: var(--gold-pale); color: var(--gold);">
                                 <span class="material-symbols-outlined fill-1">favorite</span>
                             </button>
                         </div>
@@ -68,14 +70,15 @@
             {{ $favorites->links() }}
         </div>
     @else
-        <div class="text-center py-32 bg-white rounded-[4rem] border-2 border-dashed border-gray-100 animate-in zoom-in-95 duration-700">
-            <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8">
-                <span class="material-symbols-outlined text-4xl text-gray-300">favorite</span>
+        <div class="text-center py-32 bg-white rounded-[4rem] border-2 border-dashed" style="border-color: var(--gold-pale);">
+            <div class="w-20 h-20 bg-var(--gold-pale) rounded-full flex items-center justify-center mx-auto mb-8">
+                <span class="material-symbols-outlined text-4xl opacity-20" style="color: var(--gold);">favorite</span>
             </div>
-            <h3 class="text-xl font-black text-[#1b1b18] mb-2">Belum ada petani favorit</h3>
-            <p class="text-gray-400 font-medium mb-8">Mulai jelajahi marketplace dan simpan petani pilihan Anda.</p>
-            <a href="{{ route('pembeli.marketplace.katalog') }}" class="inline-flex items-center px-10 py-5 bg-[#FFB800] text-white rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-[#1b1b18] transition-all shadow-xl shadow-orange-900/20">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--leaf-dark);" class="mb-2">Belum Ada Petani Favorit</h3>
+            <p class="text-sm mb-10" style="color: var(--text-light);">Mulai jelajahi marketplace dan simpan petani pilihan Anda.</p>
+            <a href="{{ route('pembeli.marketplace.katalog') }}" class="inline-flex items-center px-10 py-5 rounded-xl font-black text-[0.7rem] uppercase tracking-widest transition-all shadow-xl no-underline" style="background: var(--gold); color: white;">
                 JELAJAHI MARKETPLACE
+                <span class="material-symbols-outlined text-sm ml-2">explore</span>
             </a>
         </div>
     @endif
@@ -98,7 +101,6 @@ function toggleFavorit(id, btn) {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'removed') {
-            // Re-render or remove card? For simplicity, we just reload if in favorit page
             window.location.reload();
         }
     })

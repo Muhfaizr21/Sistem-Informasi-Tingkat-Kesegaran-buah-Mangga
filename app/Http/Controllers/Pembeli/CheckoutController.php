@@ -15,10 +15,15 @@ use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
             $cart = session()->get('cart', []);
+            $selectedIds = $request->query('items', []);
+            
+            if (!empty($selectedIds)) {
+                $cart = array_intersect_key($cart, array_flip($selectedIds));
+            }
             
             if (empty($cart) || !is_array($cart)) {
                 return redirect()->route('pembeli.cart.index')->with('error', 'Keranjang Anda kosong.');
@@ -96,11 +101,16 @@ class CheckoutController extends Controller
             'alamat_id' => 'required|exists:alamat_pengiriman,id',
             'metode_pengiriman' => 'required|string',
             'metode_pembayaran' => 'required|string|in:midtrans,transfer,cod',
+            'items' => 'required|array',
+            'items.*' => 'string'
         ]);
 
-        $cart = session()->get('cart', []);
-        if (empty($cart) || !is_array($cart)) {
-            return redirect()->route('pembeli.cart.index')->with('error', 'Keranjang kosong.');
+        $fullCart = session()->get('cart', []);
+        $selectedIds = $request->input('items');
+        $cart = array_intersect_key($fullCart, array_flip($selectedIds));
+
+        if (empty($cart)) {
+            return redirect()->route('pembeli.cart.index')->with('error', 'Tidak ada produk terpilih untuk diproses.');
         }
 
         $user = Auth::user();
@@ -228,7 +238,9 @@ class CheckoutController extends Controller
                 $pesanan->update(['snap_token' => $snapToken]);
             }
 
-            session()->forget('cart');
+            // Remove only processed items from session cart
+            $remainingCart = array_diff_key($fullCart, array_flip($selectedIds));
+            session()->put('cart', $remainingCart);
             DB::commit();
 
             return redirect()->route('pembeli.pesanan.show', $pesanan->id)->with('success', 'Pesanan berhasil dibuat! Silakan ikuti instruksi pembayaran.');

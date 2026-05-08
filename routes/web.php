@@ -18,6 +18,43 @@ Route::get('/syarat-dan-ketentuan', function () {
     return view('pages.syarat');
 })->name('syarat');
 
+Route::get('/tentang-kami', function () {
+    return view('pages.tentang-kami');
+})->name('tentang-kami');
+
+Route::get('/panduan', function () {
+    return view('pages.panduan');
+})->name('panduan');
+
+Route::get('/faq', function () {
+    return view('pages.faq');
+})->name('faq');
+
+Route::get('/kontak', function () {
+    return view('pages.kontak');
+})->name('kontak');
+
+// Feature Redirections (Require Auth)
+Route::get('/fitur/deteksi-kualitas', function () {
+    if (!auth()->check()) return redirect()->route('login');
+    return auth()->user()->role === 'petani' ? redirect()->route('petani.cek-kesegaran') : redirect()->route('pembeli.scan');
+})->name('fitur.deteksi-kualitas');
+
+Route::get('/fitur/analitik-panen', function () {
+    if (!auth()->check()) return redirect()->route('login');
+    return auth()->user()->role === 'petani' ? redirect()->route('petani.dashboard') : redirect()->route('pembeli.dashboard');
+})->name('fitur.analitik-panen');
+
+Route::get('/fitur/marketplace', function () {
+    if (!auth()->check()) return redirect()->route('login');
+    return redirect()->route('pembeli.marketplace.katalog');
+})->name('fitur.marketplace');
+
+Route::get('/fitur/produk', function () {
+    if (!auth()->check()) return redirect()->route('login');
+    return auth()->user()->role === 'petani' ? redirect()->route('petani.produk.index') : redirect()->route('pembeli.marketplace.katalog');
+})->name('fitur.produk');
+
 use App\Http\Controllers\Pembeli\DashboardController as PembeliDashboard;
 use App\Http\Controllers\Pembeli\ReviewController;
 use App\Http\Controllers\Pembeli\BuyerController;

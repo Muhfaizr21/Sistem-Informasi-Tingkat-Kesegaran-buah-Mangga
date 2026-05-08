@@ -1,95 +1,79 @@
-<nav x-data="{ open: false, scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)" :class="scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-gray-200/50 dark:border-gray-700/50 shadow-sm' : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800'" class="border-b sticky top-0 z-50 transition-all duration-300">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('landing') }}" class="flex items-center gap-2 sm:gap-3">
-                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" class="block h-10 sm:h-12 w-auto object-contain" alt="SI-Mangga Logo" />
-                        <span class="font-bold text-xl sm:text-2xl tracking-tight text-[#1b1b18] dark:text-white mt-1">SI-<span class="text-[#FFB800]">Mangga</span></span>
-                    </a>
-                </div>
+<nav x-data="{ open: false, scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)"
+    :class="scrolled ? 'shadow-[0_2px_20px_rgba(212,160,23,0.12)]' : ''"
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[5%] h-[72px] border-b-2 border-[#D4A017] transition-all duration-300"
+    style="background: rgba(250,245,228,0.92); backdrop-filter: blur(12px);">
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('landing')" :active="request()->routeIs('landing')">
-                        {{ __('Beranda') }}
-                    </x-nav-link>
-                    <x-nav-link href="#features">
-                        {{ __('Fitur') }}
-                    </x-nav-link>
-                    <x-nav-link href="#about">
-                        {{ __('Tentang') }}
-                    </x-nav-link>
-                </div>
-            </div>
-
-            <div class="hidden sm:flex sm:items-center sm:ml-6">
-                @if (Route::has('login'))
-                    <div class="space-x-4">
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-300 underline font-semibold italic">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">
-                                {{ __('Login') }}
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 focus:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-lg shadow-yellow-500/20">
-                                    {{ __('Register') }}
-                                </a>
-                            @endif
-                        @endauth
-                    </div>
-                @endif
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-mr-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+    <!-- Brand -->
+    <a href="{{ route('landing') }}" class="flex items-center gap-3 no-underline">
+        <div class="w-12 h-12 sm:w-11 sm:h-11 bg-[#4A7C3F] rounded-full flex items-center justify-center shadow-[0_3px_10px_rgba(74,124,63,0.3)] overflow-hidden">
+            <img src="/storage/logo/logo.png" class="h-9 w-9 sm:h-8 sm:w-8 object-contain" alt="Logo" />
         </div>
+        <span style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: #1E3A1A;">SI-<span style="color: #D4A017;">Mangga</span></span>
+    </a>
+
+    <!-- Desktop Links -->
+    <ul class="hidden md:flex items-center gap-9 list-none m-0 p-0">
+        <li><a href="{{ route('landing') }}" class="text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline relative pb-1 hover:text-[#D4A017] transition-colors group" style="@if(request()->routeIs('landing')) color: #4A7C3F; @endif">
+            Beranda
+            <span class="absolute bottom-0 left-0 h-[2px] bg-[#4A7C3F] transition-all duration-300 @if(request()->routeIs('landing')) w-full @else w-0 group-hover:w-full group-hover:bg-[#D4A017] @endif"></span>
+        </a></li>
+        <li><a href="{{ route('panduan') }}" class="text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline relative pb-1 hover:text-[#D4A017] transition-colors group" style="@if(request()->routeIs('panduan')) color: #4A7C3F; @endif">
+            Fitur
+            <span class="absolute bottom-0 left-0 h-[2px] bg-[#4A7C3F] transition-all duration-300 @if(request()->routeIs('panduan')) w-full @else w-0 group-hover:w-full group-hover:bg-[#D4A017] @endif"></span>
+        </a></li>
+        <li><a href="{{ route('tentang-kami') }}" class="text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline relative pb-1 hover:text-[#D4A017] transition-colors group" style="@if(request()->routeIs('tentang-kami')) color: #4A7C3F; @endif">
+            Tentang
+            <span class="absolute bottom-0 left-0 h-[2px] bg-[#4A7C3F] transition-all duration-300 @if(request()->routeIs('tentang-kami')) w-full @else w-0 group-hover:w-full group-hover:bg-[#D4A017] @endif"></span>
+        </a></li>
+        <li><a href="{{ route('kontak') }}" class="text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline relative pb-1 hover:text-[#D4A017] transition-colors group" style="@if(request()->routeIs('kontak')) color: #4A7C3F; @endif">
+            Kontak
+            <span class="absolute bottom-0 left-0 h-[2px] bg-[#4A7C3F] transition-all duration-300 @if(request()->routeIs('kontak')) w-full @else w-0 group-hover:w-full group-hover:bg-[#D4A017] @endif"></span>
+        </a></li>
+    </ul>
+
+    <!-- Desktop Auth Buttons -->
+    <div class="hidden md:flex items-center gap-3">
+        @if (Route::has('login'))
+            @auth
+                <a href="{{ url('/dashboard') }}" class="px-5 py-2 border-2 border-[#1E3A1A] bg-transparent text-[#1E3A1A] font-semibold text-[0.8rem] uppercase tracking-[0.08em] rounded no-underline transition-all hover:bg-[#1E3A1A] hover:text-white">Dashboard</a>
+            @else
+                <a href="{{ route('login') }}" class="px-5 py-2 border-2 border-[#1E3A1A] bg-transparent text-[#1E3A1A] font-semibold text-[0.8rem] uppercase tracking-[0.08em] rounded no-underline transition-all hover:bg-[#1E3A1A] hover:text-white">Login</a>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="px-5 py-[9px] border-2 border-[#D4A017] bg-[#D4A017] text-white font-bold text-[0.8rem] uppercase tracking-[0.08em] rounded no-underline transition-all hover:bg-[#E8821A] hover:border-[#E8821A]">Daftar</a>
+                @endif
+            @endauth
+        @endif
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('landing')" :active="request()->routeIs('landing')">
-                {{ __('Beranda') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link href="#features">
-                {{ __('Fitur') }}
-            </x-responsive-nav-link>
-        </div>
+    <!-- Mobile Hamburger -->
+    <div class="flex items-center md:hidden">
+        <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded text-[#3D3520] hover:text-[#D4A017] hover:bg-[#FFF8E1] transition">
+            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path :class="{'hidden': !open, 'inline-flex': open}" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            @auth
-                <div class="px-4">
-                    <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-responsive-nav-link>
-                </div>
-            @else
-                <div class="space-y-1">
-                    <x-responsive-nav-link :href="route('login')">
-                        {{ __('Masuk') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('register')">
-                        {{ __('Daftar') }}
-                    </x-responsive-nav-link>
-                </div>
-            @endauth
+    <!-- Mobile Menu -->
+    <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+        class="absolute top-[72px] left-0 right-0 border-b-2 border-[#D4A017] md:hidden"
+        style="background: rgba(250,245,228,0.97); backdrop-filter: blur(12px);">
+        <div class="px-[5%] py-4 space-y-2">
+            <a href="{{ route('landing') }}" class="block py-2 text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline hover:text-[#D4A017]">Beranda</a>
+            <a href="{{ route('panduan') }}" class="block py-2 text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline hover:text-[#D4A017]" style="@if(request()->routeIs('panduan')) color: #4A7C3F; @endif">Fitur</a>
+            <a href="{{ route('tentang-kami') }}" class="block py-2 text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline hover:text-[#D4A017]" style="@if(request()->routeIs('tentang-kami')) color: #4A7C3F; @endif">Tentang</a>
+            <a href="{{ route('kontak') }}" class="block py-2 text-sm font-medium uppercase tracking-[0.04em] text-[#3D3520] no-underline hover:text-[#D4A017]" style="@if(request()->routeIs('kontak')) color: #4A7C3F; @endif">Kontak</a>
+            <div class="pt-3 border-t border-[#D4A017]/20 flex flex-col gap-2">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="block py-2 text-sm font-semibold text-[#4A7C3F] no-underline">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="block py-2 text-sm font-semibold text-[#1E3A1A] no-underline">Login</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="block py-2 text-sm font-bold text-[#D4A017] no-underline">Daftar</a>
+                    @endif
+                @endauth
+            </div>
         </div>
     </div>
 </nav>

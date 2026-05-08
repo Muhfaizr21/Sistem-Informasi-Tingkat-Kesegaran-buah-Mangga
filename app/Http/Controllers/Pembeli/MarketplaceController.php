@@ -78,6 +78,7 @@ class MarketplaceController extends Controller
             ->where('detail_pesanan.listing_id', $id)
             ->select('review.*')
             ->latest()
+            ->take(4)
             ->get();
             
         return view('pembeli.marketplace.detail', compact('listing', 'reviews'));

@@ -218,6 +218,7 @@ class ScanController extends Controller
         $rasioWarnaMangga = $mangoColorCount / $samples;
         
         // Turunkan threshold menjadi 5% untuk mengakomodasi foto dengan background luas
-        return $rasioWarnaMangga > 0.05;
+    // Relaxed threshold to 0.02 (2%) to be less aggressive
+    return $rasioWarnaMangga > 0.02;
     }
 }

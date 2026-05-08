@@ -66,15 +66,11 @@ class DashboardController extends Controller
         }
 
         $listing = collect();
-        $manggaTerjual = 0;
-        $pendapatanBulanIni = 0;
 
         if ($petani) {
             $listing = DB::table('listing_mangga')->where('petani_id', $petani->id)->get();
         }
         $manggaTersedia = $listing->sum('stok_tersedia_kg');
-        $manggaTerjual = 0;
-        $pendapatanBulanIni = 0;
 
         // Live Weather based on Primary Land
         $lahanUtama = $lahan->first();
