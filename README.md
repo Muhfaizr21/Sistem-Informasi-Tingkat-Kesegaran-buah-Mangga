@@ -92,23 +92,60 @@ Untuk rincian teknis yang lebih dalam, silakan merujuk ke file berikut:
 ---
 
 ## ⚙️ Instalasi (Development)
-1. Clone repository:
+
+### 1. Persiapan Aplikasi Wajib
+Pastikan di laptop Anda sudah terinstal:
+* **PHP** (via XAMPP/Laragon) versi 8.2 atau 8.3
+* **Composer** (v2.x)
+* **Node.js** (versi 18 LTS / 20 LTS)
+* **Python** (versi 3.10, 3.11, atau 3.12). *Sangat Penting: Saat instalasi Python, pastikan Anda mencentang kotak "Add Python to PATH".*
+
+### 2. Clone & Install Dependensi Web
+Buka Terminal/CMD, lalu jalankan secara berurutan:
+```bash
+git clone https://github.com/Muhfaizr21/Sistem-Informasi-Tingkat-Kesegaran-buah-Mangga.git
+cd Sistem-Informasi-Tingkat-Kesegaran-buah-Mangga
+composer install
+npm install
+```
+
+### 3. Konfigurasi Environment & Database
+1. Duplikat file environment:
    ```bash
-   git clone https://github.com/Muhfaizr21/Sistem-Informasi-Tingkat-Kesegaran-buah-Mangga.git
+   copy .env.example .env  # (Di Windows)
+   cp .env.example .env    # (Di Mac/Linux)
    ```
-2. Instalasi dependencies:
+2. Buat App Key baru:
    ```bash
-   composer install && npm install
-   ```
-3. Konfigurasi `.env`:
-   ```bash
-   cp .env.example .env
    php artisan key:generate
    ```
-4. Jalankan migrasi:
+3. Buka **XAMPP/Laragon** dan pastikan MySQL berjalan.
+4. Buka phpMyAdmin, buat database dengan nama **`mangga`**.
+5. Jalankan migrasi dan seeder untuk tabel:
    ```bash
-   php artisan migrate
+   php artisan migrate:fresh --seed
    ```
+6. Hubungkan folder storage gambar:
+   ```bash
+   php artisan storage:link
+   ```
+
+### 4. Install Dependensi Python (AI Scanner)
+Pindah ke folder script AI dan install library yang dibutuhkan melalui `pip`:
+```bash
+cd storage/app/ml_scripts
+pip install -r requirements.txt
+cd ../../../
+```
+
+### 5. Jalankan Semua Server Sekaligus! 🚀
+Kembali ke folder root project, lalu jalankan perintah ini:
+```bash
+npm run start
+```
+*(Perintah ini akan menggunakan package `concurrently` untuk otomatis membuka 3 server: Laravel di Port 8000, Vite untuk Frontend, dan API AI Python di Port 8001)*. 
+
+Project siap diakses di `http://localhost:8000`!
 
 ---
 **© 2024 - Sistem Informasi Kesegaran Mangga Indramayu**
