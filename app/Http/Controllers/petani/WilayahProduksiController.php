@@ -37,11 +37,35 @@ class WilayahProduksiController extends Controller
             return $item;
         });
 
-        // Summary for Report
-        $totalProduksi = $stats->sum();
-        $totalLuas = $lahan->sum('luas_hektar');
+        // Summary for Report from CSV Data
+        $kecamatanIds = $lahan->pluck('kecamatan_id')->push($petani->kecamatan_id)->unique()->filter();
+        
+        $query = \App\Models\RingkasanProduksi::whereIn('kecamatan_id', $kecamatanIds)
+            ->whereNotNull('tahun');
+
+        if (request('search_tahun')) {
+            $query->where('tahun', request('search_tahun'));
+        }
+
+        $historicalStats = $query->orderBy('tahun', 'desc')
+            ->orderBy('triwulan', 'desc')
+            ->simplePaginate(5)
+            ->withQueryString();
+
+        $latestYear = \App\Models\RingkasanProduksi::where('kecamatan_id', $petani->kecamatan_id)
+            ->whereNull('triwulan')
+            ->orderBy('tahun', 'desc')
+            ->first();
+        
+        $totalProduksi = $latestYear->total_produksi_kuintal ?? $stats->sum();
+        $totalLuas = $latestYear->total_lahan_hektar ?? $lahan->sum('luas_hektar');
         $avgProductivity = $totalLuas > 0 ? $totalProduksi / $totalLuas : 0;
 
-        return view('petani.wilayah-produksi', compact('lahanData', 'totalProduksi', 'totalLuas', 'avgProductivity'));
+        // Current Weather for the territory
+        $currentWeather = \App\Models\DataCuaca::where('kecamatan_id', $petani->kecamatan_id)
+            ->orderBy('tanggal_prakiraan', 'desc')
+            ->first();
+
+        return view('petani.wilayah-produksi', compact('lahanData', 'totalProduksi', 'totalLuas', 'avgProductivity', 'historicalStats', 'currentWeather'));
     }
 }

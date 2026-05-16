@@ -18,7 +18,7 @@ class LahanController extends Controller
         $lahan = Lahan::where('petani_id', $petani->id ?? 0)->latest()->get();
         $kecamatan = Kecamatan::all();
         
-        return view('petani.data-lahan', compact('lahan', 'kecamatan'));
+        return view('petani.data-lahan', compact('lahan', 'kecamatan', 'petani'));
     }
 
     public function syncKecamatan(Request $request)

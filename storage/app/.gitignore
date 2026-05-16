@@ -1,6 +1,7 @@
 *
 !private/
 !public/
+!public/**
 !ml_scripts/
 !ml_scripts/**
 !.gitignore

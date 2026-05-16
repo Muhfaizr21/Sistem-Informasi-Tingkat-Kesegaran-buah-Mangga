@@ -146,31 +146,57 @@ class RekomendasiController extends Controller
             ];
         }
 
-        // 6. Real historical yield data
-        $historicalInsights = \App\Models\LaporanPanen::where('petani_id', $petani->id ?? 0)
-            ->where('status', 'verified')
-            ->select(
-                \Illuminate\Support\Facades\DB::raw('MONTHNAME(tanggal_panen) as month'),
-                \Illuminate\Support\Facades\DB::raw('MONTH(tanggal_panen) as month_num'),
-                \Illuminate\Support\Facades\DB::raw('SUM(jumlah_kg) as yield')
-            )
-            ->groupBy('month', 'month_num')
-            ->orderBy('month_num')
-            ->get();
+        // 6. Real historical yield data from CSV
+        $kecamatanId = $petani->kecamatan_id ?? null;
+        
+        $historicalInsights = \App\Models\DataProduksiHistoris::where('kecamatan_id', $kecamatanId)
+            ->select('tahun', \Illuminate\Support\Facades\DB::raw('SUM(produksi_kuintal) as yield'))
+            ->groupBy('tahun')
+            ->orderBy('tahun', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'month' => (string)$item->tahun,
+                    'yield' => (float)$item->yield
+                ];
+            });
 
         if ($historicalInsights->isEmpty()) {
             $historicalInsights = collect([
-                ['month' => 'Jan', 'yield' => 450],
-                ['month' => 'Feb', 'yield' => 500],
-                ['month' => 'Mar', 'yield' => 850],
-                ['month' => 'Apr', 'yield' => 1200],
-                ['month' => 'Mei', 'yield' => 1500],
+                ['month' => '2021', 'yield' => 4500],
+                ['month' => '2022', 'yield' => 5000],
+                ['month' => '2023', 'yield' => 8500],
+                ['month' => '2024', 'yield' => 12000],
+                ['month' => '2025', 'yield' => 15000],
             ]);
         }
 
+        // 7. Historical Warnings (CSV Insights)
+        $historicalFailures = \App\Models\DataProduksiHistoris::where('kecamatan_id', $kecamatanId)
+            ->whereIn('keberhasilan_panen', ['Kurang Panen', 'Tidak Berhasil Panen'])
+            ->orderBy('tahun', 'desc')
+            ->take(3)
+            ->get();
+
+        foreach ($historicalFailures as $failure) {
+            $extremeWeather[] = [
+                'date' => "Insight Historis ({$failure->tahun} {$failure->kuartal})",
+                'message' => "Risiko {$failure->keberhasilan_panen} Terdeteksi",
+                'reason' => "Pada kondisi cuaca '{$failure->cuaca}', wilayah Anda mencatat hasil panen yang rendah.",
+                'type' => $failure->keberhasilan_panen == 'Tidak Berhasil Panen' ? 'danger' : 'warning'
+            ];
+        }
+
+        // 8. Latest stats for summary
+        $lastYearData = \App\Models\RingkasanProduksi::where('kecamatan_id', $kecamatanId)
+            ->where('tahun', 2024)
+            ->whereNull('triwulan')
+            ->first();
+
         return view('petani.rekomendasi', compact(
             'forecast', 'harvestAlerts', 'plantingAlerts', 'extremeWeather', 
-            'bioRisks', 'historicalInsights', 'lahan', 'agroData', 'varietyStrategic', 'lahanUtama', 'synopticReport'
+            'bioRisks', 'historicalInsights', 'lahan', 'agroData', 'varietyStrategic', 'lahanUtama', 'synopticReport', 'lastYearData'
         ));
     }
 }

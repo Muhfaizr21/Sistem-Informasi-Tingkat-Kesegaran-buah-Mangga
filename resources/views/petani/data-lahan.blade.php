@@ -199,7 +199,7 @@
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Kecamatan Lokasi</label>
                         <select name="kecamatan_id" id="add-kecamatan-id" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold appearance-none" required>
                             @foreach($kecamatan as $k)
-                                <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                <option value="{{ $k->id }}" {{ ($petani->kecamatan_id ?? '') == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
                             @endforeach
                         </select>
                     </div>

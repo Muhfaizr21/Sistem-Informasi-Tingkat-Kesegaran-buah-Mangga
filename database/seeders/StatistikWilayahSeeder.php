@@ -12,50 +12,84 @@ class StatistikWilayahSeeder extends Seeder
      */
     public function run(): void
     {
-        // Data Produksi 2024 (Triwulan & Tahunan)
-        // Saya masukkan beberapa contoh data utama dari hasil analisis Excel sebelumnya
-        $data = [
-            // [Kode BPS, Tahun, Tw, Produksi Kuintal]
-            ['3212010', 2024, 1, 0],
-            ['3212010', 2024, 2, 57680],
-            ['3212010', 2024, 3, 203949],
-            ['3212010', 2024, 4, 242515],
-            ['3212010', 2024, null, 504144], // Total 2024
+        $filePath = base_path('dataset_baru_mangga_kuartal.csv');
+        if (!file_exists($filePath)) return;
 
-            ['3212011', 2024, null, 12864],
-            ['3212020', 2024, null, 19640],
-            ['3212030', 2024, null, 9100],
-            ['3212040', 2024, null, 106831],
-            ['3212041', 2024, null, 12505],
-            ['3212050', 2024, null, 59909],
-            
-            // Data 2025 (Prediksi/Berjalan)
-            ['3212010', 2025, null, 309069],
-            ['3212011', 2025, null, 492],
-            ['3212020', 2025, null, 0],
-            ['3212030', 2025, null, 400],
-            ['3212040', 2025, null, 0],
-        ];
+        $handle = fopen($filePath, 'r');
+        $header = fgetcsv($handle); // skip header
 
-        foreach ($data as $d) {
-            $kecamatan = DB::table('kecamatan')->where('kode_bps', $d[0])->first();
+        while (($data = fgetcsv($handle)) !== FALSE) {
+            // no,kecamatan,produksi,luas_lahan,kuartal_per_bulan,tahun,jenis_mangga,cuaca,keberhasilan_panen
+            $namaKecamatan = str_replace('Kecamatan ', '', $data[1]);
+            $kecamatan = \App\Models\Kecamatan::where('nama', $namaKecamatan)->first();
             
             if ($kecamatan) {
-                DB::table('ringkasan_produksi')->updateOrInsert(
+                $tahun = $data[5];
+                $produksiKuintal = floatval($data[2]) * 10; // Konversi Ton ke Kuintal
+                $luasHektar = floatval($data[3]);
+
+                // 1. Simpan ke Data Produksi Historis
+                \App\Models\DataProduksiHistoris::updateOrCreate(
                     [
                         'kecamatan_id' => $kecamatan->id,
-                        'tahun' => $d[1],
-                        'triwulan' => $d[2],
+                        'tahun' => $tahun,
+                        'kuartal' => $data[4],
                     ],
                     [
-                        'total_produksi_kuintal' => $d[3],
-                        'sumber_data' => 'bps',
+                        'produksi_kuintal' => $produksiKuintal,
+                        'luas_hektar' => $luasHektar,
+                        'jenis_mangga' => $data[6],
+                        'cuaca' => $data[7],
+                        'keberhasilan_panen' => $data[8],
+                    ]
+                );
+
+                // 2. Simpan ke Data Lahan Historis
+                \App\Models\DataLahanHistoris::updateOrCreate(
+                    [
+                        'kecamatan_id' => $kecamatan->id,
+                        'tahun' => $tahun,
+                    ],
+                    [
+                        'luas_hektar' => $luasHektar,
+                    ]
+                );
+
+                // 3. Update Ringkasan Produksi (Untuk SEMUA Tahun)
+                \App\Models\RingkasanProduksi::updateOrCreate(
+                    [
+                        'kecamatan_id' => $kecamatan->id,
+                        'tahun' => $tahun,
+                        'triwulan' => intval(substr($data[4], 1)), // Q1 -> 1
+                    ],
+                    [
+                        'total_produksi_kuintal' => $produksiKuintal,
+                        'total_lahan_hektar' => $luasHektar,
+                        'sumber_data' => 'bps_csv',
                         'diperbarui_pada' => now(),
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                    ]
+                );
+
+                // Juga buat record tahunan (triwulan = null)
+                $totalTahunan = \App\Models\DataProduksiHistoris::where('kecamatan_id', $kecamatan->id)
+                    ->where('tahun', $tahun)
+                    ->sum('produksi_kuintal');
+
+                \App\Models\RingkasanProduksi::updateOrCreate(
+                    [
+                        'kecamatan_id' => $kecamatan->id,
+                        'tahun' => $tahun,
+                        'triwulan' => null,
+                    ],
+                    [
+                        'total_produksi_kuintal' => $totalTahunan,
+                        'total_lahan_hektar' => $luasHektar,
+                        'sumber_data' => 'bps_csv',
+                        'diperbarui_pada' => now(),
                     ]
                 );
             }
         }
+        fclose($handle);
     }
 }

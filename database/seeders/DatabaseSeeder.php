@@ -20,7 +20,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             KecamatanSeeder::class,
+            KategoriManggaSeeder::class,
+            TestUserSeeder::class,
             StatistikWilayahSeeder::class,
+            WeatherImportSeeder::class,
         ]);
 
         // Akun Admin Default

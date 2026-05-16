@@ -24,7 +24,13 @@ class Petani extends Model
         'status_verifikasi',
         'diverifikasi_oleh',
         'diverifikasi_pada',
+        'kecamatan_id',
     ];
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class);
+    }
 
     public function user()
     {

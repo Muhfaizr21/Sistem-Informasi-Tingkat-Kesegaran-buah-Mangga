@@ -24,31 +24,38 @@
     </div>
 
     <!-- Analytics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
         <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-10 rounded-[3rem] text-white shadow-2xl shadow-slate-900/20 relative overflow-hidden group">
             <div class="relative z-10">
-                <p class="text-white/50 text-[10px] font-black uppercase tracking-widest mb-3">Produksi Kumulatif</p>
-                <h3 class="text-4xl font-extrabold mb-2 tracking-tighter">{{ number_format($totalProduksi, 1) }} <span class="text-lg font-medium opacity-50">Kg</span></h3>
-                <p class="text-xs font-bold text-primary-500">Berasal dari {{ $lahanData->count() }} titik lahan.</p>
+                <p class="text-white/50 text-[10px] font-black uppercase tracking-widest mb-3">Produksi ({{ $historicalStats->first()->tahun ?? '2024' }})</p>
+                <h3 class="text-4xl font-extrabold mb-2 tracking-tighter">{{ number_format($totalProduksi, 1) }} <span class="text-lg font-medium opacity-50">Kuintal</span></h3>
+                <p class="text-xs font-bold text-primary-500">Data bersumber dari CSV.</p>
             </div>
             <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-white/5 rotate-12 group-hover:scale-110 transition-transform duration-500">database</span>
         </div>
 
         <div class="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Rasio Produktivitas</p>
-            <h3 class="text-4xl font-extrabold text-slate-900 mb-2 tracking-tighter">{{ number_format($avgProductivity, 1) }} <span class="text-lg font-medium text-slate-400 opacity-50 uppercase">Kg/Ha</span></h3>
+            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Luas Lahan (CSV)</p>
+            <h3 class="text-4xl font-extrabold text-slate-900 mb-2 tracking-tighter">{{ number_format($totalLuas, 2) }} <span class="text-lg font-medium text-slate-400 opacity-50 uppercase">Ha</span></h3>
             <div class="flex items-center gap-2 text-xs font-black text-primary-500 uppercase tracking-widest">
-                <span class="material-symbols-outlined text-sm">trending_up</span>
-                Status: Efisien
+                <span class="material-symbols-outlined text-sm">map</span>
+                Terpetakan: {{ $lahanData->count() }} Titik
             </div>
-            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-slate-50 rotate-12 group-hover:scale-110 transition-transform duration-500">insights</span>
+            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-slate-50 rotate-12 group-hover:scale-110 transition-transform duration-500">public</span>
         </div>
 
         <div class="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Total Area Terpetakan</p>
-            <h3 class="text-4xl font-extrabold text-slate-900 mb-2 tracking-tighter">{{ number_format($totalLuas, 2) }} <span class="text-lg font-medium text-slate-400 opacity-50 uppercase">Ha</span></h3>
-            <p class="text-xs font-bold text-secondary uppercase tracking-widest">Zona: {{ $lahanData->pluck('kecamatan_id')->unique()->count() }} Kecamatan</p>
-            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-slate-50 rotate-12 group-hover:scale-110 transition-transform duration-500">public</span>
+            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Cuaca Saat Ini</p>
+            <h3 class="text-4xl font-extrabold text-slate-900 mb-2 tracking-tighter">{{ $currentWeather->suhu_max ?? '32' }}<span class="text-lg font-medium text-slate-400 opacity-50 uppercase">°C</span></h3>
+            <p class="text-xs font-bold text-secondary uppercase tracking-widest">{{ $currentWeather->kondisi ?? 'Cerah' }}</p>
+            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-slate-50 rotate-12 group-hover:scale-110 transition-transform duration-500">wb_sunny</span>
+        </div>
+
+        <div class="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Keberhasilan Panen</p>
+            <h3 class="text-3xl font-extrabold text-slate-900 mb-2 tracking-tighter">BERHASIL</h3>
+            <p class="text-xs font-bold text-primary-500 uppercase tracking-widest">Berdasarkan Tren Historis</p>
+            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-slate-50 rotate-12 group-hover:scale-110 transition-transform duration-500">verified</span>
         </div>
     </div>
 
@@ -140,6 +147,89 @@
                         </p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historical Data Table (from CSV) -->
+    <div class="mt-12 bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Data Historis Kecamatan 📈</h2>
+                <p class="text-slate-500 font-medium mt-1">Rekam jejak produksi dan luas lahan berdasarkan dataset BPS (CSV).</p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                <form action="{{ route('petani.wilayah-produksi') }}" method="GET" class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100 w-full md:w-auto">
+                    <input type="number" name="search_tahun" value="{{ request('search_tahun') }}" placeholder="Cari Tahun..." class="bg-transparent border-none outline-none px-4 py-2 font-bold text-sm w-full md:w-32">
+                    <button type="submit" class="p-2 bg-slate-900 text-white rounded-xl hover:bg-black transition-all">
+                        <span class="material-symbols-outlined text-sm">search</span>
+                    </button>
+                    @if(request('search_tahun'))
+                    <a href="{{ route('petani.wilayah-produksi') }}" class="p-2 bg-red-100 text-red-500 rounded-xl hover:bg-red-200 transition-all">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </a>
+                    @endif
+                </form>
+                <div class="px-6 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10">
+                    Dataset: 2011 - 2025
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-50">
+                        <th class="py-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tahun</th>
+                        <th class="py-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Triwulan</th>
+                        <th class="py-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Produksi</th>
+                        <th class="py-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Luas Lahan</th>
+                        <th class="py-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sumber</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($historicalStats as $stat)
+                    <tr class="group hover:bg-slate-50/50 transition-colors">
+                        <td class="py-6 px-4">
+                            <span class="px-4 py-1.5 bg-slate-100 text-slate-900 text-[10px] font-black rounded-full uppercase tracking-widest">{{ $stat->tahun }}</span>
+                        </td>
+                        <td class="py-6 px-4">
+                            @if($stat->triwulan)
+                            <span class="text-xs font-extrabold text-slate-600">Q{{ $stat->triwulan }}</span>
+                            @else
+                            <span class="px-3 py-1 bg-primary-500/10 text-primary-600 text-[8px] font-black rounded-md uppercase tracking-widest">Tahunan</span>
+                            @endif
+                        </td>
+                        <td class="py-6 px-4">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-extrabold text-slate-900">{{ number_format($stat->total_produksi_kuintal, 1) }}</span>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Kuintal</span>
+                            </div>
+                        </td>
+                        <td class="py-6 px-4">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-extrabold text-slate-600">{{ number_format($stat->total_lahan_hektar, 2) }}</span>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ha</span>
+                            </div>
+                        </td>
+                        <td class="py-6 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            {{ $stat->sumber_data }}
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="py-12 text-center">
+                            <p class="text-slate-400 font-medium">Belum ada data historis yang tersedia.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-12 flex justify-center">
+            <div class="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100 shadow-sm">
+                {{ $historicalStats->links() }}
             </div>
         </div>
     </div>

@@ -47,22 +47,48 @@
         </div>
     </div>
 
+    <!-- Statistics Bar (Historical Context) -->
+    <div class="mb-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Produksi Wilayah (2024)</p>
+            <p class="text-xl font-black text-slate-900">{{ number_format($lastYearData->total_produksi_kuintal ?? 0) }} <span class="text-[10px] text-slate-400 uppercase font-bold">Kuintal</span></p>
+        </div>
+        <div class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Luas Lahan (2024)</p>
+            <p class="text-xl font-black text-slate-900">{{ number_format($lastYearData->total_lahan_hektar ?? 0) }} <span class="text-[10px] text-slate-400 uppercase font-bold">Ha</span></p>
+        </div>
+        <div class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Sumber Data</p>
+            <p class="text-xl font-black text-primary-500 uppercase tracking-tight">Dataset CSV</p>
+        </div>
+        <div class="p-6 bg-slate-900 rounded-[2rem] border border-slate-800 shadow-xl shadow-slate-900/10 flex items-center justify-between">
+            <div>
+                <p class="text-white/40 text-[9px] font-black uppercase tracking-widest mb-1">AI Recommendation</p>
+                <p class="text-sm font-black text-white">Optimal Growth</p>
+            </div>
+            <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-xl">auto_awesome</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Alert System -->
     @if(count($extremeWeather) > 0)
     <div class="mb-12 space-y-6">
         @foreach($extremeWeather as $alert)
-        <div class="p-8 bg-red-50 border border-red-100 rounded-[3rem] flex items-center gap-8 animate-in slide-in-from-top duration-700 relative overflow-hidden group">
-            <div class="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent"></div>
-            <div class="w-20 h-20 bg-red-500 rounded-[2rem] flex items-center justify-center text-white shrink-0 shadow-2xl shadow-red-500/30 group-hover:scale-110 transition-transform duration-500 relative z-10">
-                <span class="material-symbols-outlined text-4xl animate-pulse">warning</span>
+        @php $isHistorical = str_contains($alert['date'] ?? '', 'Historis'); @endphp
+        <div class="p-8 {{ $isHistorical ? 'bg-amber-50 border-amber-100' : 'bg-red-50 border-red-100' }} rounded-[3rem] flex items-center gap-8 animate-in slide-in-from-top duration-700 relative overflow-hidden group">
+            <div class="absolute inset-0 {{ $isHistorical ? 'bg-gradient-to-r from-amber-500/5' : 'bg-gradient-to-r from-red-500/5' }} to-transparent"></div>
+            <div class="w-20 h-20 {{ $isHistorical ? 'bg-amber-500 shadow-amber-500/30' : 'bg-red-500 shadow-red-500/30' }} rounded-[2rem] flex items-center justify-center text-white shrink-0 shadow-2xl group-hover:scale-110 transition-transform duration-500 relative z-10">
+                <span class="material-symbols-outlined text-4xl {{ !$isHistorical ? 'animate-pulse' : '' }}">{{ $isHistorical ? 'history' : 'warning' }}</span>
             </div>
             <div class="relative z-10">
-                <p class="text-[11px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-                    Critical Weather Alert ({{ Carbon\Carbon::parse($alert['date'])->format('d M') }})
+                <p class="text-[11px] font-black {{ $isHistorical ? 'text-amber-500' : 'text-red-500' }} uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                    @if(!$isHistorical) <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> @endif
+                    {{ $isHistorical ? 'Historical Context' : 'Critical Weather Alert' }} ({{ $alert['date'] }})
                 </p>
-                <h4 class="text-2xl font-extrabold text-red-900 leading-tight mb-2 tracking-tight">{{ $alert['message'] }}</h4>
-                <p class="text-sm text-red-700/80 font-medium leading-relaxed max-w-2xl italic">"Tim AI merekomendasikan penutupan pelindung buah atau percepatan panen jika tingkat kematangan sudah mencapai 75%."</p>
+                <h4 class="text-2xl font-extrabold {{ $isHistorical ? 'text-amber-900' : 'text-red-900' }} leading-tight mb-2 tracking-tight">{{ $alert['message'] }}</h4>
+                <p class="text-sm {{ $isHistorical ? 'text-amber-700/80' : 'text-red-700/80' }} font-medium leading-relaxed max-w-2xl italic">"{{ $alert['reason'] ?? 'Tim AI merekomendasikan penutupan pelindung buah atau percepatan panen jika tingkat kematangan sudah mencapai 75%.' }}"</p>
             </div>
         </div>
         @endforeach
