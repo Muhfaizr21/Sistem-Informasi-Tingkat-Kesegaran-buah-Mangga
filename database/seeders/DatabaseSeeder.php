@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             TestUserSeeder::class,
             StatistikWilayahSeeder::class,
             WeatherImportSeeder::class,
+            DatasetKuartalSeeder::class,
         ]);
 
         // Akun Admin Default

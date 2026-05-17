@@ -81,6 +81,21 @@ class DatasetKuartalSeeder extends Seeder
                             'keberhasilan_panen' => $keberhasilan,
                         ]
                     );
+
+                    // Also seed into ringkasan_produksi for compatibility with Recommendations
+                    \App\Models\RingkasanProduksi::updateOrCreate(
+                        [
+                            'kecamatan_id' => $currentKecamatan->id,
+                            'tahun' => $tahun,
+                            'triwulan' => null, // TA (tahunan) has triwulan = null
+                        ],
+                        [
+                            'total_produksi_kuintal' => $produksiKuintal,
+                            'total_lahan_hektar' => $luasHektar,
+                            'sumber_data' => 'bps_markdown',
+                            'diperbarui_pada' => now(),
+                        ]
+                    );
                 }
             }
         }
