@@ -1,104 +1,466 @@
-📊 RINGKASAN DATA PRODUKSI MANGGA INDRAMAYU 2011-2025
-📈 TOTAL PRODUKSI PER TAHUN (SEMUA KECAMATAN)
-Tahun	Total Produksi (Ton)	Total Luas Lahan (Ha)	Rata-rata per Kecamatan (Ton)
-2011	73,998.53	161,678.14	2,387.05
-2012	61,045.47	145,480.16	1,969.21
-2013	50,239.52	127,492.32	1,620.63
-2014	41,214.91	110,988.54	1,329.51
-2015	31,163.35	94,845.77	1,005.27
-2016	23,483.86	80,744.50	757.54
-2017	18,694.50	68,119.37	603.05
-2018	14,644.81	57,515.61	472.41
-2019	11,802.42	48,535.80	380.72
-2020	10,178.08	41,806.05	328.33
-2021	9,296.70	40,000.19	299.89
-2022	10,225.76	29,657.06	329.86
-2023	12,427.46	23,985.45	400.89
-2024	15,456.83	18,514.95	498.61
-2025	16,460.62	15,696.25	530.99
-📉 TREN PRODUKSI (2011 → 2025)
-text
-2011: ████████████████████████████████████ 73,999 Ton
-2012: ████████████████████████████ 61,045 Ton ↓
-2013: ██████████████████████ 50,240 Ton ↓
-2014: █████████████████ 41,215 Ton ↓
-2015: ████████████ 31,163 Ton ↓
-2016: █████████ 23,484 Ton ↓
-2017: ███████ 18,695 Ton ↓
-2018: ██████ 14,645 Ton ↓
-2019: ████ 11,802 Ton ↓
-2020: ████ 10,178 Ton ↓
-2021: ███ 9,297 Ton ↓ (PALING RENDAH)
-2022: ████ 10,226 Ton ↑
-2023: █████ 12,427 Ton ↑
-2024: ██████ 15,457 Ton ↑
-2025: ██████ 16,461 Ton ↑
-Kesimpulan:
-
-📉 Produksi menurun drastis 2011-2021 (turun ~87%)
-
-📈 Mulai meningkat kembali 2022-2025
-
-🏆 TOP 5 KECAMATAN PRODUKSI TERTINGGI (2011-2025)
-Peringkat	Kecamatan	Total Produksi 2011-2025 (Ton)
-1	Cikedung	119,040.28
-2	Kroya	86,086.05
-3	Jatibarang	79,455.43
-4	Haurgeulis	77,624.46
-5	Sindang	68,761.89
-🏆 TOP 5 KECAMATAN PRODUKSI TERTINGGI (2025)
-Peringkat	Kecamatan	Produksi 2025 (Ton)	Luas Lahan 2025 (Ha)
-1	Lelea	2,623.85	505.46
-2	Lohbener	2,352.73	711.86
-3	Haurgeulis	2,294.47	1,236.38
-4	Bangodua	1,387.30	176.09
-5	Anjatan	1,072.55	361.26
-📉 TOP 5 KECAMATAN PRODUKSI TERENDAH (2025)
-Peringkat	Kecamatan	Produksi 2025 (Ton)	Luas Lahan 2025 (Ha)
-1	Losarang	1.00	346.18
-2	Kandanghaur	8.53	86.50
-3	Kedokan Bunder	9.92	393.83
-4	Sukagumiwang	9.13	208.72
-5	Indramayu	9.22	50.14
-📊 RATA-RATA PRODUKTIVITAS (Ton/Ha) PER TAHUN
-Tahun	Rata-rata Produktivitas (Ton/Ha)
-2011	0.46
-2012	0.42
-2013	0.39
-2014	0.37
-2015	0.33
-2016	0.29
-2017	0.27
-2018	0.25
-2019	0.24
-2020	0.24
-2021	0.23
-2022	0.34
-2023	0.52
-2024	0.83
-2025	1.05
-Kesimpulan: Produktivitas per hektar meningkat pesat 2022-2025, mencapai puncak 1.05 Ton/Ha di 2025.
-
-🥇 KECAMATAN DENGAN PRODUKTIVITAS TERTINGGI 2025
-Peringkat	Kecamatan	Produktivitas (Ton/Ha)	Produksi (Ton)	Luas (Ha)
-1	Pasekan	1.39	130.43	94.16
-2	Lelea	5.19	2,623.85	505.46
-3	Bangodua	7.88	1,387.30	176.09
-4	Cantigi	2.12	1,244.22	587.79
-5	Haurgeulis	1.86	2,294.47	1,236.38
-📊 STATISTIK SINGKAT
-Statistik	2011	2021 (Terendah)	2025 (Terbaru)
-Total Produksi	73,999 Ton	9,297 Ton	16,461 Ton
-Total Luas Lahan	161,678 Ha	40,000 Ha	15,696 Ha
-Rata-rata per Kecamatan	2,387 Ton	300 Ton	531 Ton
-Produktivitas Rata-rata	0.46 Ton/Ha	0.23 Ton/Ha	1.05 Ton/Ha
-📌 KESIMPULAN UTAMA
-Produksi menurun 2011-2021 (dari 74rb Ton menjadi 9.3rb Ton), turun 87%
-
-Luas lahan terus berkurang dari 161rb Ha (2011) menjadi 15.7rb Ha (2025), turun 90%
-
-Produktivitas meningkat signifikan dari 0.46 menjadi 1.05 Ton/Ha (naik 128%)
-
-Kecamatan Cikedung adalah penghasil mangga terbesar sepanjang 2011-2025
-
-Lelea menjadi kecamatan dengan produksi tertinggi di 2025
+no	kecamatan	produksi	luas_lahan	tahun
+1	Kecamatan Anjatan	80,62	2391,42	2011
+2	Kecamatan Arahan	19,41	2229,66	2011
+3	Kecamatan Balongan	3,14	2621,13	2011
+4	Kecamatan Bangodua	32,13	1915,01	2011
+5	Kecamatan Bongas	2,3	1975,97	2011
+6	Kecamatan Cantigi	5,68	2441,73	2011
+7	Kecamatan Cikedung	24353,83	9448,08	2011
+8	Kecamatan Gabuswetan	3375,52	1553,65	2011
+9	Kecamatan Gantar	32,21	2627,68	2011
+10	Kecamatan Haurgeulis	210,07	14949,8	2011
+11	Kecamatan Indramayu	2,82	22844,34	2011
+12	Kecamatan Jatibarang	196,23	18086,78	2011
+13	Kecamatan Juntinyuat	3805,53	5079,11	2011
+14	Kecamatan Kandanghaur	1888,27	558,04	2011
+15	Kecamatan Karangampel	18,45	2086,65	2011
+16	Kecamatan Kedokan Bunder	1252,59	2607,08	2011
+17	Kecamatan Kertasemaya	4,9	1012,87	2011
+18	Kecamatan Krangkeng	14,87	6044,15	2011
+19	Kecamatan Kroya	16807,02	5793,1	2011
+20	Kecamatan Lelea	90,33	3346	2011
+21	Kecamatan Lohbener	51,2	4794,29	2011
+22	Kecamatan Losarang	1947,53	2291,64	2011
+23	Kecamatan Pasekan	6,32	638,56	2011
+24	Kecamatan Patrol	457,87	2062,15	2011
+25	Kecamatan Sindang	3151,37	7274,21	2011
+26	Kecamatan Sliyeg	9161,12	5294,27	2011
+27	Kecamatan Sukagumiwang	243,24	10511,11	2011
+28	Kecamatan Sukra	126,08	884,73	2011
+29	Kecamatan Terisi	8062,9	618,31	2011
+30	Kecamatan Tukdana	4868,1	5504,81	2011
+31	Kecamatan Widasari	16,37	568,64	2011
+32	Kecamatan Anjatan	100,03	2092,5	2012
+33	Kecamatan Arahan	24,26	1960,5	2012
+34	Kecamatan Balongan	3,93	2261,9	2012
+35	Kecamatan Bangodua	40,16	1617,79	2012
+36	Kecamatan Bongas	2,88	1749,95	2012
+37	Kecamatan Cantigi	7,11	2210,26	2012
+38	Kecamatan Cikedung	18265,38	8267,07	2012
+39	Kecamatan Gabuswetan	2531,64	1389,03	2012
+40	Kecamatan Gantar	40,27	2469,72	2012
+41	Kecamatan Haurgeulis	262,58	12527,58	2012
+42	Kecamatan Indramayu	3,52	17133,25	2012
+43	Kecamatan Jatibarang	245,29	14988,87	2012
+44	Kecamatan Juntinyuat	3333,75	4500,32	2012
+45	Kecamatan Kandanghaur	1416,2	489,24	2012
+46	Kecamatan Karangampel	23,06	1834,89	2012
+47	Kecamatan Kedokan Bunder	939,44	2281,2	2012
+48	Kecamatan Kertasemaya	6,13	903,49	2012
+49	Kecamatan Krangkeng	18,59	5022,49	2012
+50	Kecamatan Kroya	12605,27	5093,78	2012
+51	Kecamatan Lelea	112,91	2927,75	2012
+52	Kecamatan Lohbener	64	4189,96	2012
+53	Kecamatan Losarang	1460,65	2005,19	2012
+54	Kecamatan Pasekan	7,9	557,76	2012
+55	Kecamatan Patrol	461,95	1804,38	2012
+56	Kecamatan Sindang	2363,53	5616,1	2012
+57	Kecamatan Sliyeg	6870,84	4621,43	2012
+58	Kecamatan Sukagumiwang	232,19	7944,59	2012
+59	Kecamatan Sukra	133,29	774,14	2012
+60	Kecamatan Terisi	6047,17	628,8	2012
+61	Kecamatan Tukdana	3651,08	4777,29	2012
+62	Kecamatan Widasari	17,93	510,72	2012
+63	Kecamatan Anjatan	124,1	1830,93	2013
+64	Kecamatan Arahan	30,32	1723,84	2013
+65	Kecamatan Balongan	4,91	1951,9	2013
+66	Kecamatan Bangodua	50,2	1366,71	2013
+67	Kecamatan Bongas	3,59	1549,78	2013
+68	Kecamatan Cantigi	8,88	2000,74	2013
+69	Kecamatan Cikedung	13699,03	7233,69	2013
+70	Kecamatan Gabuswetan	1898,73	1241,85	2013
+71	Kecamatan Gantar	50,33	2321,25	2013
+72	Kecamatan Haurgeulis	328,23	10497,82	2013
+73	Kecamatan Indramayu	4,41	12849,94	2013
+74	Kecamatan Jatibarang	306,61	12421,57	2013
+75	Kecamatan Juntinyuat	2920,46	3987,49	2013
+76	Kecamatan Kandanghaur	1062,15	428,92	2013
+77	Kecamatan Karangampel	28,82	1613,5	2013
+78	Kecamatan Kedokan Bunder	704,58	1996,05	2013
+79	Kecamatan Kertasemaya	7,66	805,93	2013
+80	Kecamatan Krangkeng	23,24	4173,52	2013
+81	Kecamatan Kroya	9453,95	4478,88	2013
+82	Kecamatan Lelea	141,14	2561,78	2013
+83	Kecamatan Lohbener	80	3661,81	2013
+84	Kecamatan Losarang	1095,49	1754,54	2013
+85	Kecamatan Pasekan	9,88	487,19	2013
+86	Kecamatan Patrol	466,08	1578,83	2013
+87	Kecamatan Sindang	1772,65	4335,95	2013
+88	Kecamatan Sliyeg	5153,13	4034,1	2013
+89	Kecamatan Sukagumiwang	221,63	6004,74	2013
+90	Kecamatan Sukra	140,9	677,37	2013
+91	Kecamatan Terisi	4535,38	639,46	2013
+92	Kecamatan Tukdana	2738,31	4145,92	2013
+93	Kecamatan Widasari	19,65	458,7	2013
+94	Kecamatan Anjatan	153,97	1602,07	2014
+95	Kecamatan Arahan	37,9	1515,74	2014
+96	Kecamatan Balongan	6,14	1684,38	2014
+97	Kecamatan Bangodua	62,74	1154,59	2014
+98	Kecamatan Bongas	4,49	1372,51	2014
+99	Kecamatan Cantigi	11,1	1811,08	2014
+100	Kecamatan Cikedung	10274,27	6329,48	2014
+101	Kecamatan Gabuswetan	1424,05	1110,27	2014
+102	Kecamatan Gantar	62,91	2181,71	2014
+103	Kecamatan Haurgeulis	410,29	8796,92	2014
+104	Kecamatan Indramayu	5,51	9637,46	2014
+105	Kecamatan Jatibarang	383,27	10294	2014
+106	Kecamatan Juntinyuat	2558,4	3533,09	2014
+107	Kecamatan Kandanghaur	796,61	376,04	2014
+108	Kecamatan Karangampel	36,03	1418,83	2014
+109	Kecamatan Kedokan Bunder	528,43	1746,54	2014
+110	Kecamatan Kertasemaya	9,57	718,89	2014
+111	Kecamatan Krangkeng	29,05	3468,06	2014
+112	Kecamatan Kroya	7090,46	3938,2	2014
+113	Kecamatan Lelea	176,42	2241,56	2014
+114	Kecamatan Lohbener	99,99	3200,23	2014
+115	Kecamatan Losarang	821,62	1535,22	2014
+116	Kecamatan Pasekan	12,35	425,54	2014
+117	Kecamatan Patrol	470,24	1381,48	2014
+118	Kecamatan Sindang	1329,49	3347,6	2014
+119	Kecamatan Sliyeg	3864,85	3521,42	2014
+120	Kecamatan Sukagumiwang	211,56	4538,54	2014
+121	Kecamatan Sukra	148,95	592,7	2014
+122	Kecamatan Terisi	3401,53	650,3	2014
+123	Kecamatan Tukdana	2053,73	3597,99	2014
+124	Kecamatan Widasari	21,53	411,97	2014
+125	Kecamatan Anjatan	191,03	1401,81	2015
+126	Kecamatan Arahan	47,38	1332,76	2015
+127	Kecamatan Balongan	7,67	1453,54	2015
+128	Kecamatan Bangodua	78,43	975,39	2015
+129	Kecamatan Bongas	5,62	1215,52	2015
+130	Kecamatan Cantigi	13,88	1639,39	2015
+131	Kecamatan Cikedung	7705,71	5538,29	2015
+132	Kecamatan Gabuswetan	1068,04	992,63	2015
+133	Kecamatan Gantar	78,64	2050,56	2015
+134	Kecamatan Haurgeulis	512,86	7371,61	2015
+135	Kecamatan Indramayu	6,88	7228,09	2015
+136	Kecamatan Jatibarang	479,08	8530,85	2015
+137	Kecamatan Juntinyuat	2241,23	3130,48	2015
+138	Kecamatan Kandanghaur	597,46	329,68	2015
+139	Kecamatan Karangampel	45,03	1247,64	2015
+140	Kecamatan Kedokan Bunder	396,33	1528,22	2015
+141	Kecamatan Kertasemaya	11,96	641,26	2015
+142	Kecamatan Krangkeng	36,31	2881,84	2015
+143	Kecamatan Kroya	5317,85	3462,8	2015
+144	Kecamatan Lelea	220,53	1961,36	2015
+145	Kecamatan Lohbener	124,99	2796,84	2015
+146	Kecamatan Losarang	616,21	1343,32	2015
+147	Kecamatan Pasekan	15,43	371,7	2015
+148	Kecamatan Patrol	474,44	1208,79	2015
+149	Kecamatan Sindang	997,11	2584,53	2015
+150	Kecamatan Sliyeg	2898,64	3073,89	2015
+151	Kecamatan Sukagumiwang	201,94	3430,36	2015
+152	Kecamatan Sukra	157,47	518,61	2015
+153	Kecamatan Terisi	2551,15	661,32	2015
+154	Kecamatan Tukdana	1540,3	3122,47	2015
+155	Kecamatan Widasari	23,6	370,01	2015
+156	Kecamatan Anjatan	237,01	1226,58	2016
+157	Kecamatan Arahan	59,22	1171,88	2016
+158	Kecamatan Balongan	9,59	1254,32	2016
+159	Kecamatan Bangodua	98,04	824,01	2016
+160	Kecamatan Bongas	7,02	1076,48	2016
+161	Kecamatan Cantigi	17,35	1483,99	2016
+162	Kecamatan Cikedung	5779,28	4846,01	2016
+163	Kecamatan Gabuswetan	801,03	887,46	2016
+164	Kecamatan Gantar	98,3	1927,29	2016
+165	Kecamatan Haurgeulis	641,07	6177,24	2016
+166	Kecamatan Indramayu	8,61	5421,07	2016
+167	Kecamatan Jatibarang	598,86	7069,68	2016
+168	Kecamatan Juntinyuat	1963,38	2773,74	2016
+169	Kecamatan Kandanghaur	448,09	289,03	2016
+170	Kecamatan Karangampel	56,29	1097,11	2016
+171	Kecamatan Kedokan Bunder	297,24	1337,2	2016
+172	Kecamatan Kertasemaya	14,95	572,01	2016
+173	Kecamatan Krangkeng	45,38	2394,72	2016
+174	Kecamatan Kroya	3988,39	3044,78	2016
+175	Kecamatan Lelea	275,66	1716,19	2016
+176	Kecamatan Lohbener	156,24	2444,29	2016
+177	Kecamatan Losarang	462,16	1175,4	2016
+178	Kecamatan Pasekan	19,29	324,66	2016
+179	Kecamatan Patrol	478,67	1057,69	2016
+180	Kecamatan Sindang	747,84	1995,41	2016
+181	Kecamatan Sliyeg	2173,98	2683,23	2016
+182	Kecamatan Sukagumiwang	192,77	2592,76	2016
+183	Kecamatan Sukra	166,46	453,78	2016
+184	Kecamatan Terisi	1913,36	672,54	2016
+185	Kecamatan Tukdana	1155,22	2709,8	2016
+186	Kecamatan Widasari	25,86	332,32	2016
+187	Kecamatan Anjatan	294,06	1073,26	2017
+188	Kecamatan Arahan	74,02	1030,41	2017
+189	Kecamatan Balongan	11,99	1082,42	2017
+190	Kecamatan Bangodua	122,55	696,12	2017
+191	Kecamatan Bongas	8,78	953,35	2017
+192	Kecamatan Cantigi	21,68	1343,31	2017
+193	Kecamatan Cikedung	4334,46	4240,26	2017
+194	Kecamatan Gabuswetan	600,77	793,43	2017
+195	Kecamatan Gantar	122,88	1811,43	2017
+196	Kecamatan Haurgeulis	801,34	5176,38	2017
+197	Kecamatan Indramayu	10,76	4065,8	2017
+198	Kecamatan Jatibarang	748,57	5858,78	2017
+199	Kecamatan Juntinyuat	1719,98	2457,66	2017
+200	Kecamatan Kandanghaur	336,07	253,39	2017
+201	Kecamatan Karangampel	70,36	964,74	2017
+202	Kecamatan Kedokan Bunder	222,93	1170,05	2017
+203	Kecamatan Kertasemaya	18,69	510,24	2017
+204	Kecamatan Krangkeng	56,73	1989,93	2017
+205	Kecamatan Kroya	2991,29	2677,22	2017
+206	Kecamatan Lelea	344,58	1501,67	2017
+207	Kecamatan Lohbener	195,3	2136,18	2017
+208	Kecamatan Losarang	346,62	1028,48	2017
+209	Kecamatan Pasekan	24,12	283,58	2017
+210	Kecamatan Patrol	482,95	925,48	2017
+211	Kecamatan Sindang	560,88	1540,57	2017
+212	Kecamatan Sliyeg	1630,48	2342,22	2017
+213	Kecamatan Sukagumiwang	184,01	1959,68	2017
+214	Kecamatan Sukra	175,98	397,06	2017
+215	Kecamatan Terisi	1435,02	683,94	2017
+216	Kecamatan Tukdana	866,42	2351,67	2017
+217	Kecamatan Widasari	28,34	298,47	2017
+218	Kecamatan Anjatan	364,84	939,1	2018
+219	Kecamatan Arahan	92,53	906,02	2018
+220	Kecamatan Balongan	14,98	934,07	2018
+221	Kecamatan Bangodua	153,18	588,08	2018
+222	Kecamatan Bongas	10,97	844,3	2018
+223	Kecamatan Cantigi	27,1	1215,97	2018
+224	Kecamatan Cikedung	3250,84	3710,22	2018
+225	Kecamatan Gabuswetan	450,58	709,36	2018
+226	Kecamatan Gantar	153,6	1702,54	2018
+227	Kecamatan Haurgeulis	1001,68	4337,68	2018
+228	Kecamatan Indramayu	13,45	3049,35	2018
+229	Kecamatan Jatibarang	935,71	4855,29	2018
+230	Kecamatan Juntinyuat	1506,75	2177,6	2018
+231	Kecamatan Kandanghaur	252,05	222,15	2018
+232	Kecamatan Karangampel	87,96	848,34	2018
+233	Kecamatan Kedokan Bunder	167,2	1023,79	2018
+234	Kecamatan Kertasemaya	23,37	455,14	2018
+235	Kecamatan Krangkeng	70,91	1653,57	2018
+236	Kecamatan Kroya	2243,47	2354,04	2018
+237	Kecamatan Lelea	430,72	1313,96	2018
+238	Kecamatan Lohbener	244,13	1866,91	2018
+239	Kecamatan Losarang	259,96	899,92	2018
+240	Kecamatan Pasekan	30,14	247,7	2018
+241	Kecamatan Patrol	487,26	809,8	2018
+242	Kecamatan Sindang	420,66	1189,4	2018
+243	Kecamatan Sliyeg	1222,86	2044,56	2018
+244	Kecamatan Sukagumiwang	175,64	1481,18	2018
+245	Kecamatan Sukra	186,03	347,43	2018
+246	Kecamatan Terisi	1076,27	695,54	2018
+247	Kecamatan Tukdana	649,81	2040,87	2018
+248	Kecamatan Widasari	31,05	268,07	2018
+249	Kecamatan Anjatan	452,65	821,71	2019
+250	Kecamatan Arahan	115,66	796,65	2019
+251	Kecamatan Balongan	18,73	806,05	2019
+252	Kecamatan Bangodua	191,48	496,81	2019
+253	Kecamatan Bongas	13,71	747,73	2019
+254	Kecamatan Cantigi	33,88	1100,7	2019
+255	Kecamatan Cikedung	2438,13	3246,45	2019
+256	Kecamatan Gabuswetan	337,93	634,2	2019
+257	Kecamatan Gantar	192	1600,19	2019
+258	Kecamatan Haurgeulis	1252,1	3634,88	2019
+259	Kecamatan Indramayu	16,81	2287,01	2019
+260	Kecamatan Jatibarang	1169,64	4023,68	2019
+261	Kecamatan Juntinyuat	1319,96	1929,45	2019
+262	Kecamatan Kandanghaur	189,04	194,76	2019
+263	Kecamatan Karangampel	109,94	745,99	2019
+264	Kecamatan Kedokan Bunder	125,4	895,82	2019
+265	Kecamatan Kertasemaya	29,21	405,99	2019
+266	Kecamatan Krangkeng	88,64	1374,06	2019
+267	Kecamatan Kroya	1682,6	2069,87	2019
+268	Kecamatan Lelea	538,4	1149,71	2019
+269	Kecamatan Lohbener	305,16	1631,58	2019
+270	Kecamatan Losarang	194,97	787,43	2019
+271	Kecamatan Pasekan	37,68	216,36	2019
+272	Kecamatan Patrol	491,61	708,57	2019
+273	Kecamatan Sindang	315,49	918,29	2019
+274	Kecamatan Sliyeg	917,15	1784,72	2019
+275	Kecamatan Sukagumiwang	167,66	1119,51	2019
+276	Kecamatan Sukra	196,66	304	2019
+277	Kecamatan Terisi	807,2	707,33	2019
+278	Kecamatan Tukdana	487,36	1771,15	2019
+279	Kecamatan Widasari	34,03	240,76	2019
+280	Kecamatan Anjatan	561,6	719	2020
+281	Kecamatan Arahan	144,58	700,48	2020
+282	Kecamatan Balongan	23,41	695,58	2020
+283	Kecamatan Bangodua	239,35	419,7	2020
+284	Kecamatan Bongas	17,14	662,2	2020
+285	Kecamatan Cantigi	42,35	996,36	2020
+286	Kecamatan Cikedung	1828,6	2840,64	2020
+287	Kecamatan Gabuswetan	253,45	567	2020
+288	Kecamatan Gantar	240	1504	2020
+289	Kecamatan Haurgeulis	1565,12	3045,94	2020
+290	Kecamatan Indramayu	21,01	1715,26	2020
+291	Kecamatan Jatibarang	1462,05	3334,5	2020
+292	Kecamatan Juntinyuat	1156,32	1709,58	2020
+293	Kecamatan Kandanghaur	141,78	170,75	2020
+294	Kecamatan Karangampel	137,43	655,98	2020
+295	Kecamatan Kedokan Bunder	94,05	783,84	2020
+296	Kecamatan Kertasemaya	36,51	362,15	2020
+297	Kecamatan Krangkeng	110,8	1141,8	2020
+298	Kecamatan Kroya	1261,95	1820	2020
+299	Kecamatan Lelea	673	1006	2020
+300	Kecamatan Lohbener	381,45	1425,92	2020
+301	Kecamatan Losarang	146,23	689	2020
+302	Kecamatan Pasekan	47,1	188,98	2020
+303	Kecamatan Patrol	496	620	2020
+304	Kecamatan Sindang	236,62	708,97	2020
+305	Kecamatan Sliyeg	687,86	1557,9	2020
+306	Kecamatan Sukagumiwang	160,04	846,16	2020
+307	Kecamatan Sukra	207,9	266	2020
+308	Kecamatan Terisi	605,4	719,32	2020
+309	Kecamatan Tukdana	365,52	1537,07	2020
+310	Kecamatan Widasari	37,29	216,24	2020
+311	Kecamatan Anjatan	1109,2	719	2021
+312	Kecamatan Arahan	170,18	700,48	2021
+313	Kecamatan Balongan	125,67	695,06	2021
+314	Kecamatan Bangodua	251,23	410,56	2021
+315	Kecamatan Bongas	15,53	673,05	2021
+316	Kecamatan Cantigi	108,45	1056,36	2021
+317	Kecamatan Cikedung	1848,41	2840,64	2021
+318	Kecamatan Gabuswetan	272,64	579,74	2021
+319	Kecamatan Gantar	809,65	1598	2021
+320	Kecamatan Haurgeulis	380,29	2891,44	2021
+321	Kecamatan Indramayu	95,2	1675,09	2021
+322	Kecamatan Jatibarang	125,43	3036,4	2021
+323	Kecamatan Juntinyuat	189,62	1742,96	2021
+324	Kecamatan Kandanghaur	69,17	171,84	2021
+325	Kecamatan Karangampel	339,71	658,66	2021
+326	Kecamatan Kedokan Bunder	122,68	783,84	2021
+327	Kecamatan Kertasemaya	166,38	371,4	2021
+328	Kecamatan Krangkeng	1152,64	1116,02	2021
+329	Kecamatan Kroya	508,96	1828,5	2021
+330	Kecamatan Lelea	617,5	1006	2021
+331	Kecamatan Lohbener	238,41	1425,92	2021
+332	Kecamatan Losarang	39,13	689	2021
+333	Kecamatan Pasekan	35,62	188,4	2021
+334	Kecamatan Patrol	434	620	2021
+335	Kecamatan Sindang	62,53	562,35	2021
+336	Kecamatan Sliyeg	342,56	1554	2021
+337	Kecamatan Sukagumiwang	299,93	639,22	2021
+338	Kecamatan Sukra	148,5	266	2021
+339	Kecamatan Terisi	167,34	802,06	2021
+340	Kecamatan Tukdana	413,71	1514,04	2021
+341	Kecamatan Widasari	68,09	225,24	2021
+342	Kecamatan Anjatan	561,6	539,25	2022
+343	Kecamatan Arahan	376,96	531,36	2022
+344	Kecamatan Balongan	73,23	505,06	2022
+345	Kecamatan Bangodua	710,3	292,06	2022
+346	Kecamatan Bongas	175,65	508,05	2022
+347	Kecamatan Cantigi	637,04	792,47	2022
+348	Kecamatan Cikedung	442,71	2130,48	2022
+349	Kecamatan Gabuswetan	61,47	443,86	2022
+350	Kecamatan Gantar	164,89	1306	2022
+351	Kecamatan Haurgeulis	1174,77	2101,14	2022
+352	Kecamatan Indramayu	4,72	118,84	2022
+353	Kecamatan Jatibarang	529,06	2267,7	2022
+354	Kecamatan Juntinyuat	301,13	1311,69	2022
+355	Kecamatan Kandanghaur	20,22	128,37	2022
+356	Kecamatan Karangampel	225,32	497,03	2022
+357	Kecamatan Kedokan Bunder	23,51	587,88	2022
+358	Kecamatan Kertasemaya	136,03	281,7	2022
+359	Kecamatan Krangkeng	276,04	763,93	2022
+360	Kecamatan Kroya	275,7	1378,5	2022
+361	Kecamatan Lelea	1343,41	754,5	2022
+362	Kecamatan Lohbener	1204,6	1066,44	2022
+363	Kecamatan Losarang	2,36	516,75	2022
+364	Kecamatan Pasekan	66,78	141,3	2022
+365	Kecamatan Patrol	496	465	2022
+366	Kecamatan Sindang	71,35	422,28	2022
+367	Kecamatan Sliyeg	91,06	1162,9	2022
+368	Kecamatan Sukagumiwang	10,5	483,39	2022
+369	Kecamatan Sukra	207,9	199,5	2022
+370	Kecamatan Terisi	59,04	737	2022
+371	Kecamatan Tukdana	105,16	1136,53	2022
+372	Kecamatan Widasari	24,9	169,98	2022
+373	Kecamatan Anjatan	696,77	471,84	2023
+374	Kecamatan Arahan	471,2	467,22	2023
+375	Kecamatan Balongan	91,54	435,84	2023
+376	Kecamatan Bangodua	887,88	246,73	2023
+377	Kecamatan Bongas	219,56	449,94	2023
+378	Kecamatan Cantigi	796,3	717,35	2023
+379	Kecamatan Cikedung	332,03	1864,17	2023
+380	Kecamatan Gabuswetan	46,1	396,83	2023
+381	Kecamatan Gantar	206,11	1227,49	2023
+382	Kecamatan Haurgeulis	1468,46	1760,71	2023
+383	Kecamatan Indramayu	5,9	89,13	2023
+384	Kecamatan Jatibarang	661,32	1879,29	2023
+385	Kecamatan Juntinyuat	263,8	1162,22	2023
+386	Kecamatan Kandanghaur	15,16	112,54	2023
+387	Kecamatan Karangampel	281,65	437,06	2023
+388	Kecamatan Kedokan Bunder	17,63	514,4	2023
+389	Kecamatan Kertasemaya	170,04	251,28	2023
+390	Kecamatan Krangkeng	345,05	634,8	2023
+391	Kecamatan Kroya	206,77	1212,09	2023
+392	Kecamatan Lelea	1679,26	660,19	2023
+393	Kecamatan Lohbener	1505,75	932,01	2023
+394	Kecamatan Losarang	1,77	452,16	2023
+395	Kecamatan Pasekan	83,47	123,42	2023
+396	Kecamatan Patrol	500,43	406,88	2023
+397	Kecamatan Sindang	53,51	326,02	2023
+398	Kecamatan Sliyeg	68,3	1015,11	2023
+399	Kecamatan Sukagumiwang	10,02	365,36	2023
+400	Kecamatan Sukra	219,78	174,56	2023
+401	Kecamatan Terisi	44,28	749,5	2023
+402	Kecamatan Tukdana	78,87	986,32	2023
+403	Kecamatan Widasari	27,29	152,67	2023
+404	Kecamatan Anjatan	864,48	412,86	2024
+405	Kecamatan Arahan	589	410,81	2024
+406	Kecamatan Balongan	114,42	376,11	2024
+407	Kecamatan Bangodua	1109,84	208,44	2024
+408	Kecamatan Bongas	274,45	398,47	2024
+409	Kecamatan Cantigi	995,38	649,35	2024
+410	Kecamatan Cikedung	249,02	1631,15	2024
+411	Kecamatan Gabuswetan	34,58	354,78	2024
+412	Kecamatan Gantar	257,64	1153,7	2024
+413	Kecamatan Haurgeulis	1835,58	1475,43	2024
+414	Kecamatan Indramayu	7,37	66,85	2024
+415	Kecamatan Jatibarang	826,66	1557,4	2024
+416	Kecamatan Juntinyuat	231,09	1029,78	2024
+417	Kecamatan Kandanghaur	11,37	98,67	2024
+418	Kecamatan Karangampel	352,06	384,33	2024
+419	Kecamatan Kedokan Bunder	13,22	450,1	2024
+420	Kecamatan Kertasemaya	212,55	224,14	2024
+421	Kecamatan Krangkeng	431,31	527,5	2024
+422	Kecamatan Kroya	155,08	1065,77	2024
+423	Kecamatan Lelea	2099,08	577,66	2024
+424	Kecamatan Lohbener	1882,19	814,53	2024
+425	Kecamatan Losarang	1,33	395,64	2024
+426	Kecamatan Pasekan	104,34	107,8	2024
+427	Kecamatan Patrol	504,9	356,02	2024
+428	Kecamatan Sindang	40,13	251,71	2024
+429	Kecamatan Sliyeg	51,22	886,1	2024
+430	Kecamatan Sukagumiwang	9,57	276,15	2024
+431	Kecamatan Sukra	232,34	152,74	2024
+432	Kecamatan Terisi	33,21	762,2	2024
+433	Kecamatan Tukdana	59,15	855,97	2024
+434	Kecamatan Widasari	29,9	137,12	2024
+435	Kecamatan Anjatan	1072,55	361,26	2025
+436	Kecamatan Arahan	736,25	361,22	2025
+437	Kecamatan Balongan	143,03	324,56	2025
+438	Kecamatan Bangodua	1387,3	176,09	2025
+439	Kecamatan Bongas	343,07	352,89	2025
+440	Kecamatan Cantigi	1244,22	587,79	2025
+441	Kecamatan Cikedung	186,77	1427,26	2025
+442	Kecamatan Gabuswetan	25,93	317,19	2025
+443	Kecamatan Gantar	322,05	1084,35	2025
+444	Kecamatan Haurgeulis	2294,47	1236,38	2025
+445	Kecamatan Indramayu	9,22	50,14	2025
+446	Kecamatan Jatibarang	1033,32	1290,65	2025
+447	Kecamatan Juntinyuat	202,45	912,43	2025
+448	Kecamatan Kandanghaur	8,53	86,5	2025
+449	Kecamatan Karangampel	440,08	337,96	2025
+450	Kecamatan Kedokan Bunder	9,92	393,83	2025
+451	Kecamatan Kertasemaya	265,68	199,94	2025
+452	Kecamatan Krangkeng	539,14	438,33	2025
+453	Kecamatan Kroya	116,31	937,12	2025
+454	Kecamatan Lelea	2623,85	505,46	2025
+455	Kecamatan Lohbener	2352,73	711,86	2025
+456	Kecamatan Losarang	1	346,18	2025
+457	Kecamatan Pasekan	130,43	94,16	2025
+458	Kecamatan Patrol	509,4	311,51	2025
+459	Kecamatan Sindang	30,1	194,33	2025
+460	Kecamatan Sliyeg	38,42	773,49	2025
+461	Kecamatan Sukagumiwang	9,13	208,72	2025
+462	Kecamatan Sukra	245,62	133,65	2025
+463	Kecamatan Terisi	24,91	775,13	2025
+464	Kecamatan Tukdana	44,36	742,84	2025
+465	Kecamatan Widasari	32,77	123,15	2025
