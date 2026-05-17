@@ -6,9 +6,21 @@
     <script src="{{ asset('assets/vendor/leaflet/leaflet.js') }}"></script>
 
     <!-- Header & Quick Actions -->
+    @php
+        $hour = \Carbon\Carbon::now()->hour;
+        if ($hour >= 4 && $hour < 11) {
+            $greeting = 'Selamat Pagi';
+        } elseif ($hour >= 11 && $hour < 15) {
+            $greeting = 'Selamat Siang';
+        } elseif ($hour >= 15 && $hour < 18) {
+            $greeting = 'Selamat Sore';
+        } else {
+            $greeting = 'Selamat Malam';
+        }
+    @endphp
     <div class="mb-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight mb-2">Semangat Pagi, {{ Auth::user()->nama }}! 🧑‍🌾</h1>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight mb-2">{{ $greeting }}, {{ Auth::user()->nama }}! 🧑‍🌾</h1>
             <p class="text-sm text-slate-500 font-medium">Berikut ringkasan kondisi bisnis mangga Anda hari ini.</p>
         </div>
         <div class="flex flex-wrap gap-3 w-full sm:w-auto">
