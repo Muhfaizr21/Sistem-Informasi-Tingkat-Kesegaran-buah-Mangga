@@ -33,7 +33,31 @@ class LaporanPanenController extends Controller
         $totalKg = $reports->sum('jumlah_kg');
         $avgPerLahan = $lahan->count() > 0 ? $totalKg / $lahan->count() : 0;
 
-        return view('petani.laporan-panen', compact('reports', 'lahan', 'totalKg', 'avgPerLahan'));
+        // Fetch yearly production for the farmer's sub-district
+        $kecamatanIds = $lahan->pluck('kecamatan_id')->push($petani->kecamatan_id ?? null)->unique()->filter();
+        $historicalStats = \App\Models\DataProduksiHistoris::with('kecamatan')
+            ->whereIn('kecamatan_id', $kecamatanIds)
+            ->where('kuartal', 'TA')
+            ->orderBy('tahun', 'asc')
+            ->get();
+
+        // Fetch top producing kecamatan for each year
+        $topKecamatanPerYear = \App\Models\DataProduksiHistoris::with('kecamatan')
+            ->where('kuartal', 'TA')
+            ->orderBy('tahun', 'asc')
+            ->get()
+            ->groupBy('tahun')
+            ->map(function ($yearGroup) {
+                $top = $yearGroup->sortByDesc('produksi_kuintal')->first();
+                return [
+                    'kecamatan_id' => $top->kecamatan_id,
+                    'nama_kecamatan' => $top->kecamatan->nama ?? 'N/A',
+                    'produksi_ton' => $top->produksi_kuintal / 10,
+                    'luas_hektar' => $top->luas_hektar
+                ];
+            });
+
+        return view('petani.laporan-panen', compact('reports', 'lahan', 'totalKg', 'avgPerLahan', 'historicalStats', 'topKecamatanPerYear'));
     }
 
     public function store(Request $request)

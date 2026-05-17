@@ -56,6 +56,49 @@ class ReportController extends Controller
             return view('admin.harvest-report', compact('tab'));
         }
 
+        if ($tab === 'dataset_kuartal') {
+            $query = \App\Models\DataProduksiHistoris::with('kecamatan')
+                ->where('kuartal', '!=', 'TA');
+            
+            if ($request->filled('kecamatan')) {
+                $query->where('kecamatan_id', $request->kecamatan);
+            }
+            if ($request->filled('tahun')) {
+                $query->where('tahun', $request->tahun);
+            }
+            
+            $reports = $query->orderBy('tahun', 'desc')
+                ->orderBy('kecamatan_id', 'asc')
+                ->orderBy('kuartal', 'asc')
+                ->paginate(15)
+                ->withQueryString();
+                
+            $kecamatans = \App\Models\Kecamatan::orderBy('nama', 'asc')->get();
+            
+            return view('admin.harvest-report', compact('reports', 'tab', 'kecamatans'));
+        }
+
+        if ($tab === 'dataset_prediksi') {
+            $query = \App\Models\DataProduksiHistoris::with('kecamatan')
+                ->where('kuartal', '=', 'TA');
+            
+            if ($request->filled('kecamatan')) {
+                $query->where('kecamatan_id', $request->kecamatan);
+            }
+            if ($request->filled('tahun')) {
+                $query->where('tahun', $request->tahun);
+            }
+            
+            $reports = $query->orderBy('tahun', 'desc')
+                ->orderBy('kecamatan_id', 'asc')
+                ->paginate(15)
+                ->withQueryString();
+                
+            $kecamatans = \App\Models\Kecamatan::orderBy('nama', 'asc')->get();
+            
+            return view('admin.harvest-report', compact('reports', 'tab', 'kecamatans'));
+        }
+
         return redirect()->route('admin.harvest-report', ['tab' => 'harvest']);
     }
 

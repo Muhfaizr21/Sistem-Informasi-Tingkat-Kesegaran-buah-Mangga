@@ -40,25 +40,22 @@ class WilayahProduksiController extends Controller
         // Summary for Report from CSV Data
         $kecamatanIds = $lahan->pluck('kecamatan_id')->push($petani->kecamatan_id)->unique()->filter();
         
-        $query = \App\Models\RingkasanProduksi::whereIn('kecamatan_id', $kecamatanIds)
-            ->whereNotNull('tahun');
+        $query = \App\Models\DataProduksiHistoris::whereIn('kecamatan_id', $kecamatanIds);
 
         if (request('search_tahun')) {
             $query->where('tahun', request('search_tahun'));
         }
 
         $historicalStats = $query->orderBy('tahun', 'desc')
-            ->orderBy('triwulan', 'desc')
-            ->simplePaginate(5)
+            ->paginate(5)
             ->withQueryString();
 
-        $latestYear = \App\Models\RingkasanProduksi::where('kecamatan_id', $petani->kecamatan_id)
-            ->whereNull('triwulan')
+        $latestYear = \App\Models\DataProduksiHistoris::where('kecamatan_id', $petani->kecamatan_id)
             ->orderBy('tahun', 'desc')
             ->first();
         
-        $totalProduksi = $latestYear->total_produksi_kuintal ?? $stats->sum();
-        $totalLuas = $latestYear->total_lahan_hektar ?? $lahan->sum('luas_hektar');
+        $totalProduksi = $latestYear->produksi_kuintal ?? $stats->sum();
+        $totalLuas = $latestYear->luas_hektar ?? $lahan->sum('luas_hektar');
         $avgProductivity = $totalLuas > 0 ? $totalProduksi / $totalLuas : 0;
 
         // Current Weather for the territory

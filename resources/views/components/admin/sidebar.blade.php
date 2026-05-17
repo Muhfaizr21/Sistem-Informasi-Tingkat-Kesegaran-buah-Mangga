@@ -1,6 +1,6 @@
 <!-- SideNavBar Component -->
 <aside
-    class="fixed left-0 top-0 h-full w-64 border-r border-slate-800 bg-[#001F3F] dark:bg-slate-950 font-inter text-sm antialiased border-r border-slate-800 z-50">
+    class="h-full w-[260px] bg-[#001F3F] dark:bg-slate-950 font-inter text-sm antialiased border-r border-slate-800">
     <div class="flex flex-col h-full py-6">
         <!-- Brand Logo Area -->
         <div class="px-6 mb-8 flex items-center gap-3 overflow-hidden">
