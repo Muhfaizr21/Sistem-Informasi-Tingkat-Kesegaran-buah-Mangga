@@ -39,4 +39,22 @@ class LaporanPanen extends Model
     {
         return $this->belongsTo(Lahan::class, 'lahan_id');
     }
+
+    public function getKeberhasilanPanenAttribute()
+    {
+        $luas = $this->luas_panen_hektar ?? ($this->lahan->luas_hektar ?? 1.0);
+        if ($luas <= 0) $luas = 1.0;
+        
+        $yield = $this->jumlah_kg / $luas;
+        
+        if ($yield >= 10000) {
+            return 'Berhasil (Tinggi)';
+        } elseif ($yield >= 5000) {
+            return 'Berhasil (Normal)';
+        } elseif ($yield >= 2500) {
+            return 'Kurang Panen';
+        } else {
+            return 'Gagal Panen';
+        }
+    }
 }

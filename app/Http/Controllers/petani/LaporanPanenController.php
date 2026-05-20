@@ -82,27 +82,29 @@ class LaporanPanenController extends Controller
             }
         }
 
+        $lahan = Lahan::find($request->lahan_id);
+        $luas_panen = $lahan->luas_hektar ?? 1.0;
+
         LaporanPanen::create([
             'petani_id' => $petani->id,
             'lahan_id' => $request->lahan_id,
             'tanggal_panen' => $request->tanggal_panen,
             'jumlah_kg' => $request->jumlah_kg,
+            'luas_panen_hektar' => $luas_panen,
             'jenis_mangga' => $request->jenis_mangga,
             'kondisi_cuaca' => $request->kondisi_cuaca,
             'catatan' => $request->catatan,
             'foto_panen' => $fotos,
-            'status' => 'submitted'
+            'status' => 'verified',
+            'diverifikasi_oleh' => auth()->id(),
+            'diverifikasi_pada' => now()
         ]);
 
-        return back()->with('success', 'Laporan panen berhasil dikirim untuk verifikasi!');
+        return back()->with('success', 'Laporan panen berhasil dicatat! Analisis keberhasilan panen dihitung secara instan.');
     }
 
     public function update(Request $request, LaporanPanen $laporan)
     {
-        if ($laporan->status === 'verified') {
-            return back()->with('error', 'Laporan yang sudah diverifikasi tidak dapat diubah.');
-        }
-
         $request->validate([
             'jumlah_kg' => 'required|numeric',
             'kondisi_cuaca' => 'nullable|string',

@@ -20,6 +20,13 @@
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('admin.dashboard') ? '1' : '0' }};">dashboard</span>
                 Dashboard
             </a>
+
+            <!-- Pusat Sinkronisasi -->
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.sync-hub') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"
+                href="{{ route('admin.sync-hub') }}">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('admin.sync-hub') ? '1' : '0' }};">sync_alt</span>
+                Pusat Sinkronisasi
+            </a>
             
             <!-- Manajemen Pengguna -->
             <a class="flex items-center gap-3 px-3 py-2.5 rounded border-l-4 {{ request()->routeIs('admin.users') ? 'border-emerald-500 bg-white/10 text-white font-semibold' : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all"

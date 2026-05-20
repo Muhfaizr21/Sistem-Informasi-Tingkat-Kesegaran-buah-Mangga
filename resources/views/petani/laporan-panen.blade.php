@@ -32,15 +32,15 @@
             <h3 class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">{{ number_format($avgPerLahan, 1) }} <span class="text-xs font-medium text-slate-400 uppercase">Kg</span></h3>
         </div>
         <div class="bg-slate-50/60 p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Verified Status</p>
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Panen Sukses (Berhasil)</p>
             <h3 class="text-2xl md:text-3xl font-extrabold text-emerald-650 tracking-tight">
-                {{ $reports->where('status', 'verified')->count() }} <span class="text-xs font-medium text-slate-400 uppercase">Items</span>
+                {{ $reports->filter(fn($r) => str_contains($r->keberhasilan_panen, 'Berhasil'))->count() }} <span class="text-xs font-medium text-slate-400 uppercase">Laporan</span>
             </h3>
         </div>
         <div class="bg-slate-50/60 p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Pending Review</p>
-            <h3 class="text-2xl md:text-3xl font-extrabold text-amber-600 tracking-tight">
-                {{ $reports->where('status', 'submitted')->count() }} <span class="text-xs font-medium text-slate-400 uppercase">Items</span>
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Kurang / Gagal Panen</p>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-rose-600 tracking-tight">
+                {{ $reports->filter(fn($r) => !str_contains($r->keberhasilan_panen, 'Berhasil'))->count() }} <span class="text-xs font-medium text-slate-400 uppercase">Laporan</span>
             </h3>
         </div>
     </div>
@@ -151,7 +151,7 @@
                         <th class="px-8 py-5 text-[9px] font-black text-slate-450 uppercase tracking-widest">Lokasi Lahan</th>
                         <th class="px-8 py-5 text-[9px] font-black text-slate-450 uppercase tracking-widest">Varietas</th>
                         <th class="px-8 py-5 text-[9px] font-black text-slate-450 uppercase tracking-widest">Kuantitas</th>
-                        <th class="px-8 py-5 text-[9px] font-black text-slate-450 uppercase tracking-widest">Status</th>
+                        <th class="px-8 py-5 text-[9px] font-black text-slate-450 uppercase tracking-widest">Keberhasilan</th>
                         <th class="px-8 py-5 text-[9px] font-black text-slate-450 uppercase tracking-widest text-right">Manajemen</th>
                     </tr>
                 </thead>
@@ -175,17 +175,21 @@
                                 </p>
                             </td>
                             <td class="px-8 py-6">
-                                @if($report->status == 'verified')
-                                    <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-emerald-100">
-                                        <span class="material-symbols-outlined text-[14px]">verified</span> VERIFIED
+                                @if(str_contains(strtolower($report->keberhasilan_panen), 'tinggi'))
+                                    <span class="px-3 py-1.5 bg-emerald-500/10 text-emerald-700 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-emerald-500/20">
+                                        <span class="material-symbols-outlined text-[14px]">stars</span> BERHASIL (TINGGI)
                                     </span>
-                                @elseif($report->status == 'submitted')
-                                    <span class="px-3 py-1.5 bg-amber-50 text-amber-800 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-amber-100 animate-pulse">
-                                        <span class="material-symbols-outlined text-[14px]">schedule</span> PENDING
+                                @elseif(str_contains(strtolower($report->keberhasilan_panen), 'normal'))
+                                    <span class="px-3 py-1.5 bg-emerald-50 text-emerald-750 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-emerald-100">
+                                        <span class="material-symbols-outlined text-[14px]">check_circle</span> BERHASIL (NORMAL)
+                                    </span>
+                                @elseif(str_contains(strtolower($report->keberhasilan_panen), 'kurang'))
+                                    <span class="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-amber-100">
+                                        <span class="material-symbols-outlined text-[14px]">warning</span> KURANG PANEN
                                     </span>
                                 @else
-                                    <span class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-slate-200">
-                                        <span class="material-symbols-outlined text-[14px]">draft</span> DRAFT
+                                    <span class="px-3 py-1.5 bg-rose-50 text-rose-700 rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit border border-rose-100">
+                                        <span class="material-symbols-outlined text-[14px]">cancel</span> GAGAL PANEN
                                     </span>
                                 @endif
                             </td>
@@ -194,11 +198,9 @@
                                     <button class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
                                         <span class="material-symbols-outlined text-base">visibility</span>
                                     </button>
-                                    @if($report->status != 'verified')
-                                        <button class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                                            <span class="material-symbols-outlined text-base">edit</span>
-                                        </button>
-                                    @endif
+                                    <button class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                        <span class="material-symbols-outlined text-base">edit</span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -224,7 +226,7 @@
             <div class="p-6 md:p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/20">
                 <div>
                     <h2 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight">Input Hasil Panen</h2>
-                    <p class="text-xs text-slate-450 font-medium">Laporan akan diverifikasi oleh Admin Sistem.</p>
+                    <p class="text-xs text-slate-450 font-medium text-emerald-600">Sistem akan melakukan evaluasi dan analisis keberhasilan panen secara instan.</p>
                 </div>
                 <button onclick="document.getElementById('modal-add-panen').classList.add('hidden')"
                     class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center hover:bg-slate-250 transition-all active:scale-90 shrink-0">
@@ -327,11 +329,11 @@
 
                 <div class="pt-6">
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4.5 rounded-xl shadow-md transition-all active:scale-[0.98] uppercase tracking-wider text-xs">
-                        Kirim Laporan Panen Ke Sistem
+                        Simpan Laporan & Evaluasi Instan
                     </button>
-                    <div class="mt-4 flex items-center justify-center gap-1.5 text-slate-400">
-                        <span class="material-symbols-outlined text-sm">shield_person</span>
-                        <p class="text-[9px] font-bold uppercase tracking-widest">Laporan akan melewati tahap validasi admin</p>
+                    <div class="mt-4 flex items-center justify-center gap-1.5 text-emerald-650">
+                        <span class="material-symbols-outlined text-sm">verified_user</span>
+                        <p class="text-[9px] font-bold uppercase tracking-widest">Auto-Verifikasi: Analisis keberhasilan panen dihitung otomatis</p>
                     </div>
                 </div>
             </form>

@@ -90,9 +90,12 @@ use App\Http\Controllers\admin\MappingController;
 use App\Http\Controllers\admin\ReportController;
 use App\Http\Controllers\admin\IntegrationController;
 use App\Http\Controllers\admin\ConfigController;
+use App\Http\Controllers\admin\SyncHubController;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/sync-hub', [SyncHubController::class, 'index'])->name('sync-hub');
+    Route::post('/sync-hub/trigger', [SyncHubController::class, 'trigger'])->name('sync-hub.trigger');
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');

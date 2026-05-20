@@ -287,10 +287,12 @@ async def lifespan(app: FastAPI):
     model_path = os.path.join(os.path.dirname(__file__), 'random_forest_model.pkl')
     if HAS_CV and os.path.exists(model_path):
         try:
-            model = joblib.load(model_path)
+            # Menggunakan mmap_mode='r' untuk loading lebih efisien
+            model = joblib.load(model_path, mmap_mode='r')
             print("INFO: Random Forest Model dimuat ke memori dengan sukses.")
         except Exception as e:
             print(f"WARNING: Gagal memuat model. Error: {e}")
+            print("Menggunakan mode Fallback deterministik.")
     else:
         print("WARNING: Model tidak ditemukan. Menggunakan mode Fallback deterministik.")
     yield
