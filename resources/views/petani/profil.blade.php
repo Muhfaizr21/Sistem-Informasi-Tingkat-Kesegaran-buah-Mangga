@@ -2,47 +2,56 @@
     <x-slot name="title">Profil Petani</x-slot>
 
     <!-- Header / Cover Section -->
-    <div class="relative mb-40">
-        <div class="h-56 md:h-72 bg-gradient-to-br from-slate-900 via-slate-800 to-primary-600 rounded-[4rem] shadow-2xl relative overflow-hidden">
+    <div class="relative mb-8">
+        <div class="h-48 md:h-64 bg-gradient-to-br from-slate-900 via-slate-800 to-primary-600 rounded-[3rem] shadow-2xl relative overflow-hidden">
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
             <div class="absolute -right-20 -top-20 w-80 h-80 bg-primary-500/20 rounded-full blur-[100px]"></div>
         </div>
-        <div class="absolute -bottom-24 left-10 flex flex-col md:flex-row items-end gap-8">
-            <div class="relative group">
-                <div class="w-40 h-40 md:w-48 md:h-48 rounded-[3.5rem] border-[10px] border-white shadow-2xl overflow-hidden bg-slate-100">
-                    <img src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama) . '&background=10B981&color=fff&size=512' }}" 
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Profile">
+        
+        <!-- Profile Info Card (Flows naturally with negative margin, fully flexible) -->
+        <div class="relative -mt-24 mx-4 md:mx-10 p-6 md:p-8 bg-white/95 backdrop-blur-md rounded-[2.5rem] border border-slate-100 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                <!-- Avatar -->
+                <div class="relative group shrink-0">
+                    <div class="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] border-[6px] border-white shadow-xl overflow-hidden bg-slate-100">
+                        <img src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama) . '&background=10B981&color=fff&size=512' }}" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Profile">
+                    </div>
+                    <label class="absolute inset-[6px] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 rounded-[2rem] transition-all duration-300 cursor-pointer border border-white/20">
+                        <span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+                        <input type="file" form="form-profile" name="foto_profil" class="hidden">
+                    </label>
                 </div>
-                <label class="absolute inset-[10px] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 rounded-[3rem] transition-all duration-300 cursor-pointer border-2 border-white/20">
-                    <span class="material-symbols-outlined text-white text-4xl">photo_camera</span>
-                    <input type="file" form="form-profile" name="foto_profil" class="hidden">
-                </label>
-            </div>
-            <div class="mb-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">{{ auth()->user()->nama }}</h1>
-                    <span class="material-symbols-outlined text-primary-500 fill-1 text-2xl">verified</span>
-                </div>
-                <div class="flex flex-wrap items-center gap-4">
-                    <span class="px-4 py-1.5 bg-primary-500/10 text-primary-500 text-[10px] font-black rounded-full uppercase tracking-[0.2em] border border-primary-500/20 shadow-sm">Verified Farmer</span>
-                    <span class="text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">groups</span>
-                        {{ $petani->kelompok_tani ?? 'Independent Producer' }}
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="absolute -bottom-16 right-10 hidden lg:flex gap-6">
-            <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border border-slate-50 text-center min-w-[140px] hover:scale-105 transition-transform duration-300">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Trust Score</p>
-                <div class="flex items-center justify-center gap-1">
-                    <p class="text-2xl font-black text-slate-900 tracking-tighter">4.9</p>
-                    <span class="material-symbols-outlined text-secondary fill-1 text-lg">star</span>
+                
+                <!-- Details -->
+                <div>
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-2 flex-wrap">
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">{{ auth()->user()->nama }}</h1>
+                        <span class="material-symbols-outlined text-primary-500 fill-1 text-xl md:text-2xl">verified</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                        <span class="px-4 py-1.5 bg-primary-500/10 text-primary-500 text-[10px] font-black rounded-full uppercase tracking-[0.2em] border border-primary-500/20 shadow-sm">Verified Farmer</span>
+                        <span class="text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">groups</span>
+                            {{ $petani->kelompok_tani ?? 'Independent Producer' }}
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border border-slate-50 text-center min-w-[140px] hover:scale-105 transition-transform duration-300">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Annual Yield</p>
-                <p class="text-2xl font-black text-slate-900 tracking-tighter">1.2K <span class="text-xs text-slate-400 font-medium">Kg</span></p>
+            
+            <!-- Stats -->
+            <div class="flex gap-4 shrink-0">
+                <div class="bg-slate-50 px-5 py-4 rounded-2xl border border-slate-100 text-center min-w-[120px] hover:scale-105 transition-transform duration-300">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Trust Score</p>
+                    <div class="flex items-center justify-center gap-1">
+                        <p class="text-xl font-black text-slate-900 tracking-tighter">4.9</p>
+                        <span class="material-symbols-outlined text-secondary fill-1 text-base">star</span>
+                    </div>
+                </div>
+                <div class="bg-slate-50 px-5 py-4 rounded-2xl border border-slate-100 text-center min-w-[120px] hover:scale-105 transition-transform duration-300">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Annual Yield</p>
+                    <p class="text-xl font-black text-slate-900 tracking-tighter">1.2K <span class="text-[10px] text-slate-400 font-medium">Kg</span></p>
+                </div>
             </div>
         </div>
     </div>
@@ -54,40 +63,54 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Sidebar Navigation Tabs -->
-        <div class="lg:col-span-3 space-y-3">
-            <button onclick="switchTab('info')" id="btn-info" class="tab-btn w-full flex items-center justify-between px-8 py-5 rounded-3xl bg-primary-500 text-white font-black shadow-2xl shadow-primary-500/20 transition-all duration-300 group">
-                <div class="flex items-center gap-4">
-                    <span class="material-symbols-outlined text-xl">account_circle</span>
-                    <span class="text-xs uppercase tracking-[0.2em]">Personal Data</span>
+        <div class="lg:col-span-4 bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-3 h-fit">
+            <button onclick="switchTab('info')" id="btn-info" class="tab-btn w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-primary-500 text-white font-black shadow-2xl shadow-primary-500/20 transition-all duration-300 group">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-lg shrink-0">account_circle</span>
+                    <span class="text-xs uppercase tracking-[0.15em] whitespace-nowrap">Personal Data</span>
                 </div>
-                <span class="material-symbols-outlined text-sm opacity-50 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                <span class="chevron-icon material-symbols-outlined text-sm opacity-50 group-hover:translate-x-1 transition-transform shrink-0">chevron_right</span>
             </button>
-            <button onclick="switchTab('verification')" id="btn-verification" class="tab-btn w-full flex items-center justify-between px-8 py-5 rounded-3xl text-slate-500 hover:bg-slate-50 font-bold transition-all duration-300 group">
-                <div class="flex items-center gap-4">
-                    <span class="material-symbols-outlined text-xl">verified_user</span>
-                    <span class="text-xs uppercase tracking-[0.2em]">Verification</span>
+            <button onclick="switchTab('verification')" id="btn-verification" class="tab-btn w-full flex items-center justify-between px-5 py-4 rounded-2xl text-slate-500 hover:bg-slate-50 font-bold transition-all duration-300 group">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-lg shrink-0">verified_user</span>
+                    <span class="text-xs uppercase tracking-[0.15em] whitespace-nowrap">Verification</span>
                 </div>
-                <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-50 group-hover:translate-x-1 transition-all">chevron_right</span>
+                <span class="chevron-icon material-symbols-outlined text-sm opacity-0 group-hover:opacity-50 group-hover:translate-x-1 transition-all shrink-0">chevron_right</span>
             </button>
-            <button onclick="switchTab('security')" id="btn-security" class="tab-btn w-full flex items-center justify-between px-8 py-5 rounded-3xl text-slate-500 hover:bg-slate-50 font-bold transition-all duration-300 group">
-                <div class="flex items-center gap-4">
-                    <span class="material-symbols-outlined text-xl">security</span>
-                    <span class="text-xs uppercase tracking-[0.2em]">Credentials</span>
+            <button onclick="switchTab('security')" id="btn-security" class="tab-btn w-full flex items-center justify-between px-5 py-4 rounded-2xl text-slate-500 hover:bg-slate-50 font-bold transition-all duration-300 group">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-lg shrink-0">security</span>
+                    <span class="text-xs uppercase tracking-[0.15em] whitespace-nowrap">Credentials</span>
                 </div>
-                <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-50 group-hover:translate-x-1 transition-all">chevron_right</span>
+                <span class="chevron-icon material-symbols-outlined text-sm opacity-0 group-hover:opacity-50 group-hover:translate-x-1 transition-all shrink-0">chevron_right</span>
             </button>
         </div>
 
         <!-- Tab Content -->
-        <div class="lg:col-span-9">
+        <div class="lg:col-span-8">
             <!-- Information Tab -->
             <div id="tab-info" class="tab-content">
                 <div class="bg-white p-10 md:p-14 rounded-[4rem] border border-slate-100 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-10 opacity-5">
                         <span class="material-symbols-outlined text-[120px]">assignment_ind</span>
                     </div>
+                    
+                    @if ($errors->any())
+                        <div class="mb-8 p-6 bg-red-50 text-red-600 rounded-3xl border border-red-100 space-y-2 animate-in slide-in-from-top duration-500">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-2xl">error</span>
+                                <span class="font-bold text-sm uppercase tracking-widest">Terjadi Kesalahan Validasi</span>
+                            </div>
+                            <ul class="list-disc list-inside text-xs font-bold text-red-500 pl-7 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     
                     <form id="form-profile" action="{{ route('petani.profil.update') }}" method="POST" enctype="multipart/form-data" class="space-y-12 relative z-10">
                         @csrf
@@ -100,6 +123,9 @@
                                     <div class="group">
                                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within:text-primary-500 transition-colors">Nama Lengkap Sesuai KTP</label>
                                         <input type="text" name="nama" value="{{ auth()->user()->nama }}" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner" required>
+                                        @error('nama')
+                                            <p class="text-xs text-red-500 font-bold mt-2 px-1">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                     <div class="group opacity-70">
                                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Nomor Induk Kependudukan (NIK)</label>
@@ -110,11 +136,17 @@
                                     </div>
                                     <div class="group">
                                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within:text-primary-500 transition-colors">Nomor WhatsApp Aktif</label>
-                                        <input type="text" name="no_hp" value="{{ auth()->user()->no_hp }}" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner">
+                                        <input type="text" name="no_hp" value="{{ auth()->user()->no_telepon }}" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner">
+                                        @error('no_hp')
+                                            <p class="text-xs text-red-500 font-bold mt-2 px-1">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                     <div class="group">
                                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within:text-primary-500 transition-colors">Alamat Domisili Lengkap</label>
                                         <textarea name="alamat" rows="4" class="w-full bg-slate-50 border-none rounded-3xl px-8 py-6 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner resize-none">{{ auth()->user()->alamat }}</textarea>
+                                        @error('alamat')
+                                            <p class="text-xs text-red-500 font-bold mt-2 px-1">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +217,11 @@
                                     <span class="material-symbols-outlined text-[14px] fill-1">check_circle</span> Terunggah
                                 </div>
                             @endif
-                            <input type="file" name="dokumen_ktp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <!-- Preview Box -->
+                            <div class="mt-4 flex justify-center pointer-events-none">
+                                <img id="ktp-preview" src="{{ $petani->dokumen_ktp ? asset('storage/' . $petani->dokumen_ktp) : '' }}" class="{{ $petani->dokumen_ktp ? '' : 'hidden' }} max-h-32 rounded-2xl border border-slate-100 object-cover shadow-sm">
+                            </div>
+                            <input type="file" name="dokumen_ktp" onchange="previewImage(this, 'ktp-preview')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                             <div class="pt-4">
                                 <p class="text-[9px] text-slate-400 italic">Klik atau seret file ke area ini</p>
                             </div>
@@ -204,7 +240,11 @@
                                     <span class="material-symbols-outlined text-[14px] fill-1">check_circle</span> Terunggah
                                 </div>
                             @endif
-                            <input type="file" name="dokumen_lahan" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <!-- Preview Box -->
+                            <div class="mt-4 flex justify-center pointer-events-none">
+                                <img id="lahan-preview" src="{{ $petani->dokumen_lahan ? asset('storage/' . $petani->dokumen_lahan) : '' }}" class="{{ $petani->dokumen_lahan ? '' : 'hidden' }} max-h-32 rounded-2xl border border-slate-100 object-cover shadow-sm">
+                            </div>
+                            <input type="file" name="dokumen_lahan" onchange="previewImage(this, 'lahan-preview')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                             <div class="pt-4">
                                 <p class="text-[9px] text-slate-400 italic">Klik atau seret file ke area ini</p>
                             </div>
@@ -226,6 +266,20 @@
                         <span class="material-symbols-outlined text-[120px]">security</span>
                     </div>
 
+                    @if ($errors->any())
+                        <div class="mb-8 p-6 bg-red-50 text-red-600 rounded-3xl border border-red-100 space-y-2 animate-in slide-in-from-top duration-500">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-2xl">error</span>
+                                <span class="font-bold text-sm uppercase tracking-widest">Terjadi Kesalahan Validasi</span>
+                            </div>
+                            <ul class="list-disc list-inside text-xs font-bold text-red-500 pl-7 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <h3 class="text-2xl font-extrabold text-slate-900 border-b border-slate-50 pb-8 mb-10 tracking-tight">Proteksi Kredensial</h3>
                     <form action="{{ route('petani.profil.password') }}" method="POST" class="space-y-8 relative z-10">
                         @csrf
@@ -233,15 +287,24 @@
                         <div class="space-y-6">
                             <div class="group">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within:text-red-500 transition-colors">Kata Sandi Saat Ini</label>
-                                <input type="password" name="current_password" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-red-500/10 outline-none font-bold text-slate-700 shadow-inner">
+                                <input type="password" name="current_password" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-red-500/10 outline-none font-bold text-slate-700 shadow-inner" required>
+                                @error('current_password')
+                                    <p class="text-xs text-red-500 font-bold mt-2 px-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="group">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within:text-primary-500 transition-colors">Kata Sandi Baru</label>
-                                <input type="password" name="password" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner">
+                                <input type="password" name="password" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner" required>
+                                @error('password')
+                                    <p class="text-xs text-red-500 font-bold mt-2 px-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="group">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within:text-primary-500 transition-colors">Konfirmasi Kata Sandi Baru</label>
-                                <input type="password" name="password_confirmation" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner">
+                                <input type="password" name="password_confirmation" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-700 shadow-inner" required>
+                                @error('password_confirmation')
+                                    <p class="text-xs text-red-500 font-bold mt-2 px-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="pt-6">
@@ -261,12 +324,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
             // Remove active styles from buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-primary-500', 'text-white', 'shadow-2xl', 'shadow-primary-500/20');
+                btn.classList.remove('bg-primary-500', 'text-white', 'shadow-2xl', 'shadow-primary-500/20', 'font-black');
                 btn.classList.add('text-slate-500', 'hover:bg-slate-50', 'font-bold');
                 
                 // Hide chevron icon for inactive
-                const chevron = btn.querySelector('span:last-child');
-                if(chevron) chevron.classList.add('opacity-0');
+                const chevron = btn.querySelector('.chevron-icon');
+                if(chevron) {
+                    chevron.classList.add('opacity-0');
+                    chevron.classList.remove('opacity-50');
+                }
             });
 
             // Show target content
@@ -274,11 +340,26 @@
             // Add active styles to clicked button
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-50', 'font-bold');
-            activeBtn.classList.add('bg-primary-500', 'text-white', 'shadow-2xl', 'shadow-primary-500/20');
+            activeBtn.classList.add('bg-primary-500', 'text-white', 'shadow-2xl', 'shadow-primary-500/20', 'font-black');
             
             // Show chevron icon for active
-            const activeChevron = activeBtn.querySelector('span:last-child');
-            if(activeChevron) activeChevron.classList.remove('opacity-0');
+            const activeChevron = activeBtn.querySelector('.chevron-icon');
+            if(activeChevron) {
+                activeChevron.classList.remove('opacity-0');
+                activeChevron.classList.add('opacity-50');
+            }
+        }
+
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
     </script>
 </x-petani-layout>

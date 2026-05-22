@@ -28,6 +28,7 @@ class User extends Authenticatable
         'role',
         'no_telepon',
         'foto_profil',
+        'alamat',
     ];
 
     /**

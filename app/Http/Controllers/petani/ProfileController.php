@@ -40,7 +40,7 @@ class ProfileController extends Controller
         // Update User Data
         $user->update([
             'nama' => $request->nama,
-            'no_hp' => $request->no_hp,
+            'no_telepon' => $request->no_hp,
             'alamat' => $request->alamat,
         ]);
 
