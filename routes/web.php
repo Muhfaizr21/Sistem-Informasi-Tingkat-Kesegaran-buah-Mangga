@@ -104,6 +104,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/quality-monitor', [AdminController::class, 'qualityMonitor'])->name('quality-monitor');
     Route::post('/quality-monitor/{id}/verify', [AdminController::class, 'verifyScan'])->name('quality-monitor.verify');
     Route::post('/quality-monitor/{id}/anomaly', [AdminController::class, 'markAnomaly'])->name('quality-monitor.anomaly');
+    Route::post('/quality-monitor/train', [AdminController::class, 'retrain'])->name('quality-monitor.train');
     Route::get('/harvest-report', [ReportController::class, 'index'])->name('harvest-report');
     Route::post('/harvest-report/{id}/verify-harvest', [ReportController::class, 'verifyHarvest'])->name('harvest-report.verify-harvest');
     Route::post('/harvest-report/{id}/verify-planting', [ReportController::class, 'verifyPlanting'])->name('harvest-report.verify-planting');
@@ -113,6 +114,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/api-integration/backup', [IntegrationController::class, 'runBackup'])->name('api-integration.backup');
     Route::get('/config', [ConfigController::class, 'index'])->name('config');
     Route::post('/config/update', [ConfigController::class, 'update'])->name('config.update');
+
+    // Profile Management
+    Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [AdminController::class, 'updatePassword'])->name('profile.password');
 
     // Pesanan & Verifikasi Pembayaran
     Route::get('/pesanan', [AdminController::class, 'pesanan'])->name('pesanan.index');
@@ -242,6 +248,8 @@ Route::prefix('petani')->name('petani.')->middleware(['auth'])->group(function (
 
     // Marketplace Management (Produk)
     Route::get('/produk', [\App\Http\Controllers\petani\ProdukController::class, 'index'])->name('produk.index');
+    Route::get('/produk/{id}/edit', [\App\Http\Controllers\petani\ProdukController::class, 'edit'])->name('produk.edit');
+    Route::put('/produk/{id}', [\App\Http\Controllers\petani\ProdukController::class, 'update'])->name('produk.update');
     Route::delete('/produk/{id}', [\App\Http\Controllers\petani\ProdukController::class, 'destroy'])->name('produk.destroy');
     Route::post('/produk/{id}/toggle', [\App\Http\Controllers\petani\ProdukController::class, 'toggleStatus'])->name('produk.toggle');
 

@@ -35,7 +35,7 @@
                         @if($p->aktif)
                             <span class="px-3 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-full shadow-lg shadow-emerald-500/20">AKTIF</span>
                         @else
-                            <span class="px-3 py-1 bg-slate-500 text-white text-[10px] font-black rounded-full shadow-lg shadow-slate-500/20">NONAKTIF</span>
+                            <span class="px-3 py-1 bg-amber-500 text-white text-[10px] font-black rounded-full shadow-lg shadow-amber-500/20">DRAFT</span>
                         @endif
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
@@ -70,7 +70,10 @@
                                 {{ $p->aktif ? 'Sembunyikan' : 'Tampilkan' }}
                             </button>
                         </form>
-                        <form action="{{ route('petani.produk.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Hapus produk ini dari marketplace?')" class="flex-shrink-0">
+                        <a href="{{ route('petani.produk.edit', $p->id) }}" class="w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all group shrink-0" title="Edit Produk">
+                            <span class="material-symbols-outlined text-sm group-hover:scale-110">edit</span>
+                        </a>
+                        <form action="{{ route('petani.produk.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Hapus produk ini dari katalog?')" class="flex-shrink-0">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="w-12 h-12 flex items-center justify-center bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-all group">

@@ -6,9 +6,9 @@
     <!-- Brand -->
     <a href="{{ route('landing') }}" class="flex items-center gap-3 no-underline">
         <div class="w-12 h-12 sm:w-11 sm:h-11 bg-[#4A7C3F] rounded-full flex items-center justify-center shadow-[0_3px_10px_rgba(74,124,63,0.3)] overflow-hidden">
-            <img src="/storage/logo/logo.png" class="h-9 w-9 sm:h-8 sm:w-8 object-contain" alt="Logo" />
+            <img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo.png') }}" class="h-9 w-9 sm:h-8 sm:w-8 object-contain" alt="Logo" />
         </div>
-        <span style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: #1E3A1A;">SI-<span style="color: #D4A017;">Mangga</span></span>
+        <span style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: #1E3A1A;">{{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}</span>
     </a>
 
     <!-- Desktop Links -->

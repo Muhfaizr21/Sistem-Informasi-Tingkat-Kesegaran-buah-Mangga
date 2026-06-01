@@ -56,13 +56,17 @@
             </div>
             <div class="h-64 w-full flex items-end gap-3 px-2">
                 @foreach($trends as $trend)
-                    <div class="flex-1 flex flex-col items-center gap-2 group">
-                        <div class="relative w-full bg-primary-50 rounded-t-xl transition-all duration-500 group-hover:bg-primary-100" style="height: {{ $trend->avg_score }}%">
-                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                {{ number_format($trend->avg_score, 1) }}
+                    <div class="flex-1 h-full flex flex-col justify-end items-center gap-2 group">
+                        <div class="w-full relative flex flex-col justify-end h-full max-w-[36px]">
+                            <!-- Tooltip -->
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-black shadow-lg z-20">
+                                {{ number_format($trend->avg_score, 1) }}%
+                            </div>
+                            <!-- Bar -->
+                            <div class="w-full bg-gradient-to-t from-primary-500 to-primary-300 rounded-t-xl transition-all duration-500 group-hover:from-primary-600 group-hover:to-primary-400 hover:scale-[1.02] shadow-sm" style="height: {{ number_format($trend->avg_score, 2, '.', '') }}%">
                             </div>
                         </div>
-                        <span class="text-[10px] text-on-surface-variant font-bold uppercase">{{ date('D', strtotime($trend->date)) }}</span>
+                        <span class="text-[10px] text-on-surface-variant font-bold uppercase whitespace-nowrap">{{ date('D', strtotime($trend->date)) }}</span>
                     </div>
                 @endforeach
             </div>
@@ -82,14 +86,11 @@
                     </div>
                     <div class="flex-1">
                         <div class="text-xs font-bold text-red-700">#{{ $anomaly->batch_id }}</div>
-                        <div class="text-[10px] text-red-600/80">Skor: {{ $anomaly->skor_kesegaran }}% • Kepercayaan: {{ $anomaly->skor_kepercayaan }}%</div>
+                        <div class="text-[10px] text-red-600/80">Skor: {{ number_format($anomaly->skor_kesegaran) }}% • Kepercayaan: {{ number_format($anomaly->skor_kepercayaan) }}%</div>
                     </div>
-                    <form action="{{ route('admin.quality-monitor.anomaly', $anomaly->id) }}" method="POST">
-                        @csrf
-                        <button class="w-8 h-8 rounded-lg bg-white text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-sm">
-                            <span class="material-symbols-outlined text-[18px]">visibility</span>
-                        </button>
-                    </form>
+                    <button type="button" onclick="showAnomalyDetail('{{ $anomaly->id }}', '{{ $anomaly->batch_id }}', '{{ $anomaly->jenis_mangga }}', '{{ number_format($anomaly->skor_kesegaran) }}', '{{ number_format($anomaly->skor_kepercayaan) }}', '{{ asset('storage/' . $anomaly->path_foto) }}', '{{ $anomaly->kategori }}', '{{ $anomaly->rekomendasi }}', '{{ $anomaly->created_at->format('d M Y H:i') }}')" class="w-8 h-8 rounded-lg bg-white text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Lihat Detail Anomali">
+                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                    </button>
                 </div>
                 @empty
                 <div class="py-12 text-center text-on-surface-variant text-sm">
@@ -257,30 +258,36 @@
             <!-- Accuracy Chart Mock -->
             <div class="h-64 flex items-end justify-between gap-6 px-4">
                 @foreach($accuracyTrend as $accuracy)
-                <div class="flex-1 flex flex-col items-center gap-3">
-                    <div class="w-full bg-gradient-to-t from-primary-500 to-primary-300 rounded-2xl shadow-lg transition-all hover:scale-105 duration-300" style="height: {{ $accuracy }}%"></div>
-                    <span class="text-[10px] font-bold text-on-surface-variant uppercase">Ver.{{ 1.0 + ($loop->index * 0.1) }}</span>
+                <div class="flex-1 h-full flex flex-col justify-end items-center gap-3 group">
+                    <div class="w-full relative flex flex-col justify-end h-full max-w-[48px]">
+                        <div id="{{ $loop->last ? 'recent-accuracy-bar' : '' }}" class="w-full bg-gradient-to-t from-primary-500 to-primary-300 rounded-2xl shadow-lg transition-all hover:scale-105 duration-300 relative animate-in slide-in-from-bottom duration-500" style="height: {{ $accuracy }}%">
+                            @if($loop->last)
+                                <div id="accuracy-tooltip" class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-[10px] py-1 px-2 rounded font-black opacity-100 transition-opacity">{{ $accuracy }}%</div>
+                            @endif
+                        </div>
+                    </div>
+                    <span id="{{ $loop->last ? 'recent-accuracy-label' : '' }}" class="text-[10px] font-bold text-on-surface-variant uppercase whitespace-nowrap">Ver.{{ number_format(1.0 + ($loop->index * 0.1), 1) }}</span>
                 </div>
                 @endforeach
             </div>
 
             <div class="mt-12 flex flex-col md:flex-row gap-6">
-                <button class="flex-1 p-6 border-2 border-dashed border-primary-200 rounded-3xl flex flex-col items-center text-center gap-3 hover:border-primary-500 hover:bg-primary-50 transition-all group">
+                <button onclick="alert('Sinkronisasi data otomatis aktif! Semua {{ $totalTrainingData }} pindaian terverifikasi dan {{ $totalAnomalies ?? 0 }} data anomali telah diindeks ke dalam set pelatihan AI.')" class="flex-1 p-6 border-2 border-dashed border-primary-200 rounded-3xl flex flex-col items-center text-center gap-3 hover:border-primary-500 hover:bg-primary-50 transition-all group">
                     <div class="w-12 h-12 rounded-2xl bg-primary-100 text-primary-600 flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-all">
                         <span class="material-symbols-outlined">upload_file</span>
                     </div>
                     <div>
                         <div class="font-bold text-on-surface">Update Training Data</div>
-                        <div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mt-1">{{ $totalTrainingData }} Verified Scans Ready</div>
+                        <div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mt-1">{{ $totalTrainingData }} Verified & {{ $totalAnomalies ?? 0 }} Anomalies Ready</div>
                     </div>
                 </button>
-                <button class="flex-1 p-6 border-2 border-dashed border-mango-200 rounded-3xl flex flex-col items-center text-center gap-3 hover:border-mango-500 hover:bg-mango-50 transition-all group">
-                    <div class="w-12 h-12 rounded-2xl bg-mango-100 text-mango-600 flex items-center justify-center group-hover:bg-mango-600 group-hover:text-white transition-all">
+                <button id="btn-retrain" onclick="startTraining()" class="flex-1 p-6 border-2 border-dashed border-mango-200 rounded-3xl flex flex-col items-center text-center gap-3 hover:border-mango-500 hover:bg-mango-50 transition-all group">
+                    <div class="w-12 h-12 rounded-2xl bg-mango-100 text-mango-600 flex items-center justify-center group-hover:bg-mango-600 group-hover:text-white transition-all animate-pulse">
                         <span class="material-symbols-outlined">model_training</span>
                     </div>
                     <div>
-                        <div class="font-bold text-on-surface">Retrain accuracy Model</div>
-                        <div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mt-1">Last Retrain: 2 Days Ago</div>
+                        <div class="font-bold text-on-surface">Retrain Accuracy Model</div>
+                        <div id="last-retrain-time" class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mt-1">Last Retrain: 2 Days Ago</div>
                     </div>
                 </button>
             </div>
@@ -389,4 +396,275 @@
         </div>
     </div>
     @endif
+
+    <!-- Retraining Progress Modal -->
+    <div id="training-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white border border-outline-variant rounded-[40px] p-8 max-w-2xl w-full premium-shadow space-y-6 animate-scale-up">
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-primary-100 text-primary-600 rounded-2xl flex items-center justify-center animate-spin-slow">
+                        <span class="material-symbols-outlined text-2xl">smart_toy</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-on-surface">Pelatihan Model AI (Kalibrasi)</h4>
+                        <p class="text-xs text-on-surface-variant mt-0.5" id="training-subtitle">Menghubungkan ke Mesin Neural Network...</p>
+                    </div>
+                </div>
+                <button onclick="closeTrainingModal()" id="btn-close-modal" class="p-2 bg-surface hover:bg-slate-100 rounded-xl text-on-surface-variant hidden">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-2">
+                <div class="flex justify-between text-xs font-bold text-on-surface-variant uppercase">
+                    <span id="training-status">Memproses Epoch...</span>
+                    <span id="training-percentage">0%</span>
+                </div>
+                <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div id="training-bar" class="h-full bg-gradient-to-r from-primary-500 to-emerald-400 rounded-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <!-- Terminal Logs -->
+            <div class="bg-slate-950 text-emerald-400 font-mono text-[11px] p-6 rounded-3xl border border-slate-900 h-64 overflow-y-auto custom-scrollbar flex flex-col gap-1.5 shadow-inner">
+                <div id="terminal-logs" class="flex-1 flex flex-col justify-end text-left">
+                    <!-- Dynamic logs here -->
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-3" id="training-footer">
+                <!-- Close Button -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Styles for animation -->
+    <style>
+        .animate-spin-slow {
+            animation: spin 8s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Javascript retrain AI controller -->
+    <script>
+        let trainingActive = false;
+
+        async function startTraining() {
+            if (trainingActive) return;
+            trainingActive = true;
+
+            const modal = document.getElementById('training-modal');
+            const terminal = document.getElementById('terminal-logs');
+            const bar = document.getElementById('training-bar');
+            const percentage = document.getElementById('training-percentage');
+            const status = document.getElementById('training-status');
+            const subtitle = document.getElementById('training-subtitle');
+            const footer = document.getElementById('training-footer');
+            const closeBtn = document.getElementById('btn-close-modal');
+
+            // Reset UI
+            modal.classList.remove('hidden');
+            terminal.innerHTML = '';
+            bar.style.width = '0%';
+            percentage.innerText = '0%';
+            status.innerText = 'Menghubungkan ke Mesin Neural...';
+            subtitle.innerText = 'Mempersiapkan lingkungan pelatihan model';
+            footer.innerHTML = '';
+            closeBtn.classList.add('hidden');
+
+            try {
+                const response = await fetch("{{ route('admin.quality-monitor.train') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+
+                const result = await response.json();
+                if (response.status !== 200 || result.status !== 'success') {
+                    throw new Error(result.message || 'Gagal memulai training.');
+                }
+
+                // Simulate Live Logs Stream
+                let logIndex = 0;
+                const logs = result.logs;
+                const totalLogs = logs.length;
+
+                const interval = setInterval(() => {
+                    if (logIndex < totalLogs) {
+                        const line = document.createElement('div');
+                        line.className = 'animate-fade-in py-0.5 leading-relaxed';
+                        line.innerText = logs[logIndex];
+                        
+                        // Style special lines
+                        if (logs[logIndex].includes('[SUCCESS]')) {
+                            line.className += ' text-emerald-300 font-bold';
+                        } else if (logs[logIndex].includes('[EPOCH')) {
+                            line.className += ' text-sky-300';
+                        }
+                        
+                        terminal.appendChild(line);
+                        
+                        // Scroll to bottom
+                        terminal.parentElement.scrollTop = terminal.parentElement.scrollHeight;
+
+                        // Update progress bar dynamically
+                        const progressPercent = Math.round(((logIndex + 1) / totalLogs) * 100);
+                        bar.style.width = `${progressPercent}%`;
+                        percentage.innerText = `${progressPercent}%`;
+
+                        if (logs[logIndex].includes('[EPOCH')) {
+                            const match = logs[logIndex].match(/EPOCH (\d+)\/10/);
+                            if (match) {
+                                status.innerText = `Menjalankan Epoch ${match[1]}/10...`;
+                            }
+                        } else if (logs[logIndex].includes('[SUCCESS]')) {
+                            status.innerText = 'Pelatihan Selesai!';
+                            subtitle.innerText = 'Model terkalibrasi siap digunakan.';
+                        }
+
+                        logIndex++;
+                    } else {
+                        clearInterval(interval);
+                        trainingActive = false;
+
+                        // Update page stats dynamically
+                        document.getElementById('last-retrain-time').innerText = 'Last Retrain: Baru saja';
+                        
+                        const accuracyBar = document.getElementById('recent-accuracy-bar');
+                        if (accuracyBar) {
+                            accuracyBar.style.height = `${result.new_accuracy}%`;
+                        }
+                        const accuracyTooltip = document.getElementById('accuracy-tooltip');
+                        if (accuracyTooltip) {
+                            accuracyTooltip.innerText = `${result.new_accuracy}%`;
+                        }
+
+                        const accuracyLabel = document.getElementById('recent-accuracy-label');
+                        if (accuracyLabel) {
+                            accuracyLabel.innerText = 'Ver.1.7 (NEW)';
+                            accuracyLabel.classList.add('text-primary-600', 'font-black');
+                        }
+
+                        // Add action close button
+                        closeBtn.classList.remove('hidden');
+                        footer.innerHTML = `
+                            <button onclick="closeTrainingModal()" class="px-8 py-4 bg-primary-600 text-white font-black rounded-2xl hover:bg-primary-700 transition-all uppercase tracking-widest text-xs shadow-lg shadow-primary-500/20">
+                                Selesai & Terapkan
+                            </button>
+                        `;
+                    }
+                }, 600);
+
+            } catch (err) {
+                console.error(err);
+                const errorLine = document.createElement('div');
+                errorLine.className = 'text-red-500 font-bold py-1';
+                errorLine.innerText = `[ERROR] Gagal: ${err.message}`;
+                terminal.appendChild(errorLine);
+                status.innerText = 'Pelatihan Gagal';
+                subtitle.innerText = 'Terjadi kesalahan sistem.';
+                closeBtn.classList.remove('hidden');
+                trainingActive = false;
+            }
+        }
+
+        function closeTrainingModal() {
+            if (trainingActive) return;
+            document.getElementById('training-modal').classList.add('hidden');
+        }
+
+        function showAnomalyDetail(id, batchId, jenis, skorKesegaran, skorKepercayaan, pathFoto, kategori, rekomendasi, tanggal) {
+            document.getElementById('anomaly-batch-id').innerText = `#${batchId}`;
+            document.getElementById('anomaly-img').src = pathFoto;
+            document.getElementById('anomaly-score').innerText = `${skorKesegaran}%`;
+            document.getElementById('anomaly-confidence').innerText = `${skorKepercayaan}%`;
+            document.getElementById('anomaly-variety').innerText = jenis;
+            document.getElementById('anomaly-time').innerText = tanggal;
+
+            // Set dynamic action route for toggling anomaly
+            const form = document.getElementById('anomaly-toggle-form');
+            form.action = `/admin/quality-monitor/${id}/anomaly`;
+
+            document.getElementById('anomaly-modal').classList.remove('hidden');
+        }
+
+        function closeAnomalyModal() {
+            document.getElementById('anomaly-modal').classList.add('hidden');
+        }
+    </script>
+
+    <!-- Anomaly Detail Modal -->
+    <div id="anomaly-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white border border-outline-variant rounded-[32px] p-6 md:p-8 max-w-md w-full premium-shadow space-y-5 animate-scale-up max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">warning</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-on-surface">Detail Anomali Kualitas</h4>
+                        <p class="text-xs text-on-surface-variant mt-0.5" id="anomaly-batch-id">#BATCH-XXXXXX</p>
+                    </div>
+                </div>
+                <button onclick="closeAnomalyModal()" class="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl text-on-surface-variant">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Image -->
+            <div class="w-full h-48 md:h-56 rounded-3xl overflow-hidden border border-slate-100 shadow-inner bg-slate-50 relative">
+                <img id="anomaly-img" src="" class="w-full h-full object-cover" alt="Foto Anomali">
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
+                    <p class="text-[8px] font-black text-red-600 uppercase tracking-widest mb-1">Skor Kesegaran</p>
+                    <p class="text-xl font-black text-red-700" id="anomaly-score">--%</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Kepercayaan AI</p>
+                    <p class="text-xl font-black text-slate-900" id="anomaly-confidence">--%</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Varietas</p>
+                    <p class="text-xs font-black text-slate-900 truncate text-left" id="anomaly-variety">--</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Waktu Scan</p>
+                    <p class="text-xs font-black text-slate-900 truncate text-left" id="anomaly-time">--</p>
+                </div>
+            </div>
+
+            <!-- Warning Notice -->
+            <div class="p-5 bg-amber-50 text-amber-800 rounded-3xl border border-amber-200 text-xs leading-relaxed text-left">
+                <div class="font-bold mb-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">info</span>
+                    Catatan Kalibrasi
+                </div>
+                Data pindaian ini ditandai sebagai anomali karena skor kepercayaan model yang rendah atau ditolak admin. Data ini akan dimasukkan secara khusus ke dalam set retraining model AI.
+            </div>
+
+            <div class="flex justify-between items-center gap-3 pt-4 border-t border-slate-100">
+                <form id="anomaly-toggle-form" action="" method="POST" class="w-full">
+                    @csrf
+                    <div class="flex justify-end gap-3">
+                        <button type="button" onclick="closeAnomalyModal()" class="px-6 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all text-xs uppercase tracking-widest">
+                            Tutup
+                        </button>
+                        <button type="submit" class="px-6 py-4 bg-red-50 text-red-600 font-black rounded-2xl hover:bg-red-600 hover:text-white transition-all text-xs uppercase tracking-widest">
+                            Bukan Anomali
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </x-admin-layout>

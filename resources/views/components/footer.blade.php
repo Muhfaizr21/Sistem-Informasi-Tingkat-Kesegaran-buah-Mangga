@@ -3,10 +3,10 @@
         <!-- Brand -->
         <div class="sm:col-span-2 lg:col-span-1">
             <div class="w-11 h-11 bg-[#4A7C3F] rounded-full flex items-center justify-center shadow-[0_3px_10px_rgba(74,124,63,0.3)] mb-4 overflow-hidden">
-                <img src="/storage/logo/logo.png" class="h-8 w-8 object-contain" alt="Logo" />
+                <img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo.png') }}" class="h-8 w-8 object-contain" alt="Logo" />
             </div>
             <div class="mb-3" style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">
-                SI-<span style="color: #D4A017;">Mangga</span>
+                {{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}
             </div>
             <p class="text-[0.82rem] leading-relaxed max-w-[240px]" style="color: rgba(255,255,255,0.4);">
                 Sistem Informasi Kesegaran Mangga berbasis AI untuk mendukung petani Indramayu menuju pertanian modern.

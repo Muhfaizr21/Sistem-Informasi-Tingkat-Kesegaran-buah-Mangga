@@ -68,10 +68,9 @@
     <aside class="hidden lg:flex flex-col w-72 bg-white/80 backdrop-blur-xl h-screen fixed left-0 top-0 rounded-r-[3.5rem] border-r border-slate-100 shadow-2xl z-50">
         <div class="p-8">
             <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                <img src="{{ asset('storage/logo/logo.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
+                <img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo.png') }}" class="w-10 h-10 object-contain" alt="Logo" />
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-tight text-[#1b1b18] leading-none">SI-<span class="text-[#FFB800]">Mangga</span></h1>
-
+                    <h1 class="font-extrabold text-xl tracking-tight text-[#1b1b18] leading-none">{{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}</h1>
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Farmer Ecosystem</p>
                 </div>
             </a>
@@ -120,7 +119,7 @@
             <button @click="sidebarOpen = true" class="w-10 h-10 flex items-center justify-center text-slate-500">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <h1 class="font-extrabold text-lg text-slate-900">SI-<span class="text-primary-500">Mangga</span></h1>
+            <h1 class="font-extrabold text-lg text-slate-900">{{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}</h1>
 
         </div>
         <a href="{{ route('petani.profil') }}" class="w-10 h-10 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 font-bold">
@@ -138,9 +137,8 @@
                 <!-- Mobile Sidebar Content (Same as desktop but adapted) -->
                 <div class="flex justify-between items-center mb-10">
                     <div class="flex items-center gap-3">
-                        <img src="{{ asset('storage/logo/logo.png') }}" class="w-10 h-10 object-contain" alt="SI-Mangga Logo" />
-                        <h1 class="font-extrabold text-xl text-slate-900">SI-<span class="text-primary-500">Mangga</span></h1>
-
+                        <img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo.png') }}" class="w-10 h-10 object-contain" alt="Logo" />
+                        <h1 class="font-extrabold text-xl text-slate-900">{{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}</h1>
                     </div>
                     <button @click="sidebarOpen = false" class="text-slate-400"><span class="material-symbols-outlined">close</span></button>
                 </div>

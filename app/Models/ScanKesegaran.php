@@ -30,15 +30,33 @@ class ScanKesegaran extends Model
         'skor_kepercayaan',
         'batch_id',
         'dipindai_pada',
+        'status_verifikasi',
+        'skor_manual',
+        'is_anomaly',
+        'catatan_admin',
+        'diverifikasi_oleh',
+        'diverifikasi_pada',
     ];
 
     protected $casts = [
         'dipindai_pada' => 'datetime',
         'cacat_terdeteksi' => 'boolean',
+        'is_anomaly' => 'boolean',
+        'diverifikasi_pada' => 'datetime',
     ];
 
     public function pembeli()
     {
         return $this->belongsTo(Pembeli::class, 'pembeli_id');
+    }
+
+    public function petani()
+    {
+        return $this->belongsTo(Petani::class, 'petani_id');
+    }
+
+    public function lahan()
+    {
+        return $this->belongsTo(Lahan::class, 'lahan_id');
     }
 }

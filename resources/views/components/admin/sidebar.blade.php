@@ -5,10 +5,10 @@
         <!-- Brand Logo Area -->
         <div class="px-6 mb-8 flex items-center gap-3 overflow-hidden">
             <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
-                <img src="{{ asset('storage/logo/logo.png') }}" class="w-full h-full object-contain p-1" alt="Logo" />
+                <img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo.png') }}" class="w-full h-full object-contain p-1" alt="Logo" />
             </div>
             <div class="truncate">
-                <div class="text-base font-black tracking-tighter text-white leading-none">SI-Mangga</div>
+                <div class="text-base font-black tracking-tighter text-white leading-none">{{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}</div>
                 <div class="text-slate-400 text-[9px] font-bold tracking-widest uppercase mt-1">Admin</div>
             </div>
         </div>

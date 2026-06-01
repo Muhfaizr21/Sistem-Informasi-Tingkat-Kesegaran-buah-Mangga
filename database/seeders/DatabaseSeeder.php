@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             StatistikWilayahSeeder::class,
             WeatherImportSeeder::class,
             DatasetKuartalSeeder::class,
+            SystemSettingSeeder::class,
         ]);
 
         // Akun Admin Default
@@ -157,6 +158,65 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => now(),
                 ]
             );
+
+            // Seed ScanKesegaran records for the last 7 days to populate the trend analysis curve
+            $now = Carbon::now();
+            $scanData = [
+                ['days_ago' => 6, 'score' => 88.5, 'confidence' => 92.0, 'jenis' => 'Harum Manis', 'anomaly' => false, 'foto' => 'scan/B2OZg1koyQ_1778080280.webp'],
+                ['days_ago' => 5, 'score' => 77.8, 'confidence' => 88.0, 'jenis' => 'Harum Manis', 'anomaly' => false, 'foto' => 'scan/CvnECsbRYC_1778080309.webp'],
+                ['days_ago' => 4, 'score' => 82.3, 'confidence' => 90.5, 'jenis' => 'Gedong Gincu', 'anomaly' => false, 'foto' => 'scan/FjXoH9ixK9_1778080329.webp'],
+                ['days_ago' => 3, 'score' => 48.4, 'confidence' => 45.0, 'jenis' => 'Harum Manis', 'anomaly' => true, 'verifikasi' => 'rejected', 'foto' => 'scan/KfO7ebYj0i_1778154185.webp'], // Anomaly (Low score, rejected)
+                ['days_ago' => 2, 'score' => 89.1, 'confidence' => 94.0, 'jenis' => 'Gedong Gincu', 'anomaly' => false, 'foto' => 'scan/YHl789wX3S_1778138023.webp'],
+                ['days_ago' => 1, 'score' => 79.5, 'confidence' => 58.0, 'jenis' => 'Indramayu', 'anomaly' => true, 'foto' => 'scan/aEpJqVEO70_1778148805.webp'], // Anomaly (Low confidence)
+                ['days_ago' => 0, 'score' => 84.2, 'confidence' => 91.0, 'jenis' => 'Harum Manis', 'anomaly' => false, 'foto' => 'scan/hojJhkSwWl_1778246255.webp'],
+            ];
+
+            foreach ($scanData as $s) {
+                $scanDate = (clone $now)->subDays($s['days_ago']);
+                
+                $createdScan = \App\Models\ScanKesegaran::updateOrCreate(
+                    ['path_foto' => $s['foto']],
+                    [
+                        'petani_id' => $petaniProfile->id,
+                        'lahan_id' => $lahan->id,
+                        'berat_gram' => rand(300, 500),
+                        'diameter_cm' => rand(8, 12),
+                        'jenis_mangga' => $s['jenis'],
+                        'skor_kesegaran' => $s['score'],
+                        'persentase_warna' => rand(60, 85),
+                        'skor_tekstur' => rand(70, 90),
+                        'skor_bentuk' => rand(75, 95),
+                        'skor_aroma' => rand(70, 90),
+                        'kategori' => $s['score'] >= 90 ? 'matang' : ($s['score'] >= 80 ? 'sangat_matang' : ($s['score'] >= 70 ? 'setengah_matang' : 'mentah')),
+                        'rekomendasi' => $s['score'] >= 80 ? 'siap_jual' : ($s['score'] >= 70 ? 'perlu_penyimpanan' : 'belum_siap'),
+                        'skor_kepercayaan' => $s['confidence'],
+                        'batch_id' => 'BATCH-' . strtoupper(\Illuminate\Support\Str::random(8)),
+                        'dipindai_pada' => $scanDate,
+                        'status_verifikasi' => $s['verifikasi'] ?? 'pending',
+                        'is_anomaly' => $s['anomaly'],
+                        'created_at' => $scanDate,
+                        'updated_at' => $scanDate,
+                    ]
+                );
+
+                // Create a sample draft listing matching this batch if not already exists
+                ListingMangga::updateOrCreate(
+                    ['scan_id' => $createdScan->id],
+                    [
+                        'petani_id' => $petaniProfile->id,
+                        'lahan_id' => $lahan->id,
+                        'batch_id' => $createdScan->batch_id,
+                        'jenis_mangga' => $createdScan->jenis_mangga,
+                        'skor_kesegaran' => $createdScan->skor_kesegaran,
+                        'foto_batch' => [$createdScan->path_foto],
+                        'stok_tersedia_kg' => 0,
+                        'harga_per_kg' => 0,
+                        'minimal_order_kg' => 1,
+                        'deskripsi' => 'Draft produk hasil scan AI.',
+                        'aktif' => false,
+                    ]
+                );
+            }
         }
     }
 }

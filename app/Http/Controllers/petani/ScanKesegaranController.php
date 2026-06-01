@@ -117,31 +117,31 @@ class ScanKesegaranController extends Controller
                 'dipindai_pada' => now(),
             ]);
 
-            // Jika user memilih untuk langsung memasarkan
-            if ($request->has('marketplace_data')) {
-                if (!$request->lahan_id) {
-                    throw new \Exception('Harap pilih lahan produksi untuk memasarkan produk.');
-                }
-
-                \App\Models\ListingMangga::create([
-                    'petani_id' => $petani->id,
-                    'lahan_id' => $request->lahan_id,
-                    'scan_id' => $scan->id,
-                    'batch_id' => $scan->batch_id,
-                    'jenis_mangga' => $scan->jenis_mangga,
-                    'skor_kesegaran' => $scan->skor_kesegaran,
-                    'foto_batch' => [$scan->path_foto],
-                    'stok_tersedia_kg' => $request->marketplace_data['stok'],
-                    'harga_per_kg' => $request->marketplace_data['harga'],
-                    'minimal_order_kg' => $request->marketplace_data['min_order'] ?? 1,
-                    'deskripsi' => $request->marketplace_data['deskripsi'] ?? 'Mangga segar hasil scan AI.',
-                    'aktif' => true,
-                ]);
+            // Selalu buat ListingMangga (sebagai draft jika tidak langsung dipasarkan)
+            if (!$request->lahan_id) {
+                throw new \Exception('Harap pilih lahan produksi untuk menyimpan produk.');
             }
+
+            $isPublish = $request->has('marketplace_data');
+
+            \App\Models\ListingMangga::create([
+                'petani_id' => $petani->id,
+                'lahan_id' => $request->lahan_id,
+                'scan_id' => $scan->id,
+                'batch_id' => $scan->batch_id,
+                'jenis_mangga' => $scan->jenis_mangga,
+                'skor_kesegaran' => $scan->skor_kesegaran,
+                'foto_batch' => [$scan->path_foto],
+                'stok_tersedia_kg' => $isPublish ? ($request->marketplace_data['stok'] ?? 0) : 0,
+                'harga_per_kg' => $isPublish ? ($request->marketplace_data['harga'] ?? 0) : 0,
+                'minimal_order_kg' => $isPublish ? ($request->marketplace_data['min_order'] ?? 1) : 1,
+                'deskripsi' => $isPublish ? ($request->marketplace_data['deskripsi'] ?? 'Mangga segar hasil scan AI.') : 'Draft produk hasil scan AI.',
+                'aktif' => $isPublish,
+            ]);
 
             return response()->json([
                 'status' => 'success',
-                'message' => $request->has('marketplace_data') ? 'Produk berhasil dipasarkan!' : 'Hasil scan berhasil disimpan!',
+                'message' => $isPublish ? 'Produk berhasil dipasarkan!' : 'Produk berhasil disimpan sebagai draft!',
                 'scan_id' => $scan->id
             ]);
         } catch (\Exception $e) {

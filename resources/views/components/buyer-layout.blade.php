@@ -21,8 +21,8 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-8">
                     <a href="{{ route('landing') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('storage/logo/logo si-mangga.png') }}" alt="SI-Mangga" class="block h-8 w-auto object-contain" />
-                        <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">SI-<span class="text-primary">Mangga</span></span>
+                        <img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo si-mangga.png') }}" alt="Logo" class="block h-8 w-auto object-contain" />
+                        <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">{{ \App\Models\SystemSetting::get('app_name', 'SI-Mangga') }}</span>
                     </a>
                     <div class="hidden md:flex gap-6">
                         <a href="{{ route('buyer.catalog') }}" class="text-sm font-medium {{ request()->routeIs('buyer.catalog') ? 'text-primary' : 'text-gray-500 hover:text-gray-900' }}">Katalog</a>

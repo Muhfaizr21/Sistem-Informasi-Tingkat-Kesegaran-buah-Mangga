@@ -549,7 +549,7 @@
                 const result = await response.json();
                 if (result.status === 'success') {
                     alert(result.message);
-                    window.location.href = "{{ route('petani.dashboard') }}";
+                    window.location.href = "{{ route('petani.produk.index') }}";
                 } else {
                     alert("Gagal: " + result.message);
                 }

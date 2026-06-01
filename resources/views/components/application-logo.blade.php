@@ -1,1 +1,1 @@
-<img src="{{ asset('storage/logo/logo si-mangga.png') }}" {{ $attributes->merge(['class' => 'object-contain']) }} alt="SI-Mangga Logo">
+<img src="{{ \App\Models\SystemSetting::get('app_logo') ? (str_starts_with(\App\Models\SystemSetting::get('app_logo'), 'http') ? \App\Models\SystemSetting::get('app_logo') : asset(\App\Models\SystemSetting::get('app_logo'))) : asset('storage/logo/logo si-mangga.png') }}" {{ $attributes->merge(['class' => 'object-contain']) }} alt="SI-Mangga Logo">
